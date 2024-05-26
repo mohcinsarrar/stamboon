@@ -4,7 +4,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Subscription')
+@section('title', 'Subscriptionn')
 
 @section('page-style')
     <!-- Page -->
