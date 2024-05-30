@@ -448,9 +448,11 @@
 
                                 <div class="table-content">
                                     <ul class="table-list">
-                                        @foreach ($product->features as $feature)
-                                            <li> <i class="lni lni-checkmark-circle"></i> {{ $feature }}</li>
-                                        @endforeach
+                                        @if($product->features != null)
+                                            @foreach ($product->features as $feature)
+                                                <li> <i class="lni lni-checkmark-circle"></i> {{ $feature }}</li>
+                                            @endforeach
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
