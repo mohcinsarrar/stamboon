@@ -1991,6 +1991,33 @@ only screen and (min-width: 1400px) {
 }
 
 /*======================================
+	login
+========================================*/
+
+.login-dropdown .dropdown .btn{
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase !important;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background-color: transparent !important;
+  border: 0 !important;
+}
+
+.login-dropdown .dropdown .btn:hover{
+  text-decoration: underline;
+}
+
+.login-dropdown .dropdown .btn:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0) !important;
+}
+
+/*======================================
 	Contact CSS
 ========================================*/
 .contact-section {

@@ -89,7 +89,7 @@
 
                     <!-- navbar -->
                 </div>
-                <div class="col-auto d-lg-block d-none">
+                <div class="col-auto d-lg-block d-none login-dropdown">
                     @if (Auth::check())
                         <div class="dropdown">
                             <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button"
@@ -99,10 +99,10 @@
 
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <li><a class="dropdown-item"
-                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('familytree.dashboard.index') }}">Dashboard</a>
+                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('familytree.dashboard.index') }}"><i class="lni lni-grid-alt pe-1"></i> Dashboard</a>
                                 </li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i class="lni lni-power-switch pe-1"></i> Logout</a>
                                 </li>
                                 <form method="POST" id="logout-form" action="{{ route('logout') }}">
                                     @csrf
