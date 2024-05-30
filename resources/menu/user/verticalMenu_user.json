@@ -1,0 +1,16 @@
+{
+  "menu": [
+    {
+      "url": "/dashboard",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "slug": "familytree.dashboard.index"
+    },
+    {
+      "url": "/subscription",
+      "icon": "menu-icon tf-icons ti ti-credit-card",
+      "name": "Subscription",
+      "slug": "familytree.subscription.index"
+    }
+  ]
+}

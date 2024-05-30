@@ -46,7 +46,7 @@
   @include('layouts/sections/scripts')
 
   <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
-  <script src="{{asset('js/init-toasts.js')}}"></script>
+  <script src="{{asset('js/init-toast.js')}}"></script>
   <script>
     var toastElList = [].slice.call(document.querySelectorAll('.toast-flash-message '))
     var toastList = toastElList.map(function (toastEl) {

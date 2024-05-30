@@ -7,7 +7,7 @@ use App\Http\Controllers\familytree\SubscriptionController;
 
 
 
-Route::middleware(['auth:sanctum','verified','active'])
+Route::middleware(['auth:sanctum','verified','active','role:user'])
     ->name('familytree.')
     ->group( function(){
 

@@ -30,14 +30,24 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->instance(LoginResponse::class, new class implements LoginResponse {
             public function toResponse($request)
             {
-                return redirect()->route('familytree.dashboard.index');
+                if(auth()->user()->hasRole('admin')){
+                    return redirect()->route('admin.dashboard.index');
+                }
+                if(auth()->user()->hasRole('user')){
+                    return redirect()->route('familytree.dashboard.index');
+                }
             }
         });
         
         $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
             public function toResponse($request)
             {
-                return redirect()->route('familytree.dashboard.index');
+                if(auth()->user()->hasRole('admin')){
+                    return redirect()->route('admin.dashboard.index');
+                }
+                if(auth()->user()->hasRole('user')){
+                    return redirect()->route('familytree.dashboard.index');
+                }
             }
         });
     }

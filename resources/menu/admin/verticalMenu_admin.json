@@ -1,0 +1,61 @@
+{
+  "menu": [
+    {
+      "url": "/admin/dashboard",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "slug": "admin.dashboard.index"
+    },
+    {
+      "name": "Webshop Admin",
+      "icon": "menu-icon tf-icons ti ti-building-store",
+      "slug": "webshop",
+      "submenu": [
+        {
+          "url": "/admin/webshop/hero",
+          "name": "Hero",
+          "slug": "admin.webshop.hero"
+        },
+        {
+          "url": "/admin/webshop/aboutus",
+          "name": "About Us",
+          "slug": "admin.webshop.aboutus"
+        },
+        {
+          "url": "/admin/webshop/features",
+          "name": "Features",
+          "slug": "admin.webshop.features"
+        },
+        {
+          "url": "/admin/webshop/pricing",
+          "name": "Pricing",
+          "slug": "admin.webshop.pricing"
+        }
+        ,
+        {
+          "url": "/admin/webshop/products",
+          "name": "Products",
+          "slug": "admin.webshop.products.index"
+        }
+        ,
+        {
+          "url": "/admin/webshop/cta",
+          "name": "Call To Action",
+          "slug": "admin.webshop.cta"
+        }
+        ,
+        {
+          "url": "/admin/webshop/faq",
+          "name": "FAQ",
+          "slug": "admin.webshop.faq"
+        }
+        ,
+        {
+          "url": "/admin/webshop/contact",
+          "name": "Contact",
+          "slug": "admin.webshop.contact"
+        }
+      ]
+    }
+  ]
+}

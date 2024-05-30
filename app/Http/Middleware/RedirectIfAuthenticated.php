@@ -21,7 +21,18 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect()->route('familytree.dashboard.index');
+
+
+                if(auth()->user()->hasRole('admin')){
+                    return redirect()->route('admin.dashboard.index');
+                }
+                if(auth()->user()->hasRole('user')){
+                    return redirect()->route('familytree.dashboard.index');
+                }
+
+                return redirect('/');
+
+                
             }
         }
 

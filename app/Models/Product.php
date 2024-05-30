@@ -13,7 +13,13 @@ class Product extends Model
     protected $fillable = [
         'name',
         'amount',
+        'description',
         'features',
+    ];
+
+    protected $casts = [
+        'features' => 'array',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     

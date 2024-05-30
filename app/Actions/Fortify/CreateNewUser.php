@@ -33,11 +33,16 @@ class CreateNewUser implements CreatesNewUsers
 
         $name = explode("@", $input['email'])[0];
 
-        return User::create([
+        $user = User::create([
             'name' => $name,
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
             'verification_code' => str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT)
         ]);
+
+        $user->assignRole("user");
+        $user->save();
+
+        return $user;
     }
 }

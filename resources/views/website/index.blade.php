@@ -53,19 +53,36 @@
 
                         <div class="collapse navbar-collapse sub-menu-bar" id="navbarNine">
                             <ul class="navbar-nav me-auto">
-                                <li class="nav-item">
-                                    <a class="page-scroll active" href="#about-us">About Us</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="page-scroll" href="#features">Features</a>
-                                </li>
 
-                                <li class="nav-item">
-                                    <a class="page-scroll" href="#pricing">Pricing</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="page-scroll" href="#contact">Contact</a>
-                                </li>
+                                @if ($data['aboutus']['enable'] == true)
+                                    <li class="nav-item">
+                                        <a class="page-scroll active" href="#about-us">About Us</a>
+                                    </li>
+                                @endif
+
+                                @if ($data['features']['enable'] == true)
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="#features">Features</a>
+                                    </li>
+                                @endif
+
+                                @if ($data['pricing']['enable'] == true)
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="#pricing">Pricing</a>
+                                    </li>
+                                @endif
+
+                                @if ($data['faq']['enable'] == true)
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="#faq">FAQ</a>
+                                    </li>
+                                @endif
+
+                                @if ($data['contact']['enable'] == true)
+                                    <li class="nav-item">
+                                        <a class="page-scroll" href="#contact">Contact</a>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                     </nav>
@@ -81,7 +98,9 @@
                             </a>
 
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <li><a class="dropdown-item" href="{{ route('familytree.dashboard.index')}}">Dashboard</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('familytree.dashboard.index') }}">Dashboard</a>
+                                </li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                                 </li>
@@ -129,10 +148,35 @@
             </div>
             <div class="sidebar-menu mt-0">
                 <ul>
-                    <li><a href="#about-us">About Us</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    @if ($data['aboutus']['enable'] == true)
+                        <li>
+                            <a class="page-scroll active" href="#about-us">About Us</a>
+                        </li>
+                    @endif
+
+                    @if ($data['features']['enable'] == true)
+                        <li>
+                            <a class="page-scroll" href="#features">Features</a>
+                        </li>
+                    @endif
+
+                    @if ($data['pricing']['enable'] == true)
+                        <li>
+                            <a class="page-scroll" href="#pricing">Pricing</a>
+                        </li>
+                    @endif
+
+                    @if ($data['faq']['enable'] == true)
+                        <li>
+                            <a class="page-scroll" href="#faq">FAQ</a>
+                        </li>
+                    @endif
+
+                    @if ($data['contact']['enable'] == true)
+                        <li>
+                            <a class="page-scroll" href="#contact">Contact</a>
+                        </li>
+                    @endif
                 </ul>
             </div>
 
@@ -163,448 +207,410 @@
     <!--====== SIDEBAR PART ENDS ======-->
 
     <!-- Start header Area -->
-    <section id="hero-area" class="header-area header-eight">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-12 col-12">
-                    <div class="header-content">
-                        <h1>Create your family history</h1>
-                        <p>
-                            Every person deserves to be remembered.
-                        </p>
-                        <div class="button">
-                            <a href="javascript:void(0)" class="btn primary-btn">Get Started</a>
-                            <a href="https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM"
-                                class="glightbox video-button">
-                                <span class="btn icon-btn rounded-full">
-                                    <i class="lni lni-play"></i>
-                                </span>
-                                <span class="text">Watch Intro</span>
-                            </a>
+    @if ($data['hero']['enable'] == true)
+        <section id="hero-area" class="header-area header-eight">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-12 col-12">
+                        <div class="header-content">
+                            <h1>{{ $data['hero']['title'] }}</h1>
+                            <p>
+                                {{ $data['hero']['subTitle'] }}
+                            </p>
+                            <div class="button">
+                                <a href="javascript:void(0)"
+                                    class="btn primary-btn">{{ $data['hero']['buttonTitle'] }}</a>
+                                <a href="https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM"
+                                    class="glightbox video-button">
+                                    <span class="btn icon-btn rounded-full">
+                                        <i class="lni lni-play"></i>
+                                    </span>
+                                    <span class="text">{{ $data['hero']['videoTitle'] }}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-12">
+                        <div class="header-image">
+                            <img src="{{ asset('storage/' . $data['hero']['image']) }}" alt="#" />
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-12 col-12">
-                    <div class="header-image">
-                        <img src="{{ asset('webshop/assets/images/hero2.webp') }}" alt="#" />
-                    </div>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- End header Area -->
 
     <!--====== ABOUT FIVE PART START ======-->
-
-    <section id="about-us" class="about-area about-five">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-12">
-                    <div class="about-image-five">
-                        <svg class="shape" width="106" height="134" viewBox="0 0 106 134" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="1.66654" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="1.66654" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.3333" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.3333" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.3333" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.3333" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.333" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.333" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.333" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.333" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.333" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="16.333" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="30.9998" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6665" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="30.9998" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6665" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="30.9998" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6665" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="30.9998" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6665" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="31" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6668" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="31" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6668" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="31" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6668" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="31" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6668" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="31" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6668" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="31" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="74.6668" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="45.6665" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="89.3333" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.3333" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="1.66679" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.3333" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="16.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.3333" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="31.0001" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.3333" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="45.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.333" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="60.3335" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.333" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="88.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.333" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="117.667" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.333" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="74.6668" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.333" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="103" r="1.66667" fill="#DADADA" />
-                            <circle cx="60.333" cy="132" r="1.66667" fill="#DADADA" />
-                            <circle cx="104" cy="132" r="1.66667" fill="#DADADA" />
-                        </svg>
-                        <img src="{{ asset('webshop/assets/images/about.webp') }}" alt="about" />
+    @if ($data['aboutus']['enable'] == true)
+        <section id="about-us" class="about-area about-five">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-12">
+                        <div class="about-image-five">
+                            <svg class="shape" width="106" height="134" viewBox="0 0 106 134" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="1.66654" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="1.66654" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.3333" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.3333" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.3333" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.3333" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.333" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.333" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.333" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.333" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.333" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="16.333" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="30.9998" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6665" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="30.9998" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6665" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="30.9998" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6665" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="30.9998" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6665" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="31" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6668" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="31" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6668" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="31" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6668" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="31" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6668" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="31" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6668" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="31" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="74.6668" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="45.6665" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="89.3333" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.3333" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="1.66679" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.3333" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="16.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.3333" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="31.0001" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.3333" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="45.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.333" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="60.3335" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.333" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="88.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.333" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="117.667" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.333" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="74.6668" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.333" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="103" r="1.66667" fill="#DADADA" />
+                                <circle cx="60.333" cy="132" r="1.66667" fill="#DADADA" />
+                                <circle cx="104" cy="132" r="1.66667" fill="#DADADA" />
+                            </svg>
+                            <img src="{{ asset('storage/' . $data['aboutus']['image']) }}" alt="about" />
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-6 col-12">
-                    <div class="about-five-content">
-                        <h6 class="small-title text-lg">About Us</h6>
-                        <h2 class="main-title fw-bold">Unique approach of your family tree</h2>
-                        <div class="about-five-tab mt-0">
-                            <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane fade show active" id="nav-who" role="tabpanel"
-                                    aria-labelledby="nav-who-tab">
-                                    <p>The Stamboom lets you create your familytree with great ease, in an attractive
-                                        overview. The tool enables easy input of family data and results in a
-                                        show-worthy result.</p>
-                                    <p class="fw-bold">How The Stamboom was created</p>
-                                    <p>When working on the family history, you will gather a lot of data. At some point
-                                        you want to put all that in an attractive overiew. The web offers many methods,
-                                        but to find the right one turned out to be diffiult. That is why The Stamboom
-                                        had a smart tool develloped to do so. The tool saves a lot of time and offers an
-                                        attractive solution to show your familytree.</p>
-                                    <p class="fw-bold">The added value of The Stamboom</p>
-                                    <p>By enabling this tool for everybody, we can keep the prices relatively low. In
-                                        this way many people can save time and create a desirable result. We use the
-                                        feedback of our users to constantly improve our website.</p>
-                                    <p class="fw-bold">We would appreciate you contacting us!</p>
-                                    <p>Do you want to discuss any matters on family trees or family history with us,
-                                        feel free to contact us. We like that and we will always try to reply as soon as
-                                        possible. Contact us here.</p>
+                    <div class="col-lg-6 col-12">
+                        <div class="about-five-content">
+                            <h6 class="small-title text-lg">About Us</h6>
+                            <h2 class="main-title fw-bold">{{ $data['aboutus']['title'] }}</h2>
+                            <div class="about-five-tab mt-0">
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="nav-who" role="tabpanel"
+                                        aria-labelledby="nav-who-tab">
+                                        <p>{{ $data['aboutus']['subTitle'] }}</p>
+                                        @foreach ($data['aboutus']['paragraphs'] as $paragraph)
+                                            <p class="fw-bold">{{ $paragraph['title'] }}</p>
+                                            <p>{{ $paragraph['content'] }}</p>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- container -->
-    </section>
-
+            <!-- container -->
+        </section>
+    @endif
     <!--====== ABOUT FIVE PART ENDS ======-->
 
     <!-- ===== service-area start ===== -->
-    <section id="features" class="services-area services-eight">
-        <!--======  Start Section Title Five ======-->
-        <div class="section-title-five">
+    @if ($data['features']['enable'] == true)
+        <section id="features" class="services-area services-eight">
+            <!--======  Start Section Title Five ======-->
+            <div class="section-title-five">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="content">
+                                <h6>Features</h6>
+                                <h2 class="fw-bold">{{ $data['features']['title'] }}</h2>
+                                <p>
+                                    {{ $data['features']['subTitle'] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- row -->
+                </div>
+                <!-- container -->
+            </div>
+            <!--======  End Section Title Five ======-->
             <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="content">
-                            <h6>Features</h6>
-                            <h2 class="fw-bold">Our Features</h2>
-                            <p>
-                                Easily ceate an attractive familytree of your ancestry. The Stamboom tool generates a
-                                showworthy result to be used as overview, walldecoration or gift. Easy to set up and
-                                adapt to your own wishes.
-                            </p>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    @foreach ($data['features']['features'] as $feature)
+                        <div class="col">
+                            <div class="single-services h-100">
+                                <div class="service-content">
+                                    <h4>{{ $feature['title'] }}</h4>
+                                    <p>
+                                        {{ $feature['description'] }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- row -->
-            </div>
-            <!-- container -->
-        </div>
-        <!--======  End Section Title Five ======-->
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-services">
-                        <div class="service-icon">
-                            <i class="lni lni-capsule"></i>
-                        </div>
-                        <div class="service-content">
-                            <h4>Visualize and Annoate Family Tree</h4>
-                            <p>
-                                Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy
-                                eirmod tempor ividunt labor dolore magna.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-services">
-                        <div class="service-icon">
-                            <i class="lni lni-bootstrap"></i>
-                        </div>
-                        <div class="service-content">
-                            <h4>Printing Options</h4>
-                            <p>
-                                Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy
-                                eirmod tempor ividunt labor dolore magna.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-services">
-                        <div class="service-icon">
-                            <i class="lni lni-shortcode"></i>
-                        </div>
-                        <div class="service-content">
-                            <h4>Only 4 easy steps </h4>
-                            <p>
-                                Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy
-                                eirmod tempor ividunt labor dolore magna.
-                            </p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- ===== service-area end ===== -->
 
 
     <!-- Start Pricing  Area -->
-    <section id="pricing" class="pricing-area pricing-fourteen">
-        <!--======  Start Section Title Five ======-->
-        <div class="section-title-five">
+    @if ($data['pricing']['enable'] == true)
+        <section id="pricing" class="pricing-area pricing-fourteen">
+            <!--======  Start Section Title Five ======-->
+            <div class="section-title-five">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="content">
+                                <h6>Pricing</h6>
+                                <h2 class="fw-bold">{{ $data['pricing']['title'] }}</h2>
+                                <p>
+                                    {{ $data['pricing']['subTitle'] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- row -->
+                </div>
+                <!-- container -->
+            </div>
+            <!--======  End Section Title Five ======-->
             <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="content">
-                            <h6>Pricing</h6>
-                            <h2 class="fw-bold">Pricing</h2>
-                            <p>
-                                There are many variations of passages of Lorem Ipsum available,
-                                but the majority have suffered alteration in some form.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <!-- row -->
-            </div>
-            <!-- container -->
-        </div>
-        <!--======  End Section Title Five ======-->
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-12">
-                    <div class="pricing-style-fourteen">
-                        <div class="table-head">
-                            <h6 class="title">Basic</h4>
-                                <p>Lorem Ipsum is simply dummy text of the printing and industry.</p>
-                                <div class="price">
-                                    <h2 class="amount">
-                                        <span class="currency">$</span>0<span class="duration">/mo </span>
-                                    </h2>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    @foreach ($products as $product)
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <div class="h-100 pricing-style-fourteen {{ $loop->index == 1 ? 'middle' : '' }}">
+                                <div class="table-head">
+                                    <h6 class="title">{{ $product->name }}</h4>
+                                        <p>{{ $product->description }}</p>
+                                        <div class="price">
+                                            <h2 class="amount">
+                                                <span class="currency">$</span>{{ $product->amount }}<span
+                                                    class="duration">/mo </span>
+                                            </h2>
+                                        </div>
                                 </div>
-                        </div>
 
-                        <div class="light-rounded-buttons">
-                            <a href="{{ route('register') }}" class="btn primary-btn-outline">
-                                Purchase
-                            </a>
-                        </div>
-
-                        <div class="table-content">
-                            <ul class="table-list">
-                                <li> <i class="lni lni-checkmark-circle"></i> Cras justo odio.</li>
-                                <li> <i class="lni lni-checkmark-circle"></i> Dapibus ac facilisis in.</li>
-                                <li> <i class="lni lni-checkmark-circle deactive"></i> Morbi leo risus.</li>
-                                <li> <i class="lni lni-checkmark-circle deactive"></i> Excepteur sint occaecat velit.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <div class="pricing-style-fourteen middle">
-                        <div class="table-head">
-                            <h6 class="title">Standard</h4>
-                                <p>Lorem Ipsum is simply dummy text of the printing and industry.</p>
-                                <div class="price">
-                                    <h2 class="amount">
-                                        <span class="currency">$</span>99<span class="duration">/mo </span>
-                                    </h2>
+                                <div class="light-rounded-buttons">
+                                    <a href="{{ route('register') }}" class="btn primary-btn-outline">
+                                        Purchase
+                                    </a>
                                 </div>
-                        </div>
 
-                        <div class="light-rounded-buttons">
-                            <a href="{{ route('register') }}" class="btn primary-btn">
-                                Purchase
-                            </a>
-                        </div>
-
-                        <div class="table-content">
-                            <ul class="table-list">
-                                <li> <i class="lni lni-checkmark-circle"></i> Cras justo odio.</li>
-                                <li> <i class="lni lni-checkmark-circle"></i> Dapibus ac facilisis in.</li>
-                                <li> <i class="lni lni-checkmark-circle"></i> Morbi leo risus.</li>
-                                <li> <i class="lni lni-checkmark-circle deactive"></i> Excepteur sint occaecat velit.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <div class="pricing-style-fourteen">
-                        <div class="table-head">
-                            <h6 class="title">Plus</h4>
-                                <p>Lorem Ipsum is simply dummy text of the printing and industry.</p>
-                                <div class="price">
-                                    <h2 class="amount">
-                                        <span class="currency">$</span>150<span class="duration">/mo </span>
-                                    </h2>
+                                <div class="table-content">
+                                    <ul class="table-list">
+                                        @foreach ($product->features as $feature)
+                                            <li> <i class="lni lni-checkmark-circle"></i> {{ $feature }}</li>
+                                        @endforeach
+                                    </ul>
                                 </div>
+                            </div>
                         </div>
+                    @endforeach
 
-                        <div class="light-rounded-buttons">
-                            <a href="{{ route('register') }}" class="btn primary-btn-outline">
-                                Purchase
-                            </a>
-                        </div>
-
-                        <div class="table-content">
-                            <ul class="table-list">
-                                <li> <i class="lni lni-checkmark-circle"></i> Cras justo odio.</li>
-                                <li> <i class="lni lni-checkmark-circle"></i> Dapibus ac facilisis in.</li>
-                                <li> <i class="lni lni-checkmark-circle"></i> Morbi leo risus.</li>
-                                <li> <i class="lni lni-checkmark-circle"></i> Excepteur sint occaecat velit.</li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!--/ End Pricing  Area -->
 
 
 
     <!-- Start Cta Area -->
-    <section id="call-action" class="call-action">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-xxl-6 col-xl-7 col-lg-8 col-md-9">
-                    <div class="inner-content">
-                        <h2>We love to make perfect <br />solutions for your business</h2>
-                        <p>
-                            Why I say old chap that is, spiffing off his nut cor blimey
-                            guvnords geeza<br />
-                            bloke knees up bobby, sloshed arse William cack Richard. Bloke
-                            fanny around chesed of bum bag old lost the pilot say there
-                            spiffing off his nut.
-                        </p>
-                        <div class="light-rounded-buttons">
-                            <a href="javascript:void(0)" class="btn primary-btn-outline">Get Started</a>
+    @if ($data['cta']['enable'] == true)
+        <section id="call-action" class="call-action">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xxl-6 col-xl-7 col-lg-8 col-md-9">
+                        <div class="inner-content">
+                            <h2>{{ $data['cta']['title'] }}</h2>
+                            <p>
+                                {{ $data['cta']['subTitle'] }}
+                            </p>
+                            <div class="light-rounded-buttons">
+                                <a href="{{ route('register') }}"
+                                    class="btn primary-btn-outline">{{ $data['cta']['buttonTitle'] }}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- End Cta Area -->
 
-
-    <!-- ========================= contact-section start ========================= -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-xl-8">
-                    <div class="contact-form-wrapper">
-                        <div class="row">
-                            <div class="col-xl-10 col-lg-8 mx-auto">
-                                <div class="section-title text-center">
-                                    <span> Get in Touch </span>
-                                    <h2>
-                                        Ready to Get Started
-                                    </h2>
-                                    <p>
-                                        At vero eos et accusamus et iusto odio dignissimos ducimus
-                                        quiblanditiis praesentium
-                                    </p>
-                                </div>
+    <!-- ========================= faq-section start ========================= -->
+    @if ($data['faq']['enable'] == true)
+        <section id="faq" class="contact-section bsb-faq-2">
+            <div class="section-title-five">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="content">
+                                <h6>FAQ</h6>
+                                <h2 class="fw-bold">{{ $data['faq']['title'] }}</h2>
                             </div>
                         </div>
-                        <form action="#" class="contact-form">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <input type="text" name="name" id="name" placeholder="Name"
-                                        required />
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="email" name="email" id="email" placeholder="Email"
-                                        required />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <input type="text" name="phone" id="phone" placeholder="Phone"
-                                        required />
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="text" name="subject" id="email" placeholder="Subject"
-                                        required />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <textarea name="message" id="message" placeholder="Type Message" rows="5"></textarea>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="button text-center rounded-buttons">
-                                        <button type="submit" class="btn primary-btn rounded-full">
-                                            Send Message
+                    </div>
+                    <!-- row -->
+                </div>
+                <!-- container -->
+            </div>
+            <div class="container mb-5">
+                <div class="row justify-content-xl-end">
+                    <div class="col-12 col-xl-11">
+                        <div class="accordion accordion-flush" id="accordionExample">
+                            @foreach ($data['faq']['questions'] as $question)
+                                <div class="accordion-item mb-4 shadow-sm">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button collapsed bg-transparent fw-bold"
+                                            type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse{{ $loop->index }}" aria-expanded="false"
+                                            aria-controls="collapse{{ $loop->index }}">
+                                            {{ $question['question'] }}
                                         </button>
+                                    </h2>
+                                    <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse"
+                                        aria-labelledby="heading{{ $loop->index }}"
+                                        data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <p>{{ $question['response'] }}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
+    <!-- ========================= faq-section end ========================= -->
+
+    <!-- ========================= contact-section start ========================= -->
+    @if ($data['contact']['enable'] == true)
+        <section id="contact" class="contact-section about-five">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-8">
+                        <div class="contact-form-wrapper">
+                            <div class="row">
+                                <div class="col-xl-10 col-lg-8 mx-auto">
+                                    <div class="section-title text-center">
+                                        <span> Contact </span>
+                                        <h2>
+                                            {{ $data['contact']['title'] }}
+                                        </h2>
+                                        <p>
+                                            {{ $data['contact']['subTitle'] }}
+                                        </p>
+                                    </div>
+                                    @if ($message = Session::get('error'))
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ $message }}
+                                        </div>
+                                    @endif
+                                    @if ($message = Session::get('success'))
+                                        <div class="alert alert-success" role="alert">
+                                            {{ $message }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <form action="{{ route('contact') }}" class="contact-form" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" name="name" id="name" placeholder="Name"
+                                            required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="email" name="email" id="email" placeholder="Email"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <input type="text" name="subject" id="subject" placeholder="Subject"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <textarea name="message" id="message" placeholder="Type Message" rows="5" minlength="10" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="button text-center rounded-buttons">
+                                            <button type="submit" class="btn primary-btn rounded-full">
+                                                Send Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
     <!-- ========================= contact-section end ========================= -->
 
 
     <!-- Start Footer Area -->
-    <footer class="footer-area footer-eleven">
+    @if(false == true)
+    <footer class="footer-area footer-eleven mt-0">
         <!-- Start Footer Top -->
         <div class="footer-top">
             <div class="container">
@@ -653,6 +659,7 @@
         </div>
         <!--/ End Footer Top -->
     </footer>
+    @endif
     <!--/ End Footer Area -->
 
 

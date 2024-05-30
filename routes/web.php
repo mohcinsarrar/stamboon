@@ -1,6 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
+use App\Models\Product;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,12 +18,60 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-require_once __DIR__ .'/familytree.php';
 require_once __DIR__ .'/auth.php';
+require_once __DIR__ .'/familytree.php';
+require_once __DIR__ .'/admin.php';
+
+require_once __DIR__ .'/utils.php';
+
 
 
 
 
 Route::get('/', function(){
-    return view('website.index');
+    // Path to the JSON file
+    $path = resource_path('views/website/website.json');
+
+    // Get the file contents
+    $json = File::get($path);
+
+    // Decode the JSON data
+    $data = json_decode($json, true);
+
+    // get products
+    $products = Product::orderByRaw('CONVERT(amount, SIGNED) asc')->get();
+
+    return view('website.index',compact('data','products'));
 });
+
+
+Route::post('/contact', function(Request $request){
+
+    // validate
+    $inputs = $request->except('_token');
+
+    $validator = Validator::make($inputs, [
+        'name' => 'required|string',
+        'email' => 'required|email',
+        'subject' => 'required|string',
+        'message' => 'required|string|min:30',
+      ]);
+
+    if ($validator->fails()) {
+        return redirect('/#contact')->with('error','Unable send your message, try again !!');
+    }
+
+
+    
+
+    try{
+        Mail::to("admin@admin.com")->send(new ContactEmail($request->name, $request->email, $request->subject, $request->message));
+        return redirect('/#contact')->with('success','Your message sent with success !!');
+    }
+    catch(Exception $e){
+        return redirect('/#contact')->with('error','Unable send your message, try again !!');
+    }
+    
+    return redirect('/#contact')->with('error','Unable send your message, try again !!');
+
+})->name('contact');

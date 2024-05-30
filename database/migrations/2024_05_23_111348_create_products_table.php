@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('amount');
+            $table->text('description');
             $table->json('features')->nullable();
             $table->timestamps();
         });
