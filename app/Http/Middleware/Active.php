@@ -19,7 +19,7 @@ class Active
     {
         if (Auth::check()) {
             if(Auth::user()->payment == null){
-                return redirect()->route('familytree.subscription.index');
+                return redirect()->route('users.subscription.index');
             }
         }
         return $next($request);

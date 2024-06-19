@@ -35,7 +35,7 @@ class AuthenticationController extends Controller
       }
     }
     //dd($request);
-    return redirect()->route('familytree.dashboard.index');
+    return redirect()->route('users.dashboard.index');
 
   }
 

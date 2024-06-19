@@ -27,7 +27,7 @@ class RedirectIfAuthenticated
                     return redirect()->route('admin.dashboard.index');
                 }
                 if(auth()->user()->hasRole('user')){
-                    return redirect()->route('familytree.dashboard.index');
+                    return redirect()->route('users.dashboard.index');
                 }
 
                 return redirect('/');

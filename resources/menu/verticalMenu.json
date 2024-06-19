@@ -4,13 +4,19 @@
       "url": "/dashboard",
       "name": "Dashboard",
       "icon": "menu-icon tf-icons ti ti-smart-home",
-      "slug": "familytree.dashboard.index"
+      "slug": "users.dashboard.index"
+    },
+    {
+      "url": "/fanchart",
+      "icon": "menu-icon tf-icons ti ti-chart-arcs-3",
+      "name": "Fanchart",
+      "slug": "users.fanchart.index"
     },
     {
       "url": "/subscription",
       "icon": "menu-icon tf-icons ti ti-credit-card",
       "name": "Subscription",
-      "slug": "familytree.subscription.index"
+      "slug": "users.subscription.index"
     }
   ]
 }

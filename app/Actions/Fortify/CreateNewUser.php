@@ -3,6 +3,8 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Models\Tree;
+use App\Models\Node;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -34,6 +36,7 @@ class CreateNewUser implements CreatesNewUsers
         $name = explode("@", $input['email'])[0];
 
         $user = User::create([
+            'active' => 1,
             'name' => $name,
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
@@ -42,6 +45,14 @@ class CreateNewUser implements CreatesNewUsers
 
         $user->assignRole("user");
         $user->save();
+
+        // create tree
+        $tree = Tree::create([
+            'user_id' => $user->id
+        ]);
+
+        // create familytree
+        Node::createFamilyTree($user->name, "", "", $tree->id);
 
         return $user;
     }

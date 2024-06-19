@@ -99,7 +99,7 @@
 
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <li><a class="dropdown-item"
-                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('familytree.dashboard.index') }}"><i class="lni lni-grid-alt pe-1"></i> Dashboard</a>
+                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}"><i class="lni lni-grid-alt pe-1"></i> Dashboard</a>
                                 </li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i class="lni lni-power-switch pe-1"></i> Logout</a>
@@ -441,9 +441,15 @@
                                 </div>
 
                                 <div class="light-rounded-buttons">
+                                    @if(Auth::check())
+                                    <a href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}" class="btn primary-btn-outline">
+                                        Purchase
+                                    </a>
+                                    @else
                                     <a href="{{ route('register') }}" class="btn primary-btn-outline">
                                         Purchase
                                     </a>
+                                    @endif
                                 </div>
 
                                 <div class="table-content">

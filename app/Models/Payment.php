@@ -19,6 +19,10 @@ class Payment extends Model
         'payment_method'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s'
+    ];
+
     /** Relations **/
     
     public function user(): BelongsTo

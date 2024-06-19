@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\WebshopController;
 
 
@@ -11,7 +12,11 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
     ->group( function(){
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
     Route::resource('webshop/products', ProductController::class)->names('webshop.products');
+    
+    Route::post('users/toggle_active/{id}', [UserController::class, 'toggle_active'])->name('users.toggle_active');
+    Route::resource('users', UserController::class)->names('users');
 
     Route::get('webshop/hero', [WebshopController::class, 'hero'])->name('webshop.hero');
     Route::post('webshop/hero', [WebshopController::class, 'hero_update'])->name('webshop.hero.update');

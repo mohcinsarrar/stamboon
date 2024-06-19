@@ -7,6 +7,12 @@
       "slug": "admin.dashboard.index"
     },
     {
+      "url": "/admin/users",
+      "name": "Users",
+      "icon": "menu-icon tf-icons ti ti-users",
+      "slug": "admin.users.index"
+    },
+    {
       "name": "Webshop Admin",
       "icon": "menu-icon tf-icons ti ti-building-store",
       "slug": "webshop",

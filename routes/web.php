@@ -19,7 +19,7 @@ use App\Mail\ContactEmail;
 |
 */
 require_once __DIR__ .'/auth.php';
-require_once __DIR__ .'/familytree.php';
+require_once __DIR__ .'/users.php';
 require_once __DIR__ .'/admin.php';
 
 require_once __DIR__ .'/utils.php';
