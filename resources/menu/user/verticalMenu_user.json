@@ -19,6 +19,12 @@
       "slug": "users.fanchart.index"
     },
     {
+      "url": "/pedigree",
+      "icon": "menu-icon tf-icons ti ti-growth",
+      "name": "Pedigree",
+      "slug": "users.pedigree.index"
+    },
+    {
       "url": "/subscription",
       "icon": "menu-icon tf-icons ti ti-credit-card",
       "name": "Subscription",

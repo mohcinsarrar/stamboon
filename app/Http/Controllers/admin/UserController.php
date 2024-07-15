@@ -64,6 +64,10 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->back()->with('success','user deleted with success');
     }
 
     public function toggle_active(Request $request,string $id)

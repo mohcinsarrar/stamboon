@@ -1,0 +1,41 @@
+.person-member {
+    display: flex;
+    flex-wrap: wrap;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+}
+
+.male-member {
+    background: radial-gradient(circle, #B0E0E6 0%, #00CED1 100%);
+}
+
+.female-member {
+    background: radial-gradient(circle, #FFB6C1 0%, #FF69B4 100%);
+}
+
+div.line {
+    margin-top: 13px;
+    width: 5px;
+}
+
+div.line hr {
+    border-style: solid;
+    border-width: 5px 0 0;
+}
+
+.person-icon {
+    padding-top: 3px;
+    width: 40px;
+    height: 30px;
+}
+
+.person-name {
+    text-align: left;
+    justify-content: center;
+}
+
+.selected-person {
+    border: 4px solid #152785;
+}

@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\User;
 use App\Models\Tree;
 use App\Models\Node;
+use App\Models\Pedigree;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -54,6 +55,11 @@ class CreateNewUser implements CreatesNewUsers
         // create familytree
         Node::createFamilyTree($user->name, "", "", $tree->id);
 
+        // create pedigree
+        Pedigree::create([
+            'user_id' => $user->id
+        ]);
+        
         return $user;
     }
 }

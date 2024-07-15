@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab19cf6b96c8c18e611dfd13e7ba2356",
+    "content-hash": "96cac4e37f0b9331400f7785c4cfc697",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2356,6 +2356,57 @@
                 }
             ],
             "time": "2024-01-28T23:22:08+00:00"
+        },
+        {
+            "name": "liberu-genealogy/php-gedcom",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liberu-genealogy/php-gedcom.git",
+                "reference": "720daa51f73008c6a1aedf07eca9d30824d57663"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberu-genealogy/php-gedcom/zipball/720daa51f73008c6a1aedf07eca9d30824d57663",
+                "reference": "720daa51f73008c6a1aedf07eca9d30824d57663",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "driftingly/rector-laravel": "^0.25.0",
+                "phpunit/phpunit": "11.*",
+                "rector/rector": "*",
+                "squizlabs/php_codesniffer": "3.6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gedcom\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A GEDCOM file parser (read + write) for PHP 8.0+",
+            "homepage": "http://github.com/familytree365/php-gedcom",
+            "keywords": [
+                "gedcom",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/liberu-genealogy/php-gedcom/issues",
+                "source": "https://github.com/liberu-genealogy/php-gedcom/tree/v2.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/liberu-genealogy",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-05-17T21:02:53+00:00"
         },
         {
             "name": "livewire/livewire",

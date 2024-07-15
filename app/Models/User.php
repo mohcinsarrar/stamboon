@@ -77,6 +77,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Tree::class);
     }
 
+    public function pedigree(): HasOne
+    {
+        return $this->hasOne(Pedigree::class);
+    }
+
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);

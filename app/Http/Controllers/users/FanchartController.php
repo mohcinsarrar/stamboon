@@ -81,7 +81,7 @@ class FanchartController extends Controller
             $file = $request->file('file');
             Excel::import(new TreeImport, $file);
             $user->addActivity('Family Tree imported','family tree imported with success via excel file');
-            return response()->json(['error'=>false,'msg' => 'Image Added','redirect_url'=>route('trees.index')]);
+            return response()->json(['error'=>false,'msg' => 'File Added','redirect_url'=>route('trees.index')]);
 
         }
         else{
