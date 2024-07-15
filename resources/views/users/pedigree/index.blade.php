@@ -184,18 +184,29 @@
             });
 
             $(document).on("click", "#compactView", function() {
-                if($('#compactView').data('compact') == 'false'){
+                if($('#compactView').data('compact') == false){
                     chart.compact(true).render().fit()
-                    $('#compactView').data('compact','true')
+                    $('#compactView').data('compact',true)
                     $('#compactView').html('Decompact')
                 }
                 else{
                     chart.compact(false).render().fit()
-                    $('#compactView').data('compact','false')
+                    $('#compactView').data('compact',false)
                     $('#compactView').html('Compact')
                 }
             });
 
+            $(document).on("click", "#expandView", function() {
+                chart.expandAll();
+            });
+
+            $(document).on("click", "#collpaseView", function() {
+
+                const { allNodes, root } = chart.getChartState();
+                allNodes.forEach(d => d.data._expanded = false);
+                chart.initialExpandLevel(1)
+                chart.render().fit();
+            });
             
         }
 
@@ -588,6 +599,12 @@
                 </div>
                 <div class="row mx-0 mb-2">
                     <button id="compactView" data-compact="false" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1">Compact</button>
+                </div>
+                <div class="row mx-0 mb-2">
+                    <button id="expandView" data-expand="false" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1">Expand</button>
+                </div>
+                <div class="row mx-0 mb-2">
+                    <button id="collpaseView" data-collpase="false" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1">Collpase</button>
                 </div>
                 <div class="row mx-0 mb-2">
                     <div class="btn-group dropend">
