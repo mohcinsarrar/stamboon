@@ -165,7 +165,7 @@
 
 
 
-            chart.render();
+            chart.render().fit();
 
             $(document).on("click", "#zoomIn", function() {
                 chart.zoomIn()
@@ -225,6 +225,36 @@
                         <div class="col person-name">${person.name}</div>
                         </div>`;
                 return nodeContent;
+                        /*
+                 nodeHtml = `
+                        <div style="padding-top:30px;background-color:none;margin-left:1px;height:${d.height}px;border-radius:2px;overflow:visible">
+                        <div style="height:${
+                            d.height - 32
+                        }px;padding-top:0px;background-color:white;border:1px solid lightgray;">
+
+                            <img src=" ${
+                            d.data.imageUrl
+                            }" style="margin-top:-30px;margin-left:${d.width / 2 - 30}px;border-radius:100px;width:60px;height:60px;" />
+
+                        <div style="margin-right:10px;margin-top:15px;float:right">${
+                            d.data.id
+                        }</div>
+                        
+                        <div style="margin-top:-30px;background-color:#3AB6E3;height:10px;width:${
+                            d.width - 2
+                        }px;border-radius:1px"></div>
+
+                        <div style="padding:20px; padding-top:35px;text-align:center">
+                            <div style="color:#111672;font-size:16px;font-weight:bold"> ${
+                                d.data.name
+                            } </div>
+                            <div style="color:#404040;font-size:16px;margin-top:4px"> ${
+                                d.data.positionName
+                            } </div>
+                        </div> 
+                        </div>     
+                        </div>
+                        `;*/
             }
         }
 
@@ -239,7 +269,8 @@
             promise.then(gedcom => {
                 
 
-                //const treeData = transformGedcom(gedcom);
+                const treeData = transformGedcom(gedcom);
+                /*
                 const treeData = [{
                     id: 'L1',
                     name: 'Grand Father Kumar',
@@ -268,6 +299,7 @@
                     spouseGender: 'M',
                 },
                 ]
+                */
                 draw_graph(treeData)
 
             });
@@ -455,8 +487,12 @@
     <script>
         $(document).on("click", "#import-gedcom", function() {
             const file = $('#gedcom').prop('files')[0];
+            var modalElement = document.getElementById('uploadFile');
+            var modal = bootstrap.Modal.getInstance(modalElement);
+            
+
             if (!file) {
-                alert_msg('error', 'No file selected');
+                show_toast('error','error','No file selected')
                 return;
             }
 
@@ -478,18 +514,21 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
+                    modal.hide();
                     if (data.error == false) {
-                        console.log(data.msg)
+                        show_toast('success','upload file',data.msg)
+                        draw_tree()
                     } else {
-                        alert_msg('error', data.msg)
+                        show_toast('error','error',data.error)
                     }
 
                 },
                 error: function(xhr, status, error) {
+                    modal.hide();
                     if ('responseJSON' in xhr) {
-                        alert_msg('error', xhr.responseJSON.message)
+                        show_toast('error','error',xhr.responseJSON.message)
                     } else {
-                        alert_msg('error', error)
+                        show_toast('error','error',error)
                     }
 
                     return null;
@@ -505,74 +544,51 @@
 
 @section('content')
 
-    <!-- settings -->
-    <div class="card mb-5 mt-4 blocking-card">
-        <div class="card-header d-flex justify-content-between border-bottom">
-            <h5 class="card-title m-0 me-2">Settings</h5>
-            <div>
-                <button type="button" id="send" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal"
-                    data-bs-target="#sendTree">Send Your Family
-                    Tree</button>
+    <div class="modal fade" id="uploadFile" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel1">Uplod your family tree</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
-        <div class="card-body mt-3">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label for="template" class="form-label">Import your Gedcom file</label>
-                    <div class="input-group">
-                        <input type="file" name="gedcom" id="gedcom" class="form-control" id="inputGroupFile04"
-                            aria-describedby="import-gedcom" aria-label="Upload" autocomplete="off">
-                        <button class="btn btn-outline-primary waves-effect" type="button"
-                            id="import-gedcom">Import</button>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="template" class="form-label">Import your Gedcom file</label>
+                        <div class="input-group">
+                            <input type="file" name="gedcom" id="gedcom" class="form-control" id="inputGroupFile04"
+                                aria-describedby="import-gedcom" aria-label="Upload" autocomplete="off">
+                            <button class="btn btn-outline-primary waves-effect" type="button"
+                                id="import-gedcom">Import</button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label for="generations" class="form-label">Generations</label>
-                    <select class="form-select" id="generations">
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4" selected>4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="template" class="form-label">Template</label>
-                    <select class="form-select" id="template">
-                        <option value="basic" selected>Basic</option>
-                        <option value="gradient">gradient</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="template" class="form-label mb-2">Show empty Nodes</label>
-                    <div class="form-check form-switch mb-2">
-                        <input class="form-check-input" type="checkbox" id="show_empty_node" checked="">
-                        <label class="form-check-label" for="show_empty_node" value="show"></label>
-                    </div>
-                </div>
-
             </div>
-
+          </div>
         </div>
-    </div>
+      </div>
     <div class="card blocking-card">
         <div class="card-body position-relative">
             <div class="border position-absolute p-3 bg-secondary rounded">
-                <div class="btn-group mb-2 dropend">
-                    <button type="button" class="btn btn-outline-dark dropdown-toggle waves-effect hide-arrow  text-white border-0 px-1" data-bs-toggle="dropdown" data-trigger="hover" aria-expanded="false"><i class="ti ti-growth  fs-3"></i></button>
-                    <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header text-uppercase">View</h6></li>
-                        <li><a class="dropdown-item waves-effect" href="javascript:void(0);" id="viewVertical">Vertical</a></li>
-                        <li><a class="dropdown-item waves-effect" href="javascript:void(0);" id="viewHorizontal">Horizontal</a></li>
-                    </ul>
-                  </div>
+                <div class="row mx-0 mb-2">
+                    <button data-bs-toggle="modal" data-bs-target="#uploadFile" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1"><i class="ti ti-upload fs-3"></i></button>
+                </div>
+                <div class="row mx-0 mb-2">
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle waves-effect hide-arrow  text-white border-0 px-1" data-bs-toggle="dropdown" data-trigger="hover" aria-expanded="false"><i class="ti ti-growth  fs-3"></i></button>
+                        <ul class="dropdown-menu">
+                            <li><h6 class="dropdown-header text-uppercase">View</h6></li>
+                            <li><a class="dropdown-item waves-effect" href="javascript:void(0);" id="viewVertical">Vertical</a></li>
+                            <li><a class="dropdown-item waves-effect" href="javascript:void(0);" id="viewHorizontal">Horizontal</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <hr class="border-1 text-white my-2">
                 <div class="row mx-0 mb-2">
-                    <button id="zoomIn" type="button" class="btn rounded-pill btn-outline-dark waves-effect text-white border-0 px-1"><i class="ti ti-zoom-in fs-3"></i></button>
+                    <button id="zoomIn" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1"><i class="ti ti-zoom-in fs-3"></i></button>
                 </div>
                 <div class="row mx-0">
-                    <button id="zoomOut" type="button" class="btn rounded-pill btn-outline-dark waves-effect text-white border-0 px-1"><i class="ti ti-zoom-out fs-3"></i></button>
+                    <button id="zoomOut" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1"><i class="ti ti-zoom-out fs-3"></i></button>
                 </div>
             </div>
             <div id="graph"></div>

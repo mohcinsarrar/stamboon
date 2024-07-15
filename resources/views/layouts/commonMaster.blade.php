@@ -39,7 +39,18 @@
   <!-- Layout Content -->
   @yield('layoutContent')
   <!--/ Layout Content -->
-
+ <!-- Toast with Animation -->
+ <div class="bs-toast toast toast-ex animate__animated my-2" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header text-white">
+    <div class="icon text-white"><i class="ti ti-bell ti-xs me-2"></i></div>
+    <div class="me-auto fw-semibold title">Bootstrap</div>
+    <small class="text-muted datetime"></small>
+    <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+    Hello, world! This is a toast message.
+  </div>
+</div>
   
 
   <!-- Include Scripts -->
@@ -47,6 +58,18 @@
 
   <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
   <script src="{{asset('js/init-toast.js')}}"></script>
+  <script>
+    function show_toast(type,title,msg){
+        const toastAnimationExample = document.querySelector('.toast-ex')
+        toastAnimationExample.classList.add("animate__tada");
+        toastAnimationExample.querySelector('.toast-header').classList.add("bg-"+type);
+        toastAnimationExample.querySelector('.title').innerHTML = title;
+        toastAnimationExample.querySelector('.toast-body').innerHTML = msg;
+
+        toastAnimation = new bootstrap.Toast(toastAnimationExample);
+        toastAnimation.show();
+    }
+</script>
   <script>
     var toastElList = [].slice.call(document.querySelectorAll('.toast-flash-message '))
     var toastList = toastElList.map(function (toastEl) {

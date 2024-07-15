@@ -65,6 +65,8 @@ class UserController extends Controller
     {
         //
         $user = User::findOrFail($id);
+        $payment = $user->payment;
+        $payment->delete();
         $user->delete();
 
         return redirect()->back()->with('success','user deleted with success');
