@@ -183,6 +183,19 @@
                 chart.layout('left').render().fit()
             });
 
+            $(document).on("click", "#compactView", function() {
+                if($('#compactView').data('compact') == 'false'){
+                    chart.compact(true).render().fit()
+                    $('#compactView').data('compact','true')
+                    $('#compactView').html('Decompact')
+                }
+                else{
+                    chart.compact(false).render().fit()
+                    $('#compactView').data('compact','false')
+                    $('#compactView').html('Compact')
+                }
+            });
+
             
         }
 
@@ -572,6 +585,9 @@
             <div class="border position-absolute p-3 bg-secondary rounded">
                 <div class="row mx-0 mb-2">
                     <button data-bs-toggle="modal" data-bs-target="#uploadFile" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1"><i class="ti ti-upload fs-3"></i></button>
+                </div>
+                <div class="row mx-0 mb-2">
+                    <button id="compactView" data-compact="false" type="button" class="btn btn-outline-dark waves-effect text-white border-0 px-1">Compact</button>
                 </div>
                 <div class="row mx-0 mb-2">
                     <div class="btn-group dropend">
