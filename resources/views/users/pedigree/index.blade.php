@@ -197,7 +197,7 @@
             });
 
             $(document).on("click", "#expandView", function() {
-                chart.expandAll();
+                chart.expandAll().render().fit();
             });
 
             $(document).on("click", "#collpaseView", function() {
