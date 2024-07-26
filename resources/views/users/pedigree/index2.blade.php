@@ -154,7 +154,8 @@
 
                     return nodeHtml;
                 });
-
+                
+                
 
             chart.layoutBindings().top.linkX = (d) => {
                 if (d.data.spouseId === undefined) {
@@ -167,9 +168,11 @@
             };
 
 
-
+            
+            
 
             chart.render().fit();
+
 
             $(document).on("click", "#zoomIn", function() {
                 chart.zoomIn()
@@ -223,7 +226,7 @@
 
         function getPersonNodeContent(personData, personType) {
             const person = {};
-
+            
             if (personType === 'spouse') {
                 person.id = personData.spouseId;
                 person.name = personData.spouseName;
@@ -250,7 +253,13 @@
                 }
                 let nodeContent = '';
                 if (personData.spouseId !== undefined && person.gender === 'F') {
-                    nodeContent += '<div class="line"><hr/></div>';
+                    
+                    if(personData.hidden == true && personData.multipleSpouse == true){
+                        nodeContent += '<div class="line"><hr/></div>';
+                    }
+                    else{
+                        nodeContent += '<div class="line"><hr/></div>';
+                    }
                 }
 
                 nodeContent += `
@@ -277,7 +286,106 @@
             promise.then(gedcom => {
 
 
-                const treeData = transformGedcom(gedcom);
+                //const treeData = transformGedcom(gedcom);
+                const treeData = [{
+                        id: 'hidden_root',
+                        name: 'hidden_root',
+                        gender: 'M',
+                        parentId: '',
+                    },
+                    {
+                        id: 'L1',
+                        name: 'Grand Father Kumar',
+                        gender: 'M',
+                        multipleSpouse : true,
+                        parentId: 'hidden_root',
+                        spouseId: 'L1S',
+                        spouseName: 'Grand Mother Kumar',
+                        spouseGender: 'F',
+                        
+                    },
+                    {
+                        id: 'L2',
+                        name: 'Grand Father Kumar',
+                        gender: 'M',
+                        hidden : true,
+                        multipleSpouse : true,
+                        parentId: 'hidden_root',
+                        spouseId: 'L1S2',
+                        spouseName: 'Grand Mother Kumar2',
+                        spouseGender: 'F',
+                        
+                    },
+                    {
+                        id: 'L1C10',
+                        name: 'Son 10 Kumar',
+                        gender: 'M',
+                        parentId: 'L2',
+                    },
+                    {
+                        id: 'L1C1',
+                        name: 'Son 1 Kumar',
+                        gender: 'M',
+                        parentId: 'L1',
+                        spouseId: 'L1C1S',
+                        spouseName: 'Daughter in law',
+                        spouseGender: 'F',
+                    },
+                    {
+                        id: 'L1C2',
+                        name: 'Daughter Devi',
+                        gender: 'F',
+                        parentId: 'L1',
+                        spouseId: 'L1C2S',
+                        spouseName: 'Son in law',
+                        spouseGender: 'M',
+                    },
+                    {
+                        id: 'L1C3',
+                        name: 'Son 2 Kumar',
+                        gender: 'M',
+                        parentId: 'L1',
+                        spouseId: 'L1C3S',
+                        spouseName: 'Daughter in law',
+                        spouseGender: 'F',
+                    },
+                    {
+                        id: 'L1C1C1',
+                        name: 'Grand Daughter 1',
+                        gender: 'F',
+                        parentId: 'L1C1'
+                    },
+                    {
+                        id: 'L1C1C2',
+                        name: 'Grand Son 1',
+                        gender: 'M',
+                        parentId: 'L1C1'
+                    },
+                    {
+                        id: 'L1C2C1',
+                        name: 'Grand Daughter 2',
+                        gender: 'F',
+                        parentId: 'L1C2'
+                    },
+                    {
+                        id: 'L1C2C2',
+                        name: 'Grand Daughter 3',
+                        gender: 'F',
+                        parentId: 'L1C2'
+                    },
+                    {
+                        id: 'L1C3C1',
+                        name: 'Grand Son 2',
+                        gender: 'M',
+                        parentId: 'L1C3'
+                    },
+                    {
+                        id: 'L1C3C2',
+                        name: 'Grand Son 3',
+                        gender: 'M',
+                        parentId: 'L1C3'
+                    },
+                ];
                 draw_graph(treeData)
 
             });
@@ -318,7 +426,7 @@
             families = gedcom.getFamilyRecord().arraySelect()
             if (families.length == 0) {
                 indiv = families = gedcom.getIndividualRecord().arraySelect()[0]
-                //console.log(indiv)
+                console.log(indiv)
                 let indivPerson = {
                     id: indiv[0].pointer,
                     name: ((indiv.getName().length > 0) ? indiv.getName()[0].value.replace(/\//g, " ").trimEnd() : ''),
@@ -391,7 +499,6 @@
 
                         }
                     } else {
-                        console.log(spouse);
                         if (spouse.length > 0) {
                             parentPerson = {
                                 id: spouse[0].pointer,
@@ -403,13 +510,12 @@
                                 death: get_death_date(spouse),
                             };
                         }
-                        else{
-                            return;
-                        }
 
                     }
 
-                   
+                    if (Object.keys(parentPerson).length === 0) {
+                        return;
+                    }
 
                     // parent dont already exist
                     if (!(parentPerson.id in individualRecords)) {
@@ -474,7 +580,7 @@
                 }
             });
             data.sort((a, b) => parseDate(a.birth) - parseDate(b.birth));
-            //console.log(data)
+            console.log(data)
             return (data)
         }
 

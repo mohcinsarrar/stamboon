@@ -36,6 +36,16 @@ class PedigreeController extends Controller
         return view('users.pedigree.index');
     }
 
+    public function index2(Request $request){
+        
+        return view('users.pedigree.index2');
+    }
+
+    public function index3(Request $request){
+        
+        return view('users.pedigree.index3');
+    }
+
     public function importgedcom(Request $request){
 
         $input = $request->all();
