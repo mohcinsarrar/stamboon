@@ -36,7 +36,9 @@ class PedigreeController extends Controller
 
     public function index(Request $request){
         
-        return view('users.pedigree.index');
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $gedcom_file = $pedigree->gedcom_file;
+        return view('users.pedigree.index',compact('gedcom_file'));
     }
 
     public function index2(Request $request){
@@ -48,7 +50,7 @@ class PedigreeController extends Controller
 
         $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
         $gedcom_file = $pedigree->gedcom_file;
-        return view('users.pedigree.index3',compact('gedcom_file'));
+        return view('users.pedigree.index33',compact('gedcom_file'));
     }
 
     public function importgedcom(Request $request){
