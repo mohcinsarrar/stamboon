@@ -1,168 +1,4 @@
-treeData = [
-    {
-        id: 'hidden_root', // this is unique id for husband and wife
-        personId: -1,
-    }, {
-        id: '1-2', // this is unique id for husband and wife
-        personId: 1,
-        label1: 'Father',
-        label2: 'Father',
-        name: 'Father',
-        gender: "M",
-        photo: "",
-        parentId: "hidden_root", // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: 2,
-        spouseName: "Mother",
-        spouseLabel1: "Mother",
-        spouseGender: "F",
-        spouseOrder: 1, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: undefined, // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    }
-    ,
-    {
-        id: '3', // this is unique id for husband and wife
-        personId: 3,
-        label1: 'Son 0',
-        label2: 'Son 0',
-        name: 'Son 0',
-        gender: "M",
-        photo: "",
-        parentId: '1-2', // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: undefined,
-        spouseName: undefined,
-        spouseLabel1: undefined,
-        spouseGender: undefined,
-        spouseOrder: undefined, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: undefined, // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    }
-    ,
-    {
-        id: '4-5', // this is unique id for husband and wife
-        personId: 4,
-        label1: 'Son',
-        label2: 'Son',
-        name: 'Son',
-        gender: "M",
-        photo: "",
-        parentId: '1-2', // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: 5,
-        spouseName: "Wife - 1",
-        spouseLabel1: "Wife - 1",
-        spouseGender: "F",
-        spouseOrder: 1, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: undefined, // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    }
-    ,
-    {
-        id: '4-6', // this is unique id for husband and wife
-        personId: 4,
-        label1: 'Son',
-        label2: 'Son',
-        name: 'Son',
-        gender: "M",
-        photo: "",
-        parentId: '1-2', // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: 6,
-        spouseName: "Wife - 2",
-        spouseLabel1: "Wife - 2",
-        spouseGender: "F",
-        spouseOrder: 1, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: '4-5', // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    }
-    ,
-    {
-        id: '4-7', // this is unique id for husband and wife
-        personId: 4,
-        label1: 'Son',
-        label2: 'Son',
-        name: 'Son',
-        gender: "M",
-        photo: "",
-        parentId: '1-2', // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: 7,
-        spouseName: "Wife - 3",
-        spouseLabel1: "Wife - 3",
-        spouseGender: "F",
-        spouseOrder: 1, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: '4-5', // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    }
-    ,
-    {
-        id: '5', // this is unique id for husband and wife
-        personId: 5,
-        label1: 'Son 2',
-        label2: 'Son 2',
-        name: 'Son 2',
-        gender: "M",
-        photo: "",
-        parentId: '4-5', // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: undefined,
-        spouseName: undefined,
-        spouseLabel1: undefined,
-        spouseGender: undefined,
-        spouseOrder: undefined, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: undefined, // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    },
-    {
-        id: '6', // this is unique id for husband and wife
-        personId: 6,
-        label1: 'Son 3',
-        label2: 'Son 3',
-        name: 'Son 3',
-        gender: "F",
-        photo: "",
-        parentId: '4-6', // root parent
-        personOrder: '',
-        childOrder: 1, // currently not used in UI
-        size: 1, // probably not used
-        spouseId: undefined,
-        spouseName: undefined,
-        spouseLabel1: undefined,
-        spouseGender: undefined,
-        spouseOrder: undefined, // currently not used in UI
-        spouseDrillTo: false, // this is required to show multiple trees
-        primarySpouseId: undefined, // used in multiple spouses for the second spouse
-        spousePhoto: undefined,
-        path: undefined, // may not be used
-    }
 
-];
 // the function draw_tree load gedcom file from API '/pedigree/getTree' 
 // next, its parse data to transform gedcom file to accepted structure for d3-org-chart
 function draw_tree() {
@@ -173,10 +9,9 @@ function draw_tree() {
         .then(Gedcom.readGedcom);
 
     promise.then(gedcom => {
-
-
+        
         const treeData = transformGedcom(gedcom);
-        draw_graph(treeData)
+        renderChart(treeData)
 
     });
 
@@ -188,28 +23,47 @@ function isObject(variable) {
     return typeof variable === 'object' && variable !== null;
 }
 
+// get status (living or Deceased) from individual object
+function get_status(individual) {
+    if (individual.getEventDeath().length == 0) {
+        return 'Living'
+    }
+    else{
+        return 'Deceased'
+    }
+}
+
 // get death date from individual object
 function get_death_date(individual) {
-    if (individual.getEventDeath().length <= 0) {
+
+    if(individual.getEventDeath().length == 0){
         return null
     }
-    if (individual.getEventDeath().getDate().length <= 0) {
-        return null
+    else{
+        if(individual.getEventDeath().getDate().length == 0){
+            return null
+        }
+        else{
+            return individual.getEventDeath().getDate()[0].value
+        }
     }
 
-    return individual.getEventDeath().getDate()[0].value
 }
 
 // get birth date from individual object
 function get_birth_date(individual) {
-    if (individual.getEventBirth().length <= 0) {
+    if (individual.getEventBirth().length == 0) {
         return null
     }
-    if (individual.getEventBirth().getDate().length <= 0) {
-        return null
+    else{
+        if (individual.getEventBirth().getDate().length == 0) {
+            return null
+        }
+        else{
+            return individual.getEventBirth().getDate()[0].value
+        }
     }
-
-    return individual.getEventBirth().getDate()[0].value
+    
 }
 
 // get name from individual object
@@ -314,10 +168,9 @@ function get_couples(families,individualRecords) {
                 parentPerson = {
                     id: parent[0].pointer + '-' + spouse[0].pointer,
                     personId: parent[0].pointer,
-                    label1: get_name(parent),
-                    label2: get_name(parent),
                     name: get_name(parent),
                     gender: get_sex(parent),
+                    status : get_status(parent),
                     birth: get_birth_date(parent),
                     death: get_death_date(parent),
                     photo: undefined,
@@ -326,8 +179,10 @@ function get_couples(families,individualRecords) {
                     childOrder: undefined,
                     spouseId: spouse[0].pointer,
                     spouseName: get_name(spouse),
-                    spouseLabel1: get_name(spouse),
                     spouseGender: get_sex(spouse),
+                    spouseStatus : get_status(spouse),
+                    spouseBirth: get_birth_date(spouse),
+                    spouseDeath: get_death_date(spouse),
                     spouseOrder: undefined,
                     spouseDrillTo: false,
                     primarySpouseId: undefined,
@@ -341,10 +196,9 @@ function get_couples(families,individualRecords) {
                 parentPerson = {
                     id: parent[0].pointer,
                     personId: parent[0].pointer,
-                    label1: get_name(parent),
-                    label2: get_name(parent),
                     name: get_name(parent),
                     gender: get_sex(parent),
+                    status : get_status(parent),
                     birth: get_birth_date(parent),
                     death: get_death_date(parent),
                     photo: undefined,
@@ -353,7 +207,6 @@ function get_couples(families,individualRecords) {
                     childOrder: undefined,
                     spouseId: undefined,
                     spouseName: undefined,
-                    spouseLabel1: undefined,
                     spouseGender: undefined,
                     spouseOrder: undefined,
                     spouseDrillTo: false,
@@ -371,10 +224,9 @@ function get_couples(families,individualRecords) {
                 parentPerson = {
                     id: spouse[0].pointer,
                     personId: spouse[0].pointer,
-                    label1: get_name(spouse),
-                    label2: get_name(spouse),
                     name: get_name(spouse),
                     gender: get_sex(spouse),
+                    status : get_status(spouse),
                     birth: get_birth_date(spouse),
                     death: get_death_date(spouse),
                     photo: undefined,
@@ -383,7 +235,6 @@ function get_couples(families,individualRecords) {
                     childOrder: undefined,
                     spouseId: undefined,
                     spouseName: undefined,
-                    spouseLabel1: undefined,
                     spouseGender: undefined,
                     spouseOrder: undefined,
                     spouseDrillTo: false,
@@ -498,10 +349,9 @@ function get_children(families, individualRecords) {
                 const childPerson  = {
                     id: child[0].pointer,
                     personId: child[0].pointer,
-                    label1: get_name(child),
-                    label2: get_name(child),
                     name: get_name(child),
                     gender: get_sex(child),
+                    status : get_status(child),
                     birth: get_birth_date(child),
                     death: get_death_date(child),
                     photo: undefined,
@@ -512,7 +362,6 @@ function get_children(families, individualRecords) {
                     childOrder: undefined,
                     spouseId: undefined,
                     spouseName: undefined,
-                    spouseLabel1: undefined,
                     spouseGender: undefined,
                     spouseOrder: undefined,
                     spouseDrillTo: false,
@@ -543,10 +392,9 @@ function transformGedcom(gedcom) {
         let indiPerson = {
             id: indiv[0].pointer,
             personId: indiv[0].pointer,
-            label1: get_name(indiv),
-            label2: get_name(indiv),
             name: get_name(indiv),
             gender: get_sex(indiv),
+            status : get_status(indiv),
             birth: get_birth_date(indiv),
             death: get_death_date(indiv),
             photo: undefined,
@@ -555,7 +403,6 @@ function transformGedcom(gedcom) {
             childOrder: undefined,
             spouseId: undefined,
             spouseName: undefined,
-            spouseLabel1: undefined,
             spouseGender: undefined,
             spouseOrder: undefined,
             spouseDrillTo: false,
@@ -591,7 +438,7 @@ function transformGedcom(gedcom) {
     });
 
     // sort data by birth date to sort children from old to young
-    data.sort((a, b) => parseDate(a.birth) - parseDate(b.birth));
+    data.sort((a, b) => parseDateToSort(a.birth) - parseDateToSort(b.birth));
 
 
     console.log(data)
@@ -599,7 +446,7 @@ function transformGedcom(gedcom) {
 
 }
 
-function parseDate(dateStr) {
+function parseDateToSort(dateStr) {
     if (!dateStr) return new Date(0); // For undefined dates, return a very early date
     const parts = dateStr.split(' ');
 
@@ -610,7 +457,7 @@ function parseDate(dateStr) {
         // Full date is given
         const [day, month, year] = parts;
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const monthIndex = monthNames.indexOf(month);
+        const monthIndex = monthNames.indexOf(month)+1;
         return new Date(year, monthIndex, day);
     }
 }

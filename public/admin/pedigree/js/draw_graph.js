@@ -2,6 +2,7 @@
 const maleIcon = '/storage/portraits/male2.gif';
 const femaleIcon = '/storage/portraits/female2.gif';
 var chart;
+var familyData = [];
 var selectedPersonId = -1;
 var prevSelectedPersonId = -1;
 var constants = {
@@ -43,9 +44,11 @@ var treeConfiguration = {
 
 // render chart //
 function renderChart(data) {
+    familyData = data;
     chart = new d3.OrgChart()
         .container(treeConfiguration.chartContainer)
         .data(data)
+        .initialExpandLevel(5)
         .layout('top')
         .onNodeClick((nodeId) => nodeClicked(nodeId))
         .rootMargin(treeConfiguration.rootMargin)
@@ -216,29 +219,59 @@ function renderChart(data) {
     // Move the third group to the first position
     chartElement.insertBefore(thirdGroup, chartElement.firstChild);
 
-    // getting the selectedPerons to show
-    const selectedPersons = treeData.filter(
-        (p) => p.personId === selectedPersonId
-    );
-    if (selectedPersons.length > 0) {
-        const nodeId = selectedPersons[0].id;
-        chart.setCentered(nodeId);
-    }
-    chart.expandAll();
 
-    // hiding the root node
-    /*
-    const rootIdNode = document.querySelector(
-        '.person-' + constants.rootPersonId
-    );
-    const parentRootIdNode = rootIdNode?.closest('.node');
-    if (parentRootIdNode !== undefined && parentRootIdNode !== null)
-        parentRootIdNode.style.display = 'none';
-    */
+    // add tools zoom, expand ...
+    $(document).on("click", "#zoomIn", function () {
+        chart.zoomIn()
+    });
+
+    $(document).on("click", "#zoomOut", function () {
+        chart.zoomOut()
+    });
+
+    $(document).on("click", "#viewVertical", function () {
+        chart.layout('top').render().fit()
+    });
+
+    $(document).on("click", "#viewHorizontal", function () {
+        chart.layout('left').render().fit()
+    });
+
+    $(document).on("click", "#compactView", function () {
+
+        if ($('#compactView').data('compact') == false) {
+            chart.compact(true).render().fit()
+            $('#compactView').data('compact', true)
+            $('#compactView').html('Decompact')
+        } else {
+            chart.compact(false).render().fit()
+            $('#compactView').data('compact', false)
+            $('#compactView').html('Compact')
+        }
+
+    });
+
+    $(document).on("click", "#expandView", function () {
+        chart.expandAll().render().fit();
+    });
+
+    $(document).on("click", "#collpaseView", function () {
+
+        const {
+            allNodes,
+            root
+        } = chart.getChartState();
+        allNodes.forEach(d => d.data._expanded = false);
+        chart.initialExpandLevel(1)
+        chart.render().fit();
+    });
+
 }
 
 // generate NodeContent
 function getPersonNodeContent(personData, personType) {
+    // get the layout type to change nodeContent depending on layout type
+    //console.log(chart.layout())
     const person = {};
 
     if (personType === 'spouse') {
@@ -247,13 +280,19 @@ function getPersonNodeContent(personData, personType) {
         } else {
             return '';
         }
-        person.personName = personData.spouseLabel1;
+        person.personName = personData.spouseName;
         person.gender = personData.spouseGender;
+        person.status = personData.spouseStatus;
+        person.birth = personData.spouseBirth;
+        person.death = personData.spouseDeath;
         person.photo = personData.spousePhoto;
     } else {
         person.personId = personData.personId;
-        person.personName = personData.label1;
+        person.personName = personData.name;
         person.gender = personData.gender;
+        person.status = personData.status;
+        person.birth = personData.birth;
+        person.death = personData.death;
         person.photo = personData.photo;
     }
 
@@ -293,14 +332,14 @@ function getPersonNodeContent(personData, personType) {
 
     let adoptiveChild = '';
     if (personData.adopted == true) {
-        adoptiveChild = 'border-start border-danger border-start-3'
+        adoptiveChild = 'adoptive-child'
     }
-    
+
     nodeContent += `
-          <div class="col px-0 person-member person-${person.personId} ${selectedPersonCssClass}">
+          <div class="col px-0 person-member person-${person.personId} ${selectedPersonCssClass} ">
             
-            <div class="card rounded-0 w-100 overflow-hidden ${personCssClass} ${adoptiveChild}" onClick="window.personClicked='${person.personId}';">
-                ${is_death(personData.death)}
+            <div class="card rounded-0 w-100 overflow-hidden ${personCssClass}  ${adoptiveChild}" onClick="window.personClicked='${person.personId}';" >
+                ${is_death(person.status)}
                 <div class="row g-0 mx-0 overflow-hidden">
                 <div class="col-4">
                     <img class="card-img card-img-left rounded-0 object-fit-cover" src="${personIcon}" alt="Card image">
@@ -308,7 +347,7 @@ function getPersonNodeContent(personData, personType) {
                 <div class="col-8 align-items-center d-flex">
                     <div class="card-body p-1 ms-1">
                     <p class="card-title mb-1 ellipsis">${person.personName}</p>
-                    <p class="card-text"><small class="">${getParsedDate(personData.birth,personData.death)}</small></p>
+                    <p class="card-text"><small class="">${getFullDate(person.birth, person.death)}</small></p>
                     </div>
                 </div>
                 </div>
@@ -318,51 +357,63 @@ function getPersonNodeContent(personData, personType) {
     //}
 }
 
-function is_death(death){
-    if(death == null){
+function is_death(status) {
+    if (status == "Deceased") {
         return `<div class="diagonal-text"><span></span></div>`;
     }
-    else{
+    else {
         return "";
     }
 }
 
-function parseDate(dateStr){
+function parseDate(dateStr) {
 
     const parts = dateStr.split(' ');
-
+    var day,month,year;
+    
     if (parts.length === 1) {
         // Only year is given
-        return new Date(parts[0], 0, 1); // Use January 1st of that year
+         // Use January 1st of that year
+        day = null
+        month = null
+        year = parts[0]
+        
     } else {
         // Full date is given
-        const [day, month, year] = parts;
+        const [dayName, monthName, yearName] = parts;
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const monthIndex = monthNames.indexOf(month);
-        return new Date(year, monthIndex, day);
+        const monthIndex = monthNames.indexOf(monthName)+1;
+        day = dayName
+        month = monthIndex< 10 ? "0"+monthIndex.toString() : monthIndex.toString() 
+        year = yearName
     }
+
+    return {day,month,year};
 
 }
 
 
-function getParsedDate(birth,death) {
-    let parsedDate = "";
+function getFullDate(birth, death) {
 
-    if(birth != null){
-        birthDate = parseDate(birth).getFullYear();
-    }
-    else{
-        birthDate = '';
-    }
 
-    if(death != null){
-        deathDate = parseDate(death).getFullYear();
+    if (death != null) {
+        var {day,month,year} = parseDate(death);
+        deathDate = year;
     }
-    else{
+    else {
         deathDate = '';
     }
 
-    if(birthDate == '' && deathDate == ''){
+
+    if (birth != null) {
+        var {day,month,year} = parseDate(birth);
+        birthDate = year;
+    }
+    else {
+        birthDate = '';
+    }
+
+    if (birthDate == '' && deathDate == '') {
         return ''
     }
 
@@ -370,12 +421,166 @@ function getParsedDate(birth,death) {
 
 
 }
+
 function nodeClicked(id) {
-    console.log(window.personClicked)
+
+    const person = familyData.filter((p) => p.personId === window.personClicked);
+    var personInfo = {}
+    if(person.length > 0){
+        personInfo.personId = person[0].personId
+        personInfo.name = person[0].name
+        personInfo.status = person[0].status
+        personInfo.birth = person[0].birth
+        personInfo.death = person[0].death
+    }
+    else{
+        
+        const spouse = familyData.filter((p) => p.spouseId === window.personClicked);
+        personInfo.personId = spouse[0].spouseId
+        personInfo.name = spouse[0].spouseName
+        personInfo.status = spouse[0].spouseStatus
+        personInfo.birth = spouse[0].spouseBirth
+        personInfo.death = spouse[0].spouseDeath
+    }
+
+    show_profile(personInfo)
 }
 
+function clearForm(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input');
+    const selects = form.querySelectorAll('select');
 
+    inputs.forEach(input => {
+        switch (input.type) {
+            case 'checkbox':
+            case 'radio':
+                input.checked = false;
+                break;
+            default:
+                if(input.name != "_token"){
+                    input.value = '';
+                }
+                    
+        }
+    });
 
-function draw_graph(treeData) {
-    renderChart(treeData)
+    selects.forEach(select => {
+        select.selectedIndex = 0;
+    });
 }
+
+// toggle death container view
+document.querySelector('#formUpdatePerson #deceased').addEventListener('change', (event) => {
+   if(event.target.checked){
+    document.querySelector('#formUpdatePerson #death-container').classList.remove("d-none");
+   }
+   else{
+    document.querySelector('#formUpdatePerson #death-container').classList.add("d-none");
+   }
+});
+
+document.querySelector('#formUpdatePerson #living').addEventListener('change', (event) => {
+    if(event.target.checked){
+     document.querySelector('#formUpdatePerson #death-container').classList.add("d-none");
+    }
+    else{
+     document.querySelector('#formUpdatePerson #death-container').classList.remove("d-none");
+    }
+ });
+
+function show_profile(personInfo){
+    // clear update form
+    clearForm("formUpdatePerson")
+    document.querySelector('#formUpdatePerson #death-container').classList.remove("d-none");
+    
+    // fill person id
+    document.querySelector('#formUpdatePerson #person_id').value = personInfo.personId
+
+    // split name to first and last name
+    names_array = personInfo.name.split(' ')
+    document.querySelector('#formUpdatePerson #firstname').value = names_array.slice(0, -1).join(' ')
+    document.querySelector('#formUpdatePerson #lastname').value = names_array[names_array.length - 1]
+
+    // check living or deceased radioButton
+    if(personInfo.status == 'Deceased'){
+        document.getElementById('deceased').checked = true;
+    }
+    else{
+        document.getElementById('living').checked = true;
+    }
+
+    // fill birth if exist
+    if(personInfo.birth != null){
+
+        var {day,month,year} = parseDate(personInfo.birth);
+
+        document.querySelector('#formUpdatePerson #date_birth input[aria-label="day"]').value = day
+        document.querySelector('#formUpdatePerson #date_birth input[aria-label="month"]').value = month
+        document.querySelector('#formUpdatePerson #date_birth input[aria-label="year"]').value = year
+    }
+
+    // show death date input if Deceased
+    if(personInfo.status == 'Deceased'){
+        // fill death if exist
+        if(personInfo.death != null){
+
+            var {day,month,year} = parseDate(personInfo.death);
+    
+            document.querySelector('#formUpdatePerson #date_death input[aria-label="day"]').value = day
+            document.querySelector('#formUpdatePerson #date_death input[aria-label="month"]').value = month
+            document.querySelector('#formUpdatePerson #date_death input[aria-label="year"]').value = year
+        }
+    }
+    // hide death date id living
+    else{
+
+        document.querySelector('#formUpdatePerson #death-container').classList.add("d-none");
+    }
+    
+
+    
+    //document.querySelector('#formUpdatePerson #birth_date').value = personInfo.birth
+    //document.querySelector('#formUpdatePerson #death_date').value = personInfo.death
+
+    var myOffcanvas = document.getElementById('offcanvasUpdatePerson')
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
+    bsOffcanvas.show()
+}
+
+// send update form
+document.getElementById('formUpdatePerson').addEventListener('submit', function(event) {
+    const form = event.target;
+    let isValid = true;
+    let msg = "<ul>"
+
+    // validate first name
+    if(form.querySelector('#firstname').value == ""){
+        isValid = false
+        msg += "<li>First and middle name is required</li>"
+    }
+
+    // validate last name
+    if(form.querySelector('#lastname').value == ""){
+        isValid = false
+        msg += "<li>First and middle name is required</li>"
+    }
+
+    // validate last name
+    if(form.querySelector('#lastname').value == ""){
+        isValid = false
+        msg += "<li>First and middle name is required</li>"
+    }
+
+    if(form.querySelector('#living').check == false && form.querySelector('#deceased').value == false){ 
+        isValid = false
+        msg += "<li>Status must be checked</li>"
+    }
+
+    msg += "</ul>"
+
+    if (!isValid) {
+        event.preventDefault(); // Prevent form submission
+        show_toast('danger', 'error', msg)
+    }
+});

@@ -108,7 +108,111 @@
 
 
 @section('content')
+    <!-- Offcanvas to edit person -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUpdatePerson"
+        aria-labelledby="offcanvasUpdatePersonLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasUpdatePersonLabel" class="offcanvas-title">Update Person</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
 
+        <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
+
+            <form class="add-new-user pt-0" id="formUpdatePerson" method="POST" action="{{route('users.pedigree.update')}}">
+                @csrf
+                <input type="hidden" name="person_id" id="person_id">
+                <div class="mb-3">
+                    <div id="portrait_container">
+
+                    </div>
+                    <button id="importimagebtn" type="button" class="btn btn-primary mt-4" data-id="" data-sex=""
+                        data-image="">
+                        <span class="ti-xs ti ti-edit me-1"></span>
+                        Edit image
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="name">First and middle name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="firstname" placeholder="First name" name="firstname"
+                        aria-label="John" autocomplete="off"/>
+                    <span class="text-danger d-none" id="firstname_feedback"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="name">Last name <span class="text-danger">*</span> </label>
+                    <input type="text" class="form-control" id="lastname" placeholder="Last name" name="lastname"
+                        aria-label="Doe" autocomplete="off"/>
+                    <span class="text-danger d-none" id="lastname_feedback"></span>
+                </div>
+                <div class="mb-0">
+                    <label class="d-block form-label">Status</label>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="status" id="living"
+                            value="living">
+                        <label class="form-check-label" for="living"> Living</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status" id="deceased"
+                            value="deceased">
+                        <label class="form-check-label" for="deceased"> Deceased</label>
+                    </div>
+                </div>
+                <div class="divider my-0"><hr></div>
+                <div class="mb-3" id="date_birth">
+                    <label class="form-label">Date of Birth <span class="text-muted">(DD MM YYYY)</span></label>
+                    <div class="input-group">
+                        <input type="text" name="birth_day" aria-label="day" class="form-control" placeholder="Day">
+                        <input type="text" name="birth_month" aria-label="month" class="form-control" placeholder="Month">
+                        <input type="text" name="birth_year" aria-label="year" class="form-control" placeholder="Year">
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="birth_place">Place of Birth</label>
+                    <input type="text" class="form-control" id="birth_place" name="birth_place">
+                </div>
+                <div class="divider my-0"><hr></div>
+                <div id="death-container">
+                    <div class="mb-3" id="date_death">
+                        <label class="form-label">Date of Death <span class="text-muted">(DD MM YYYY)</span></label>
+                        <div class="input-group">
+                            <input type="text" name="death_day" aria-label="day" class="form-control" placeholder="Day">
+                            <input type="text" name="death_month" aria-label="month" class="form-control" placeholder="Month">
+                            <input type="text" name="death_year" aria-label="year" class="form-control" placeholder="Year">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="death_place">Place of Death</label>
+                        <input type="text" class="form-control" id="death_place" name="death_place">
+                    </div>
+                </div>
+                
+
+                <div class="row mx-0 mb-3">
+                    <button type="submit" class="btn btn-warning me-sm-3 me-1 data-submit col-md-4">
+                        <span class="ti-xs ti ti-edit me-1"></span>
+                        Update
+                    </button>
+                    <button type="button" id="deletePerson" class="btn btn-danger col-md-4">
+                        <span class="ti-xs ti ti-trash me-1"></span>
+                        Delete
+                    </button>
+                </div>
+
+                <div class="row mx-0 mb-3">
+                    <button type="button" id="addFather" class="btn btn-primary me-sm-3 me-1 col-md-4">
+                        <span class="ti-xs ti ti-layout-grid-add me-1"></span>
+                        Add Father
+                    </button>
+                    <button type="button" id="addMother" class="btn btn-primary col-md-4">
+                        <span class="ti-xs ti ti-layout-grid-add me-1"></span>
+                        Add Mother
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <!-- modal to upload gedcom file -->
     <div class="modal fade" id="uploadFile" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -140,6 +244,11 @@
                     <button data-bs-toggle="modal" data-bs-target="#uploadFile" type="button"
                         class="btn btn-outline-dark waves-effect text-white border-0 px-1"><i
                             class="ti ti-upload fs-3"></i></button>
+                </div>
+                <div class="row mx-0 mb-2">
+                    <a id="downloadFile" type="button" href="{{asset('storage/'.$gedcom_file)}}"
+                        class="btn btn-outline-dark waves-effect text-white border-0 px-1" download=""><i
+                            class="ti ti-download fs-3"></i></a>
                 </div>
                 <div class="row mx-0 mb-2">
                     <button id="compactView" data-compact="false" type="button"

@@ -27,6 +27,9 @@ use Goutte\Client;
 
 use App\Rules\GedcomFile;
 use Gedcom\Parser as GedcomParser;
+use Gedcom\Writer as GedcomWriter;
+use App\Services\GedcomService;
+
 
 class PedigreeController extends Controller
 {
@@ -42,8 +45,10 @@ class PedigreeController extends Controller
     }
 
     public function index3(Request $request){
-        
-        return view('users.pedigree.index3');
+
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $gedcom_file = $pedigree->gedcom_file;
+        return view('users.pedigree.index3',compact('gedcom_file'));
     }
 
     public function importgedcom(Request $request){
@@ -79,22 +84,14 @@ class PedigreeController extends Controller
         
     }
 
-    public function parse_gedcom(Request $request){
-        $file = $request->file('file');
-            $tmpPath = $file->getRealPath();
+    private function parse_gedcom($file){
+
 
             $parser = new GedcomParser();
-            $gedcom = $parser->parse($tmpPath);
+            $gedcom = $parser->parse($file);
 
-            foreach ($gedcom->getIndi() as $individual) {
-                $names = $individual->getName();
-                if (!empty($names)) {
-                    $name = reset($names); // Get the first name object from the array
-                    echo $individual->getId() . ': ' . $name->getName() . ', ' . $name->getGivn() . PHP_EOL;
-                }
-            }
+            return $gedcom;
 
-            dd($gedcom);
     }
 
     public function getTree(Request $request){
@@ -106,6 +103,69 @@ class PedigreeController extends Controller
         return response($file, 200)
                   ->header('Content-Type', 'application/octet-stream')
                   ->header('Content-Disposition', 'attachment; filename="' . basename($pedigree->gedcom_file) . '"');
+    }
+
+
+    public function update(Request $request){
+        
+        $inputs = $request->except(['_token']);
+        $gedcomService = new GedcomService();
+
+        Validator::make($inputs, [
+            'person_id' => ['required','string'],
+            'firstname' => ['required','string'],
+            'lastname' => ['required','string'],
+            'status' => ['required','string'],
+        ])->validate();
+
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        if($pedigree == null){
+            return redirect()->back()->with('error','cant load your family tree');
+        }
+
+        if (!Storage::disk('local')->exists($pedigree->gedcom_file)) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        $person_id = str_replace('@','',$request->person_id);
+        $file = Storage::disk('local')->get($pedigree->gedcom_file);
+        $gedcom = $this->parse_gedcom('storage/'.$pedigree->gedcom_file);
+
+        $person = null;
+        foreach ($gedcom->getIndi() as $individual) {
+            $id = $individual->getId();
+            if ($id == $person_id) {
+                $person = $individual;
+            }
+        }
+
+        if($person == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+
+        // edit death event
+        $death_date_array = [$request->death_day,$request->death_month,$request->death_year];
+        $gedcomService->edit_death($person, $request->status,$death_date_array);
+
+        // edit birt event
+        $birth_date_array = [$request->birth_day,$request->birth_month,$request->birth_year];
+        $gedcomService->edit_birth($person,$birth_date_array);
+
+        // edit names
+        $name = $request->firstname."'\' ".$request->lastname."'\'";
+        $name = str_replace("'\'","",$name);
+        $gedcomService->edit_name($person,$name);
+
+        // write modification to gedcom file
+        $gedcomService->writer($gedcom,$pedigree->gedcom_file);
+
+        return redirect()->back()->with('success','person updated with success');
+    }
+
+
+    private function gedcom_writer($gedcom){
+        
     }
 
 }

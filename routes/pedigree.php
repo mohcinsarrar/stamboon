@@ -18,6 +18,8 @@ Route::middleware(['auth:sanctum','verified','active','role:user'])
 
         Route::get('/pedigree/getTree', [PedigreeController::class,'getTree'])->name('pedigree.getTree');
         Route::post('/pedigree/importgedcom', [PedigreeController::class,'importgedcom'])->name('pedigree.importgedcom');
+
+        Route::post('/pedigree/update', [PedigreeController::class,'update'])->name('pedigree.update');
     
 
 });
