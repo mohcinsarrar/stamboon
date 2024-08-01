@@ -177,6 +177,7 @@ function get_couples(families,individualRecords) {
                     parentId: undefined,
                     personOrder: undefined,
                     childOrder: undefined,
+                    spouseIds : [],
                     spouseId: spouse[0].pointer,
                     spouseName: get_name(spouse),
                     spouseGender: get_sex(spouse),
@@ -205,6 +206,7 @@ function get_couples(families,individualRecords) {
                     parentId: undefined,
                     personOrder: undefined,
                     childOrder: undefined,
+                    spouseIds : [],
                     spouseId: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
@@ -233,6 +235,7 @@ function get_couples(families,individualRecords) {
                     parentId: undefined,
                     personOrder: undefined,
                     childOrder: undefined,
+                    spouseIds : [],
                     spouseId: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
@@ -253,8 +256,22 @@ function get_couples(families,individualRecords) {
         // check if parent exist already in individualRecords update primarySpouseId with the id of the first match of parent
         var personExist = personIdExists(individualRecords, parentPerson.personId)
         if (personExist.length > 0) {
+            // change primarySpouseId to link second and third spouse with the person
             parentPerson.primarySpouseId = personExist[0].id
+
+            // get all spouse from spouseIds to update spouseIds for current person
+            var spouseIds = personExist[0].spouseIds
+            spouseIds.push(parentPerson.spouseId)
+            parentPerson.spouseIds = spouseIds
         }
+        else{
+            // if person dont exist just add spouseId to spouseIds
+            if(parentPerson.spouseId != undefined){
+                parentPerson.spouseIds.push(parentPerson.spouseId)
+            }
+        }
+        
+        
 
         // add parent to individualRecords
         individualRecords[parentPerson.id] = parentPerson;
@@ -360,6 +377,7 @@ function get_children(families, individualRecords) {
                     adoptedType : adoptedType,
                     personOrder: undefined,
                     childOrder: undefined,
+                    spouseIds : [],
                     spouseId: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
@@ -401,6 +419,7 @@ function transformGedcom(gedcom) {
             parentId: undefined,
             personOrder: undefined,
             childOrder: undefined,
+            spouseIds : [],
             spouseId: undefined,
             spouseName: undefined,
             spouseGender: undefined,
@@ -440,8 +459,6 @@ function transformGedcom(gedcom) {
     // sort data by birth date to sort children from old to young
     data.sort((a, b) => parseDateToSort(a.birth) - parseDateToSort(b.birth));
 
-
-    console.log(data)
     return (data)
 
 }

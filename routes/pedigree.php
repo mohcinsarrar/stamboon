@@ -18,6 +18,11 @@ Route::middleware(['auth:sanctum','verified','active','role:user'])
         Route::post('/pedigree/importgedcom', [PedigreeController::class,'importgedcom'])->name('pedigree.importgedcom');
 
         Route::post('/pedigree/update', [PedigreeController::class,'update'])->name('pedigree.update');
+        Route::post('/pedigree/delete', [PedigreeController::class,'delete'])->name('pedigree.delete');
+        Route::post('/pedigree/addspouse', [PedigreeController::class,'addspouse'])->name('pedigree.addspouse');
+        Route::post('/pedigree/addchild', [PedigreeController::class,'addchild'])->name('pedigree.addchild');
+
+
     
 
 });

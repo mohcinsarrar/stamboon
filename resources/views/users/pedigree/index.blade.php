@@ -9,17 +9,114 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }}" />
+
 @endsection
 
 @section('page-style')
 
     <link rel="stylesheet" href="{{ asset('admin/pedigree/css/graph.css') }}?{{ time() }}">
+    <style>
+        .custom-modal {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            min-width: 350px;
+        }
+
+        .custom-modal-body {
+            position: relative
+        }
+
+        .custom-modal-close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+            z-index: 1000;
+        }
+    </style>
 @endsection
 
 
 @section('title', 'Pedigree')
 
 @section('vendor-script')
+    <script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
+    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            new Cleave('.death_date', {
+                delimiters: ['-', '-'],
+                blocks: [4, 2, 2],
+                numericOnly: true,
+                onValueChanged: function(e) {
+                    let value = e.target.value;
+                    if (value.length === 4) {
+                        e.target.setRawValue(value); // remove delimiters if only the year is entered
+                    }
+                }
+            });
+            new Cleave('.birth_date', {
+                delimiters: ['-', '-'],
+                blocks: [4, 2, 2],
+                numericOnly: true,
+                onValueChanged: function(e) {
+                    let value = e.target.value;
+                    if (value.length === 4) {
+                        e.target.setRawValue(value); // remove delimiters if only the year is entered
+                    }
+                }
+            });
+            new Cleave('.death_date_add_spouse', {
+                delimiters: ['-', '-'],
+                blocks: [4, 2, 2],
+                numericOnly: true,
+                onValueChanged: function(e) {
+                    let value = e.target.value;
+                    if (value.length === 4) {
+                        e.target.setRawValue(value); // remove delimiters if only the year is entered
+                    }
+                }
+            });
+            new Cleave('.birth_date_add_spouse', {
+                delimiters: ['-', '-'],
+                blocks: [4, 2, 2],
+                numericOnly: true,
+                onValueChanged: function(e) {
+                    let value = e.target.value;
+                    if (value.length === 4) {
+                        e.target.setRawValue(value); // remove delimiters if only the year is entered
+                    }
+                }
+            });
+            new Cleave('.death_date_add_child', {
+                delimiters: ['-', '-'],
+                blocks: [4, 2, 2],
+                numericOnly: true,
+                onValueChanged: function(e) {
+                    let value = e.target.value;
+                    if (value.length === 4) {
+                        e.target.setRawValue(value); // remove delimiters if only the year is entered
+                    }
+                }
+            });
+            new Cleave('.birth_date_add_child', {
+                delimiters: ['-', '-'],
+                blocks: [4, 2, 2],
+                numericOnly: true,
+                onValueChanged: function(e) {
+                    let value = e.target.value;
+                    if (value.length === 4) {
+                        e.target.setRawValue(value); // remove delimiters if only the year is entered
+                    }
+                }
+            });
+        });
+    </script>
     <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
     <script src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js">
     </script>
@@ -108,107 +205,288 @@
 
 
 @section('content')
+    <!-- Offcanvas to add child -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddChild" aria-labelledby="offcanvasAddChildLabel"
+        data-bs-backdrop="false">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasAddChildLabel" class="offcanvas-title">Add Child</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
+            <h6 class="offcanvas-subtitle"></h6>
+            <form class="add-new-user pt-0" id="formAddChild" method="POST"
+                action="{{ route('users.pedigree.addchild') }}">
+                @csrf
+                <input type="hidden" name="person_id" class="person_id">
+                <input type="hidden" name="person_type" class="person_type">
+                <div class="mb-3 parents">
+                    <label class="form-label" for="parents">Parents <span class="text-danger">*</span>
+                    </label>
+                    <div class="parents_container">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="name">First and middle name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control firstname" placeholder="First name" name="firstname"
+                        aria-label="John" autocomplete="off" />
+                    <span class="text-danger d-none" id="firstname_feedback"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="name">Last name <span class="text-danger">*</span> </label>
+                    <input type="text" class="form-control lastname" placeholder="Last name" name="lastname"
+                        aria-label="Doe" autocomplete="off" />
+                    <span class="text-danger d-none" id="lastname_feedback"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="d-block form-label">Sex</label>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input male" type="radio" id="male" name="sex" value="M">
+                        <label class="form-check-label" for="male"> Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input female" type="radio" id="female" name="sex" value="F">
+                        <label class="form-check-label" for="female"> Female</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="d-block form-label">Status</label>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input living" type="radio" id="livingAddChild" name="status" value="living">
+                        <label class="form-check-label" for="livingAddChild"> Living</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input deceased" type="radio" id="deceasedAddChild" name="status" value="deceased">
+                        <label class="form-check-label" for="deceasedAddChild"> Deceased</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="text" name="birth_date" class="form-control date-input birth_date birth_date_add_child"
+                        placeholder="YYYY-MM-DD or YYYY">
+                </div>
+                <!--
+                    <div class="mb-2">
+                        <label class="form-label" for="birth_place">Place of Birth</label>
+                        <input type="text" class="form-control" id="birth_place" name="birth_place">
+                    </div>
+                    -->
+
+                <div class="death-container">
+                    <div class="mb-3">
+                        <label class="form-label">Date of Death</label>
+                        <input type="text" name="death_date"
+                            class="form-control date-input death_date death_date_add_child"
+                            placeholder="YYYY-MM-DD or YYYY">
+                    </div>
+                    <!--
+                        <div class="mb-3">
+                            <label class="form-label" for="death_place">Place of Death</label>
+                            <input type="text" class="form-control" id="death_place" name="death_place">
+                        </div>
+                        -->
+                </div>
+
+
+                <div class="row mx-0 my-5 justify-content-center">
+                    <button type="submit" class="col-auto btn btn-warning me-sm-3 me-1 data-submit col-md-4">
+                        <span class="ti-xs ti ti-edit me-1"></span>
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Offcanvas to add spouse -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddSpouse"
+        aria-labelledby="offcanvasAddSpouseLabel" data-bs-backdrop="false">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasAddSpouseLabel" class="offcanvas-title">Add Spouse</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
+            <h6 class="offcanvas-subtitle"></h6>
+            <form class="add-new-user pt-0" id="formAddSpouse" method="POST"
+                action="{{ route('users.pedigree.addspouse') }}">
+                @csrf
+                <input type="hidden" name="person_id" class="person_id">
+                <div class="mb-3">
+                    <label class="form-label" for="name">First and middle name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control firstname" placeholder="First name" name="firstname"
+                        aria-label="John" autocomplete="off" />
+                    <span class="text-danger d-none" id="firstname_feedback"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="name">Last name <span class="text-danger">*</span> </label>
+                    <input type="text" class="form-control lastname" placeholder="Last name" name="lastname"
+                        aria-label="Doe" autocomplete="off" />
+                    <span class="text-danger d-none" id="lastname_feedback"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="d-block form-label">Status</label>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input living" type="radio" id="livingAddSpouse" name="status" value="living">
+                        <label class="form-check-label" for="livingAddSpouse"> Living</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input deceased" type="radio" id="deceasedAddSpouse" name="status" value="deceased">
+                        <label class="form-check-label" for="deceasedAddSpouse"> Deceased</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="text" name="birth_date"
+                        class="form-control date-input birth_date birth_date_add_spouse" placeholder="YYYY-MM-DD or YYYY">
+                </div>
+                <!--
+                            <div class="mb-2">
+                                <label class="form-label" for="birth_place">Place of Birth</label>
+                                <input type="text" class="form-control" id="birth_place" name="birth_place">
+                            </div>
+                            -->
+
+                <div class="death-container">
+                    <div class="mb-3">
+                        <label class="form-label">Date of Death</label>
+                        <input type="text" name="death_date"
+                            class="form-control date-input death_date death_date_add_spouse"
+                            placeholder="YYYY-MM-DD or YYYY">
+                    </div>
+                    <!--
+                                <div class="mb-3">
+                                    <label class="form-label" for="death_place">Place of Death</label>
+                                    <input type="text" class="form-control" id="death_place" name="death_place">
+                                </div>
+                                -->
+                </div>
+
+
+                <div class="row mx-0 my-5 justify-content-center">
+                    <button type="submit" class="col-auto btn btn-warning me-sm-3 me-1 data-submit col-md-4">
+                        <span class="ti-xs ti ti-edit me-1"></span>
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Custom Modal -->
+    <div class="custom-modal p-2" id="nodeModal">
+        <div class="modal-body custom-modal-body" id="nodeModalBody">
+            <span class="custom-modal-close" onclick="close_custom_modal()">&times;</span>
+            <div class="row mx-0">
+                <div class="card mb-0 border-0 shadow-none p-2">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img src="..." class="card-img card-img-left personImage rounded-0" alt="...">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body p-0 ms-3">
+                                <h5 class="card-title name mb-2">Card title</h5>
+                                <p class="card-text mb-1">Birth : <small class="text-muted birth">Last updated 3 mins
+                                        ago</small></p>
+                                <p class="card-text mb-1">Death : <small class="text-muted death">Last updated 3 mins
+                                        ago</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mx-0">
+                <div class="btn-group px-1" role="group" aria-label="Basic example">
+                    <button type="button" id="nodeEdit"
+                        class="btn btn-secondary waves-effect waves-light">Edit</button>
+                    <button type="button" id="nodeDelete"
+                        class="btn btn-secondary waves-effect waves-light">Delete</button>
+                    <form id="formDeletePerson" action="{{ route('users.pedigree.delete') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="person_id" class="person_id">
+                    </form>
+                    <button type="button" id="addSpouse" class="btn btn-secondary waves-effect waves-light">Add
+                        Spouse</button>
+                    <button type="button" id="addChild" class="btn btn-secondary waves-effect waves-light">Add
+                        child</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Offcanvas to edit person -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUpdatePerson"
-        aria-labelledby="offcanvasUpdatePersonLabel">
+        aria-labelledby="offcanvasUpdatePersonLabel" data-bs-backdrop="false">
         <div class="offcanvas-header">
-            <h5 id="offcanvasUpdatePersonLabel" class="offcanvas-title">Update Person</h5>
+            <h5 id="offcanvasUpdatePersonLabel" class="offcanvas-title">Edit Person</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
 
         <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
 
-            <form class="add-new-user pt-0" id="formUpdatePerson" method="POST" action="{{route('users.pedigree.update')}}">
+            <form class="add-new-user pt-0" id="formUpdatePerson" method="POST"
+                action="{{ route('users.pedigree.update') }}">
                 @csrf
-                <input type="hidden" name="person_id" id="person_id">
-                <div class="mb-3">
-                    <div id="portrait_container">
-
-                    </div>
-                    <button id="importimagebtn" type="button" class="btn btn-primary mt-4" data-id="" data-sex=""
-                        data-image="">
-                        <span class="ti-xs ti ti-edit me-1"></span>
-                        Edit image
-                    </button>
-                </div>
+                <input type="hidden" name="person_id" class="person_id">
                 <div class="mb-3">
                     <label class="form-label" for="name">First and middle name <span class="text-danger">*</span>
                     </label>
-                    <input type="text" class="form-control" id="firstname" placeholder="First name" name="firstname"
-                        aria-label="John" autocomplete="off"/>
+                    <input type="text" class="form-control firstname" placeholder="First name" name="firstname"
+                        aria-label="John" autocomplete="off" />
                     <span class="text-danger d-none" id="firstname_feedback"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="name">Last name <span class="text-danger">*</span> </label>
-                    <input type="text" class="form-control" id="lastname" placeholder="Last name" name="lastname"
-                        aria-label="Doe" autocomplete="off"/>
+                    <input type="text" class="form-control lastname" placeholder="Last name" name="lastname"
+                        aria-label="Doe" autocomplete="off" />
                     <span class="text-danger d-none" id="lastname_feedback"></span>
                 </div>
-                <div class="mb-0">
+                <div class="mb-3">
                     <label class="d-block form-label">Status</label>
                     <div class="form-check form-check-inline mt-2">
-                        <input class="form-check-input" type="radio" name="status" id="living"
-                            value="living">
-                        <label class="form-check-label" for="living"> Living</label>
+                        <input class="form-check-input living" type="radio" id="livingUpdatePerson" name="status" value="living">
+                        <label class="form-check-label" for="livingUpdatePerson"> Living</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status" id="deceased"
-                            value="deceased">
-                        <label class="form-check-label" for="deceased"> Deceased</label>
+                        <input class="form-check-input deceased" type="radio" id="deceasedUpdatePerson" name="status" value="deceased">
+                        <label class="form-check-label" for="deceasedUpdatePerson"> Deceased</label>
                     </div>
                 </div>
-                <div class="divider my-0"><hr></div>
-                <div class="mb-3" id="date_birth">
-                    <label class="form-label">Date of Birth <span class="text-muted">(DD MM YYYY)</span></label>
-                    <div class="input-group">
-                        <input type="text" name="birth_day" aria-label="day" class="form-control" placeholder="Day">
-                        <input type="text" name="birth_month" aria-label="month" class="form-control" placeholder="Month">
-                        <input type="text" name="birth_year" aria-label="year" class="form-control" placeholder="Year">
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label" for="birth_place">Place of Birth</label>
-                    <input type="text" class="form-control" id="birth_place" name="birth_place">
-                </div>
-                <div class="divider my-0"><hr></div>
-                <div id="death-container">
-                    <div class="mb-3" id="date_death">
-                        <label class="form-label">Date of Death <span class="text-muted">(DD MM YYYY)</span></label>
-                        <div class="input-group">
-                            <input type="text" name="death_day" aria-label="day" class="form-control" placeholder="Day">
-                            <input type="text" name="death_month" aria-label="month" class="form-control" placeholder="Month">
-                            <input type="text" name="death_year" aria-label="year" class="form-control" placeholder="Year">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="death_place">Place of Death</label>
-                        <input type="text" class="form-control" id="death_place" name="death_place">
-                    </div>
-                </div>
-                
 
-                <div class="row mx-0 mb-3">
-                    <button type="submit" class="btn btn-warning me-sm-3 me-1 data-submit col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="text" name="birth_date" class="form-control date-input birth_date"
+                        placeholder="YYYY-MM-DD or YYYY">
+                </div>
+                <!--
+                            <div class="mb-2">
+                                <label class="form-label" for="birth_place">Place of Birth</label>
+                                <input type="text" class="form-control" id="birth_place" name="birth_place">
+                            </div>
+                            -->
+
+                <div class="death-container">
+                    <div class="mb-3">
+                        <label class="form-label">Date of Death</label>
+                        <input type="text" name="death_date" class="form-control date-input death_date"
+                            placeholder="YYYY-MM-DD or YYYY">
+                    </div>
+                    <!--
+                                <div class="mb-3">date-input
+                                    <label class="form-label" for="death_place">Place of Death</label>
+                                    <input type="text" class="form-control" id="death_place" name="death_place">
+                                </div>
+                                -->
+                </div>
+
+
+                <div class="row mx-0 my-5 justify-content-center">
+                    <button type="submit" class="col-auto btn btn-warning me-sm-3 me-1 data-submit col-md-4">
                         <span class="ti-xs ti ti-edit me-1"></span>
                         Update
                     </button>
-                    <button type="button" id="deletePerson" class="btn btn-danger col-md-4">
-                        <span class="ti-xs ti ti-trash me-1"></span>
-                        Delete
-                    </button>
                 </div>
-
-                <div class="row mx-0 mb-3">
-                    <button type="button" id="addFather" class="btn btn-primary me-sm-3 me-1 col-md-4">
-                        <span class="ti-xs ti ti-layout-grid-add me-1"></span>
-                        Add Father
-                    </button>
-                    <button type="button" id="addMother" class="btn btn-primary col-md-4">
-                        <span class="ti-xs ti ti-layout-grid-add me-1"></span>
-                        Add Mother
-                    </button>
-                </div>
-
             </form>
         </div>
     </div>
@@ -237,6 +515,8 @@
             </div>
         </div>
     </div>
+
+    <!-- min graph -->
     <div class="card blocking-card">
         <div class="card-body position-relative">
             <div class="border position-absolute p-3 bg-secondary rounded">
@@ -246,7 +526,7 @@
                             class="ti ti-upload fs-3"></i></button>
                 </div>
                 <div class="row mx-0 mb-2">
-                    <a id="downloadFile" type="button" href="{{asset('storage/'.$gedcom_file)}}"
+                    <a id="downloadFile" type="button" href="{{ asset('storage/' . $gedcom_file) }}"
                         class="btn btn-outline-dark waves-effect text-white border-0 px-1" download=""><i
                             class="ti ti-download fs-3"></i></a>
                 </div>

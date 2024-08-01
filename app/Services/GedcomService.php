@@ -313,24 +313,7 @@ class GedcomService
     
     }
 
-    public function edit_death(&$person, $status, $death_date_array){
-
-        $day = $death_date_array[0];
-        $month = $death_date_array[1];
-        $year = $death_date_array[2];
-
-        // create death_date from day,month and year
-        $death_date = "";
-        if($year == null and $month == null and $day == null){
-            $death_date = null;
-        }
-        if($year != null and $month == null and $day == null){
-            $death_date .= $year;
-        }
-        if($month != null and $day != null){
-            $death_date .= $year.'-'.$month.'-'.$day;
-        }
-
+    public function edit_death(&$person, $status, $death_date){
 
         // if status is deceased edit death event if exist, or add it if not exist
         if($status == "deceased"){
@@ -357,22 +340,7 @@ class GedcomService
         }
     }
 
-    public function edit_birth(&$person, $date_array){
-        $day = $date_array[0];
-        $month = $date_array[1];
-        $year = $date_array[2];
-
-        // create birth_date from day,month and year
-        $birth_date = "";
-        if($year == null and $month == null and $day == null){
-            $birth_date = null;
-        }
-        if($year != null and $month == null and $day == null){
-            $birth_date .= $year;
-        }
-        if($month != null and $day != null){
-            $birth_date .= $year.'-'.$month.'-'.$day;
-        }
+    public function edit_birth(&$person, $birth_date){
 
         // check if person has birth event
         if($person->getEven('BIRT') == null){
@@ -400,4 +368,6 @@ class GedcomService
         $firstName->setName($name);
 
     }
+
+
 }
