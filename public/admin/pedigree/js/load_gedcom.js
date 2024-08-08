@@ -3,15 +3,107 @@
 // next, its parse data to transform gedcom file to accepted structure for d3-org-chart
 function draw_tree() {
 
-
+    // load gedcom file from api for the current user
     const promise = fetch('/pedigree/getTree')
-        .then(r => r.arrayBuffer())
-        .then(Gedcom.readGedcom);
+        .then(r => {
+            if(r.status == 404){
+                throw new Error(`HTTP error! Status: ${r.status}`);
+            }
+            return r.arrayBuffer()
+        })
+        .then(Gedcom.readGedcom)
+        .catch(error => {
+            if(document.getElementById("add-first-person-container") != null){
+                document.getElementById("add-first-person-container").classList.remove('d-none');
+            }
+            return false;
+        });
 
     promise.then(gedcom => {
-        
+        // transform readGedcom structure to a structure accepted from d3-org-chart
+        if (!gedcom) return;
+
         const treeData = transformGedcom(gedcom);
-        renderChart(treeData)
+        familyData = treeData;
+        // load settings from "/pedigree/settings"
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: "/pedigree/settings",
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.error == false) {
+
+                    treeConfiguration = {
+                        chartContainer: '#graph', // root svg
+
+                        // height & width
+                        nodeWidth: 190,
+                        nodeWidthSpouse: 400,
+                        get nodeWidthDiff() {
+                            return this.nodeWidthSpouse - this.nodeWidth * 2;
+                        },
+                        get linkShift() {
+                            return Math.round((this.nodeWidth + this.nodeWidthDiff) / 2) + 1;// for moving the link coming from parent
+                        },
+                        nodeHeight: 70,
+                        nodeHeightSpouse: 70,
+
+                        // margins
+                        siblingsMargin: 23,
+                        childrenMargin: 60,
+                        neighbourMargin: 13,
+                        rootMargin: 0,
+
+                        // child & spouse lines
+                        primarySpouseLinkStroke: data.settings.spouse_link_color,
+                        linkStroke: data.settings.bio_child_link_color,
+                        linkStrokeAdopted: data.settings.adop_child_link_color,
+                        linkStrokeWidth: 2,
+                        connectionStroke: data.settings.spouse_link_color,
+                        connectionStrokeWidth: 2,
+
+                        // expand collapse button
+                        nodeButtonWidth: '',
+                        nodeButtonHeight: '',
+                        nodeButtonX: -20,
+                        nodeButtonY: -10,
+
+                        // node colors
+                        maleColor: data.settings.male_color,
+                        femaleColor: data.settings.female_color,
+
+                        // text color
+                        maleTextColor: data.settings.male_text_color,
+                        femaleTextColor: data.settings.female_text_color
+                    }
+                    // after loading settings draw chart with treeData and treeConfiguration
+                    renderChart();
+                    if(document.getElementById("add-first-person-container") != null){
+                        document.getElementById("add-first-person-container").remove();
+                    }
+                    
+
+                } else {
+                    show_toast('error', 'error', data.error)
+                }
+
+            },
+            error: function (xhr, status, error) {
+                if ('responseJSON' in xhr) {
+                    show_toast('error', 'error', xhr.responseJSON.message)
+                } else {
+                    show_toast('error', 'error', error)
+                }
+
+                return null;
+            }
+        });
 
     });
 
@@ -28,7 +120,7 @@ function get_status(individual) {
     if (individual.getEventDeath().length == 0) {
         return 'Living'
     }
-    else{
+    else {
         return 'Deceased'
     }
 }
@@ -36,14 +128,14 @@ function get_status(individual) {
 // get death date from individual object
 function get_death_date(individual) {
 
-    if(individual.getEventDeath().length == 0){
+    if (individual.getEventDeath().length == 0) {
         return null
     }
-    else{
-        if(individual.getEventDeath().getDate().length == 0){
+    else {
+        if (individual.getEventDeath().getDate().length == 0) {
             return null
         }
-        else{
+        else {
             return individual.getEventDeath().getDate()[0].value
         }
     }
@@ -55,15 +147,15 @@ function get_birth_date(individual) {
     if (individual.getEventBirth().length == 0) {
         return null
     }
-    else{
+    else {
         if (individual.getEventBirth().getDate().length == 0) {
             return null
         }
-        else{
+        else {
             return individual.getEventBirth().getDate()[0].value
         }
     }
-    
+
 }
 
 // get name from individual object
@@ -88,31 +180,49 @@ function get_sex(individual) {
     }
 }
 
+// check if person is foster
+/*
+function is_foster(individual, familyId) {
+
+
+    foster = false
+    fosterType = undefined
+
+    familyFoster = individual.getFamilyAsChild()
+
+    console.log(familyFoster[0])
+
+
+    return { foster, fosterType }
+
+}
+*/
+
 // check if the child is adopted
-function is_adopted(individual,familyId){
-    
-    
+function is_adopted(individual, familyId) {
+
+
     adopted = false
     adoptedType = undefined
 
     adoption = individual.getEventAdoption()
-    if(adoption.length == 0){
+    if (adoption.length == 0) {
         return { adopted, adoptedType }
     }
 
     familyAdoptive = adoption.getFamilyAsChildReference()
-    if(familyAdoptive.length == 0){
+    if (familyAdoptive.length == 0) {
         return { adopted, adoptedType }
     }
 
-    
+
     familyAdoptiveId = familyAdoptive[0].value
-    if(familyAdoptiveId == familyId){
+    if (familyAdoptiveId == familyId) {
         adopted = true
     }
 
     adoptedByWhom = familyAdoptive.getAdoptedByWhom()
-    if(adoptedByWhom.length > 0){
+    if (adoptedByWhom.length > 0) {
         adoptedType = adoptedByWhom[0].value
     }
 
@@ -127,7 +237,7 @@ function personIdExists(people, id) {
 
 
 // iterate over all families and get couples
-function get_couples(families,individualRecords) {
+function get_couples(families, individualRecords) {
 
 
     families.forEach((family, key, array) => {
@@ -165,55 +275,72 @@ function get_couples(families,individualRecords) {
         if (parent.length > 0) {
             // family with parent and with spouse
             if (spouse.length > 0) {
+                var parentPhoto = undefined;
+                if (parent.getNote()[0] != undefined) {
+                    parentPhoto = parent.getNote()[0].value;
+                }
+                
+                var spousePhoto = undefined;
+                if (spouse.getNote()[0] != undefined) {
+                    spousePhoto = spouse.getNote()[0].value;
+                }
+
                 parentPerson = {
                     id: parent[0].pointer + '-' + spouse[0].pointer,
                     personId: parent[0].pointer,
                     name: get_name(parent),
                     gender: get_sex(parent),
-                    status : get_status(parent),
+                    status: get_status(parent),
                     birth: get_birth_date(parent),
                     death: get_death_date(parent),
-                    photo: undefined,
+                    photo: parentPhoto,
                     parentId: undefined,
                     personOrder: undefined,
                     childOrder: undefined,
-                    spouseIds : [],
+                    spouseIds: [],
                     spouseId: spouse[0].pointer,
                     spouseName: get_name(spouse),
                     spouseGender: get_sex(spouse),
-                    spouseStatus : get_status(spouse),
+                    spouseStatus: get_status(spouse),
                     spouseBirth: get_birth_date(spouse),
                     spouseDeath: get_death_date(spouse),
+                    spousePhoto: spousePhoto,
                     spouseOrder: undefined,
                     spouseDrillTo: false,
                     primarySpouseId: undefined,
-                    spousePhoto: undefined,
                     path: undefined,
                 };
 
             }
             // family with parent and without spouse
             else {
+                var photo = undefined;
+                if (parent.getNote()[0] != undefined) {
+                    photo = parent.getNote()[0].value;
+                }
                 parentPerson = {
                     id: parent[0].pointer,
                     personId: parent[0].pointer,
                     name: get_name(parent),
                     gender: get_sex(parent),
-                    status : get_status(parent),
+                    status: get_status(parent),
                     birth: get_birth_date(parent),
                     death: get_death_date(parent),
-                    photo: undefined,
+                    photo: photo,
                     parentId: undefined,
                     personOrder: undefined,
                     childOrder: undefined,
-                    spouseIds : [],
+                    spouseIds: [],
                     spouseId: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
+                    spouseStatus: undefined,
+                    spouseBirth: undefined,
+                    spouseDeath: undefined,
+                    spousePhoto: undefined,
                     spouseOrder: undefined,
                     spouseDrillTo: false,
                     primarySpouseId: undefined,
-                    spousePhoto: undefined,
                     path: undefined,
                 };
 
@@ -223,19 +350,23 @@ function get_couples(families,individualRecords) {
         else {
             // family without parent and with spouse, so the spouse is the parent
             if (spouse.length > 0) {
+                var photo = undefined;
+                if (spouse.getNote()[0] != undefined) {
+                    photo = spouse.getNote()[0].value;
+                }
                 parentPerson = {
                     id: spouse[0].pointer,
                     personId: spouse[0].pointer,
                     name: get_name(spouse),
                     gender: get_sex(spouse),
-                    status : get_status(spouse),
+                    status: get_status(spouse),
                     birth: get_birth_date(spouse),
                     death: get_death_date(spouse),
-                    photo: undefined,
+                    photo: photo,
                     parentId: undefined,
                     personOrder: undefined,
                     childOrder: undefined,
-                    spouseIds : [],
+                    spouseIds: [],
                     spouseId: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
@@ -264,14 +395,14 @@ function get_couples(families,individualRecords) {
             spouseIds.push(parentPerson.spouseId)
             parentPerson.spouseIds = spouseIds
         }
-        else{
+        else {
             // if person dont exist just add spouseId to spouseIds
-            if(parentPerson.spouseId != undefined){
+            if (parentPerson.spouseId != undefined) {
                 parentPerson.spouseIds.push(parentPerson.spouseId)
             }
         }
-        
-        
+
+
 
         // add parent to individualRecords
         individualRecords[parentPerson.id] = parentPerson;
@@ -346,9 +477,24 @@ function get_children(families, individualRecords) {
 
         children.forEach((child, key, array) => {
 
+            /*
+            if(child[0].pointer == "@I10@"){
+                const { foster, fosterype } = is_foster(child, family[0].pointer)
+            }
+            */
+
+            var photo = undefined;
+            if (child.getNote()[0] != undefined) {
+                photo = child.getNote()[0].value;
+            }
+
+
             // check if child is adopted
-            const { adopted, adoptedType } = is_adopted(child,family[0].pointer)
+            const { adopted, adoptedType } = is_adopted(child, family[0].pointer)
+
+            // check if child is foster
             
+
             // check if child exist as couple
             childAsCouples = personIdExists(individualRecords, child[0].pointer)
 
@@ -360,24 +506,24 @@ function get_children(families, individualRecords) {
                     individualRecords[childAsCouple.id].adoptedType = adoptedType
                 })
 
-            } 
+            }
             // if child not exist as couple add it to individualRecords
             else {
-                const childPerson  = {
+                const childPerson = {
                     id: child[0].pointer,
                     personId: child[0].pointer,
                     name: get_name(child),
                     gender: get_sex(child),
-                    status : get_status(child),
+                    status: get_status(child),
                     birth: get_birth_date(child),
                     death: get_death_date(child),
-                    photo: undefined,
+                    photo: photo,
                     parentId: parentId,
-                    adopted : adopted,
-                    adoptedType : adoptedType,
+                    adopted: adopted,
+                    adoptedType: adoptedType,
                     personOrder: undefined,
                     childOrder: undefined,
-                    spouseIds : [],
+                    spouseIds: [],
                     spouseId: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
@@ -393,7 +539,7 @@ function get_children(families, individualRecords) {
         });// end children foreach
 
     });// end families foreach
-        
+
 }
 
 // parse gedcom file 
@@ -407,19 +553,23 @@ function transformGedcom(gedcom) {
     // if there is no families add just the first individual
     if (families.length == 0) {
         indi = families = gedcom.getIndividualRecord().arraySelect()[0]
+        var photo = undefined;
+        if (indi.getNote()[0] != undefined) {
+            photo = indi.getNote()[0].value;
+        }
         let indiPerson = {
-            id: indiv[0].pointer,
-            personId: indiv[0].pointer,
-            name: get_name(indiv),
-            gender: get_sex(indiv),
-            status : get_status(indiv),
-            birth: get_birth_date(indiv),
-            death: get_death_date(indiv),
-            photo: undefined,
+            id: indi[0].pointer,
+            personId: indi[0].pointer,
+            name: get_name(indi),
+            gender: get_sex(indi),
+            status: get_status(indi),
+            birth: get_birth_date(indi),
+            death: get_death_date(indi),
+            photo: photo,
             parentId: undefined,
             personOrder: undefined,
             childOrder: undefined,
-            spouseIds : [],
+            spouseIds: [],
             spouseId: undefined,
             spouseName: undefined,
             spouseGender: undefined,
@@ -431,14 +581,16 @@ function transformGedcom(gedcom) {
         };
 
         individualRecords[indiPerson.id] = indiPerson;
-        return;
+    }
+    else{
+        // if families length > 0, iterate over all families and get couples
+        get_couples(families, individualRecords)
+
+        // if families length > 0, iterate over all families and get children
+        get_children(families, individualRecords)
     }
 
-    // if families length > 0, iterate over all families and get couples
-    get_couples(families,individualRecords)
-
-    // if families length > 0, iterate over all families and get children
-    get_children(families, individualRecords)
+    
 
     // add hidden route to individualRecords
     const hiddenRootNode = {
@@ -474,7 +626,7 @@ function parseDateToSort(dateStr) {
         // Full date is given
         const [day, month, year] = parts;
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const monthIndex = monthNames.indexOf(month)+1;
+        const monthIndex = monthNames.indexOf(month) + 1;
         return new Date(year, monthIndex, day);
     }
 }

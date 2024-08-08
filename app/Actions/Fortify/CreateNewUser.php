@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use App\Models\Tree;
+use App\Models\Setting;
 use App\Models\Node;
 use App\Models\Pedigree;
 use Illuminate\Support\Facades\Hash;
@@ -59,6 +60,10 @@ class CreateNewUser implements CreatesNewUsers
         Pedigree::create([
             'user_id' => $user->id
         ]);
+
+        // create settings
+        $setting = Setting::create(['user_id' => $user->id]);
+        
         
         return $user;
     }

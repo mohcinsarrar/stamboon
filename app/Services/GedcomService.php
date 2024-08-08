@@ -214,6 +214,28 @@ class GedcomService
                 
             }
 
+            // write ADOP
+            $adop = $indi->getEven('ADOP');
+            if($adop != null && $adop != []){
+                $adop = $adop[0];
+                // get adop type
+                $adopType = $adop->getAdop();
+
+                // get adop famc
+                $adopFamc = $adop->getFamc();
+                
+            }
+            else{
+                $adop == null;
+            }
+
+            if($adop  != null){
+                fwrite($fileHandle, "1 ADOP\n");
+                fwrite($fileHandle, "2 FAMC $adopFamc\n");
+                fwrite($fileHandle, "3 ADOP $adopType\n");
+            }
+
+
             // write FAMS
             $fams = $indi->getFams();
             if($fams != null && $fams != []){
@@ -233,9 +255,24 @@ class GedcomService
                     if($fam != null){
                         fwrite($fileHandle, "1 FAMC @$fam@\n");
                     }
+
+                    $pedi = $family->getPedi();
+                    if($pedi != null){
+                        fwrite($fileHandle, "2 PEDI $pedi\n");
+                    }
                 }
             }
-            
+
+            // write Note
+            $notes = $indi->getNote();
+            if($notes != null && $notes != []){
+                foreach($notes as $key => $note){
+                    $noteTitle = $note->getNote();
+                    if($noteTitle != null){
+                        fwrite($fileHandle, "1 NOTE $noteTitle\n");
+                    }
+                }
+            }
         }
     }
 

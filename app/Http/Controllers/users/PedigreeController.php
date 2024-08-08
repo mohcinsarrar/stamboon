@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\NodeResource;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File as StorageFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use Carbon\Carbon;
 
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
@@ -22,11 +24,14 @@ use App\Models\User;
 use App\Models\Tree;
 use App\Models\Node;
 use App\Models\Pedigree;
+use App\Models\Setting;
+
 
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
 
 use App\Rules\GedcomFile;
+use App\Rules\HexColor;
 use Gedcom\Parser as GedcomParser;
 use Gedcom\Writer as GedcomWriter;
 use Gedcom\Record\Indi as Indi;
@@ -35,6 +40,8 @@ use Gedcom\Record\Indi\Birt as IndiBirt;
 use Gedcom\Record\Indi\Deat as IndiDeat;
 use Gedcom\Record\Indi\Fams as IndiFams;
 use Gedcom\Record\Indi\Famc as IndiFamc;
+use Gedcom\Record\Indi\Adop as IndiAdop;
+use Gedcom\Record\NoteRef as IndiNoteRef;
 use Gedcom\Record\Fam as Fam;
 
 
@@ -45,8 +52,219 @@ use App\Services\GedcomService;
 class PedigreeController extends Controller
 {
 
-    public function index(Request $request){
+
+    private array $months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+     
+
+    private function dateStr($date)
+    {
+        $records = explode('-', $date);
+        if(sizeof($records) == 1){
+            $year = $records[0];
+            return "$year";
+        }
+        $day = $records[1];
+        $month = $records[1];
+        $year = $records[0];
+        $monthName = $this->months[$month-1];
+
+        return "$day $monthName $year";
+    }
+
+    public function addperson(Request $request){
+
+
+        $inputs = $request->except(['_token']);
         
+        Validator::make($inputs, [
+            'firstname' => ['required','string'],
+            'lastname' => ['required','string'],
+            'sex' => ['required','string'],
+            'status' => ['required','string'],
+        ])->validate();
+
+
+        // Create a temporary file path
+        $tempFilePath = storage_path('app/temp_file.txt');
+
+        // Create an empty file
+        StorageFile::put($tempFilePath, '');
+
+
+        $todayDate = strtoupper(Carbon::now()->format('d M Y'));
+        $todayTime = Carbon::now()->format('H:i:s');
+
+        // Define the lines you want to add
+        $lines = [
+            "0 HEAD",
+            "1 SOUR Stamboon",
+            "2 VERS 10.1",
+            "2 NAME Aldfaer",
+            "2 CORP The Stamboon",
+            "3 ADDR https://www.thestamboom.nl",
+            "1 DATE ".$todayDate,
+            "2 TIME ".$todayTime,
+            "1 SUBM @SUBM1@",
+            "1 GEDC",
+            "2 VERS 5.5",
+            "2 FORM Lineage-Linked",
+            "1 CHAR UTF-8",
+            "0 @I1@ INDI",
+            "1 NAME ".$request->firstname."/".$request->lastname."/",
+            "1 SEX ".$request->sex,
+            "1 BIRT",
+        ];
+
+
+            if($request->birth_date != null){
+                array_push($lines, "2 DATE ".$this->dateStr($request->birth_date));
+            }
+            if($request->death_date != null){
+                array_push($lines, "1 DEAT");
+                array_push($lines, "2 DATE ".$this->dateStr($request->death_date));
+            }
+
+            $lines = array_merge(
+                $lines, 
+                [
+                    "1 _NEW",
+                    "2 TYPE 1",
+                    "2 DATE ".$todayDate,
+                    "3 TIME ".$todayTime,
+                    "1 CHAN",
+                    "2 DATE ".$todayDate,
+                    "3 TIME ".$todayTime,
+                    "0 @SUBM1@ SUBM",
+                    "1 NAME Unknown",
+                    "0 TRLR",
+                ]
+                );
+        
+
+        // Add lines to the file
+        foreach ($lines as $line) {
+            StorageFile::append($tempFilePath, $line . PHP_EOL);
+        }
+
+        // Store the file in Laravel's storage
+        $uniqueFilename = 'gedcoms/'.Str::uuid() . '.ged';
+        Storage::put($uniqueFilename, StorageFile::get($tempFilePath));
+
+        // store filename to pedigree
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree->gedcom_file = $uniqueFilename;
+        $pedigree->save();
+
+        // Optionally delete the temporary file
+        StorageFile::delete($tempFilePath);
+
+        return redirect()->back()->with('success','person added with success');
+        
+    }
+
+    public function saveimage(Request $request){
+
+
+        $gedcomService = new GedcomService();
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $person = $this->get_person($gedcom,$person_id);
+        if($person == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+
+        // if is placeholder image
+        if($request->checkedImage != null){
+
+            $image = $request->checkedImage.'.jpg';
+            $sourcePath = 'placeholder_portraits/'.$image;
+
+            $imageName = Str::random(40).'.'.'png';
+            $destinationPath = "portraits/".$imageName;
+
+            Storage::copy($sourcePath, $destinationPath);
+        }
+        else{
+            // save image
+            $image = $request->imageBase64;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = Str::random(40).'.'.'png';
+            storage::put( "portraits/".$imageName, base64_decode($image));
+        }
+
+        
+
+        // test if person has note
+        $hasPhoto = false;
+        $notes = $person->getNote();
+        if($notes != null && $notes != []){
+            foreach($notes as $key => $note){
+                if(str_contains($note->getNote(), '.png')){
+                    // delete old image if exist
+                    if (Storage::exists("portraits/".$note->getNote())) {
+                        Storage::delete("portraits/".$note->getNote());
+                      }
+
+                    $hasPhoto = true;
+                    $note->setNote($imageName);
+                }
+            }
+        }
+
+        // if dont has photo create a note and add imagename and added it to person
+        if($hasPhoto == false){
+            $note = new IndiNoteRef();
+            $note->setNote($imageName);
+            $person->addNote($note);
+        }
+        
+        $gedcomService->writer($gedcom,$gedcom_file);
+
+        return response()->json(['error'=>false,'msg' => 'Image Added']);
+        
+        
+    }
+
+    public function settings(Request $request){
+        
+        // load settings
+        if($request->isMethod('get')){
+            $settings = Setting::where('user_id',Auth::user()->id)->first();
+            return response()->json(['error'=>false,'settings' => $settings]);
+        }
+
+        // update settings
+        if($request->isMethod('post')){
+            $inputs = $request->except(['_token']);
+
+            Validator::make($inputs, [
+                'spouse_link_color' => ['required',new HexColor],
+                'bio_child_link_color' => ['required',new HexColor],
+                'adop_child_link_color' => ['required',new HexColor],
+            ])->validate();
+
+            Setting::where('user_id',Auth::user()->id)->update($inputs);
+
+            return redirect()->back()->with('success','settings updated with success');
+        }
+    }
+
+
+    public function index(Request $request){
         $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
         $gedcom_file = $pedigree->gedcom_file;
         return view('users.pedigree.index',compact('gedcom_file'));
@@ -91,7 +309,13 @@ class PedigreeController extends Controller
     public function getTree(Request $request){
         $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
 
+        if($pedigree->gedcom_file == null){
+            return response(null, 200);
+        }
+
         $file = Storage::disk('local')->get($pedigree->gedcom_file);
+
+        
         
         // Return the file as a response
         return response($file, 200)
@@ -159,7 +383,6 @@ class PedigreeController extends Controller
             'status' => ['required','string'],
         ])->validate();
 
-        
         // get gedcom file
         $gedcom_file = $this->get_gedcom_file();
         if ($gedcom_file == null) {
@@ -230,13 +453,13 @@ class PedigreeController extends Controller
             'person_id' => ['required','string'],
             'person_type' => ['required','string'],
             'parents' => ['required','string'],
+            'relationship' => ['required','string'],
             'firstname' => ['required','string'],
             'lastname' => ['required','string'],
             'sex' => ['required','string'],
             'status' => ['required','string'],
         ])->validate();
 
-        
         // get gedcom file
         $gedcom_file = $this->get_gedcom_file();
         if ($gedcom_file == null) {
@@ -245,7 +468,6 @@ class PedigreeController extends Controller
 
         // get gedcom object
         $gedcom = $this->get_gedcom($gedcom_file);
-
 
         // get person
         $person_id = str_replace('@','',$request->person_id);
@@ -260,9 +482,30 @@ class PedigreeController extends Controller
         // get family where parents exist
         $family = $this->get_family_for_child($gedcom, $request->parents);
 
-        // add FAMC to child
+        // create FAMC for child
         $famc = new IndiFamc();
         $famc->setFamc($family->getId());
+        
+
+        // add ADOPT event if child if adoptive
+        if($request->relationship == 'adopt'){
+            $adop = new IndiAdop();
+            $adop->setType('ADOP');
+            $adop->setAdop('BOTH');
+            $adop->setFamc('@'.$famc->getFamc().'@');
+            $child->addEven($adop);
+
+            // add pedi to famc
+            $famc->setPedi('adopted');
+        }
+        /*
+        if($request->relationship == 'foster'){
+
+            // add pedi to famc
+            $famc->setPedi('foster');
+        }
+        */
+        // add FAMC to child
         $child->addFamc($famc);
 
         // add child to gedcom
