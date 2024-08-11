@@ -38,10 +38,27 @@ function draw_tree() {
             dataType: 'json',
             success: function (data) {
                 if (data.error == false) {
+                    var node_height = 70;
+                    if(data.settings.node_template == '1'){
+                        node_height = 70
+                    }
+                    if(data.settings.node_template == '2'){
+                        node_height = 180
+                    }
+                    if(data.settings.node_template == '3'){
+                        node_height = 140
+                    }
+
+                    var children_margin = 60;
+                    if(data.settings.node_template == '3'){
+                        children_margin = 150
+                    }
+
 
                     treeConfiguration = {
                         chartContainer: '#graph', // root svg
-
+                        // tempale
+                        nodeTemplate : data.settings.node_template,
                         // height & width
                         nodeWidth: 190,
                         nodeWidthSpouse: 400,
@@ -51,12 +68,12 @@ function draw_tree() {
                         get linkShift() {
                             return Math.round((this.nodeWidth + this.nodeWidthDiff) / 2) + 1;// for moving the link coming from parent
                         },
-                        nodeHeight: 70,
-                        nodeHeightSpouse: 70,
+                        nodeHeight: node_height,
+                        nodeHeightSpouse: node_height,
 
                         // margins
                         siblingsMargin: 23,
-                        childrenMargin: 60,
+                        childrenMargin: children_margin,
                         neighbourMargin: 13,
                         rootMargin: 0,
 

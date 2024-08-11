@@ -61,7 +61,7 @@
                     <div class="row g-3">
                         <div class="col">
                             <div class="row">
-                                <p class="mt-2">Male color</p>
+                                <p class="mt-2">Male BG color</p>
                             </div>
                             <div class="row justify-content-start">
                                 <div class="col-6">
@@ -83,7 +83,7 @@
                         </div>
                         <div class="col">
                             <div class="row">
-                                <p class="mt-2">Female color</p>
+                                <p class="mt-2">Female BG color</p>
                             </div>
                             <div class="row justify-content-start">
                                 <div class="col-6">
@@ -115,49 +115,36 @@
                         <div class="col-md mb-md-0 mb-5">
                             <div
                                 class="form-check custom-option custom-option-image custom-option-image-check checked">
-                                <input class="form-check-input" type="checkbox" value=""
-                                    id="customCheckboxImg1" checked="">
-                                <label class="form-check-label custom-option-content" for="customCheckboxImg1">
+                                <input class="form-check-input customimagescheckbox" type="checkbox" name="node_template" value="1"
+                                    id="customCheckboxImg1">
+                                <label class="form-check-label custom-option-content" for="customCheckboxImg1"  style="height: 250px;">
                                     <span class="custom-option-body">
-                                        <img src="https://demos.pixinvent.com/vuexy-html-laravel-admin-template/demo/assets/img/backgrounds/watch.png"
-                                            alt="cbImg">
+                                        <img src="{{asset('admin/images/template1.png')}}"
+                                            alt="cbImg" style="object-fit: scale-down;">
                                     </span>
                                 </label>
                             </div>
                         </div>
                         <div class="col-md mb-md-0 mb-5">
                             <div class="form-check custom-option custom-option-image custom-option-image-check">
-                                <input class="form-check-input " type="checkbox" value=""
+                                <input class="form-check-input customimagescheckbox " type="checkbox" name="node_template" value="2"
                                     id="customCheckboxImg2">
-                                <label class="form-check-label custom-option-content" for="customCheckboxImg2">
+                                <label class="form-check-label custom-option-content" for="customCheckboxImg2"  style="height: 250px;">
                                     <span class="custom-option-body">
-                                        <img src="https://demos.pixinvent.com/vuexy-html-laravel-admin-template/demo/assets/img/backgrounds/phone.png"
-                                            alt="cbImg">
+                                        <img src="{{asset('admin/images/template2.png')}}"
+                                            alt="cbImg" style="object-fit: scale-down;">
                                     </span>
                                 </label>
                             </div>
                         </div>
                         <div class="col-md">
                             <div class="form-check custom-option custom-option-image custom-option-image-check">
-                                <input class="form-check-input" type="checkbox" value=""
+                                <input class="form-check-input customimagescheckbox" type="checkbox" name="node_template" value="3"
                                     id="customCheckboxImg3">
-                                <label class="form-check-label custom-option-content" for="customCheckboxImg3">
+                                <label class="form-check-label custom-option-content" for="customCheckboxImg3" style="height: 250px;">
                                     <span class="custom-option-body">
-                                        <img src="https://demos.pixinvent.com/vuexy-html-laravel-admin-template/demo/assets/img/backgrounds/mac.png"
-                                            alt="cbImg">
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md mb-md-0 mb-5">
-                            <div
-                                class="form-check custom-option custom-option-image custom-option-image-check checked">
-                                <input class="form-check-input" type="checkbox" value=""
-                                    id="customCheckboxImg1" checked="">
-                                <label class="form-check-label custom-option-content" for="customCheckboxImg1">
-                                    <span class="custom-option-body">
-                                        <img src="https://demos.pixinvent.com/vuexy-html-laravel-admin-template/demo/assets/img/backgrounds/watch.png"
-                                            alt="cbImg">
+                                        <img src="{{asset('admin/images/template3.png')}}"
+                                            alt="cbImg" style="object-fit: scale-down;">
                                     </span>
                                 </label>
                             </div>

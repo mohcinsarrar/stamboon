@@ -58,17 +58,28 @@ function compareDates(birth, death) {
 //check if is a string date is valid
 
 function isValidDate(dateString) {
-    // First check if the string can be parsed as a date
-    var date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-        return false; // Invalid date
+
+    // Handle case for year only (YYYY)
+    if (/^\d{4}$/.test(dateString)) {
+        return true; // Valid year
     }
 
-    // Check if the parsed date matches the input string to handle cases like '2023-02-30'
-    var parts = dateString.split(/[-/]/);
-    var year = parseInt(parts[0], 10);
-    var month = parseInt(parts[1], 10);
-    var day = parseInt(parts[2], 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        // First check if the string can be parsed as a date
+        var date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return false; // Invalid date
+        }
 
-    return date.getFullYear() === year && (date.getMonth() + 1) === month && date.getDate() === day;
+        // Check if the parsed date matches the input string to handle cases like '2023-02-30'
+        var parts = dateString.split(/[-/]/);
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        var day = parseInt(parts[2], 10);
+
+        return date.getFullYear() === year && (date.getMonth() + 1) === month && date.getDate() === day;
+    }
+
+    return false
+    
 }

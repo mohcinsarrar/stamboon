@@ -4,8 +4,8 @@ new Cleave('.death_date', {
     numericOnly: true,
     onValueChanged: function(e) {
         let value = e.target.value;
-        if (value.length === 4) {
-            e.target.setRawValue(value); // remove delimiters if only the year is entered
+        if (value.length === 5) {
+            $('.death_date').val(value.replace('-',''))
         }
     }
 });
@@ -15,8 +15,8 @@ new Cleave('.birth_date', {
     numericOnly: true,
     onValueChanged: function(e) {
         let value = e.target.value;
-        if (value.length === 4) {
-            e.target.setRawValue(value); // remove delimiters if only the year is entered
+        if (value.length === 5) {
+            $('.birth_date').val(value.replace('-',''))
         }
     }
 });
@@ -57,12 +57,14 @@ function edit_person() {
             formUpdatePerson.querySelector('.death-container').classList.remove("d-none");
         }
         else {
+            formUpdatePerson.querySelector('.death_date').value = "";
             formUpdatePerson.querySelector('.death-container').classList.add("d-none");
         }
     });
 
     formUpdatePerson.querySelector('.living').addEventListener('change', (event) => {
         if (event.target.checked) {
+            formUpdatePerson.querySelector('.death_date').value = "";
             formUpdatePerson.querySelector('.death-container').classList.add("d-none");
         }
         else {
@@ -125,8 +127,10 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
     const regexYearOnly = /^\d{4}$/;
 
     var birth_date = form.querySelector('.birth_date').value
+    
     if (birth_date != '') {
         if (regexFullDate.test(birth_date) || regexYearOnly.test(birth_date)) {
+            
             if (!isValidDate(birth_date)) {
                 isValid = false
                 msg += "<li>Please enter a valid birth date</li>"
@@ -186,4 +190,36 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
         event.preventDefault(); // Prevent form submission
         show_toast('danger', 'error', msg)
     }
+    /*
+    const formData = $(this).serialize();
+    console.log(formData);
+    event.preventDefault();
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/pedigree/update",
+        type: 'POST',
+        data: formData,
+        encode: true,
+        dataType: 'json',
+        success: function(data) {
+            if (data.error === false) {
+                // Handle success - you can display a success message or process the data
+                alert('Form submitted successfully');
+            } else {
+                // Handle the error - display an error message or take appropriate action
+                alert("Error: " + data.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            // Handle any errors from the request
+            alert("AJAX error: " + error);
+        }
+    });
+    */
+
 });

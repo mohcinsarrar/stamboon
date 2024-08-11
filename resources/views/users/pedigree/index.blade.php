@@ -16,7 +16,9 @@
 @section('page-style')
 
     <link rel="stylesheet" href="{{ asset('admin/pedigree/css/graph.css') }}?{{ time() }}">
-
+    <link rel="stylesheet" href="{{ asset('admin/pedigree/css/template1.css') }}?{{ time() }}">
+    <link rel="stylesheet" href="{{ asset('admin/pedigree/css/template2.css') }}?{{ time() }}">
+    <link rel="stylesheet" href="{{ asset('admin/pedigree/css/template3.css') }}?{{ time() }}">
 @endsection
 
 

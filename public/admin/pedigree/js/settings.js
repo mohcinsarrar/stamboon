@@ -1,6 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 
+  document.querySelectorAll('.customimagescheckbox').forEach((checkbox) => {
+    checkbox.addEventListener('click', function(event) {
+      // If the checkbox is already checked, prevent it from being unchecked
+      if (this.checked) {
+        document.querySelectorAll('.customimagescheckbox').forEach((cb) => {
+          if (cb !== this) {
+            cb.checked = false;
+          }
+        });
+      } else {
+        // If trying to uncheck the only checked checkbox, prevent it
+        event.preventDefault();
+      }
+    });
+  });
 
 
   $.ajaxSetup({
@@ -34,7 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   function init_settings(settings) {
-
+    
+    
     const colorSpouse = document.querySelector('#color-picker-spouse');
     const colorBioChild = document.querySelector('#color-picker-bio-child');
     const colorAdopChild = document.querySelector('#color-picker-adop-child');
@@ -45,6 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const colorMaleText = document.querySelector('#color-picker-text-male');
     const colorFemaleText = document.querySelector('#color-picker-text-female');
 
+    // init node-template
+    const checkbox = document.querySelector(`.customimagescheckbox[value="${settings.node_template}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+    }
     // classic
     if (colorSpouse) {
       var colorSpousepickr = pickr.create({

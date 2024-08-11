@@ -9,6 +9,7 @@ use App\Http\Resources\NodeResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File as StorageFile;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -57,8 +58,7 @@ class PedigreeController extends Controller
 
      
 
-    private function dateStr($date)
-    {
+    private function dateStr($date){
         $records = explode('-', $date);
         if(sizeof($records) == 1){
             $year = $records[0];
@@ -241,6 +241,7 @@ class PedigreeController extends Controller
 
     public function settings(Request $request){
         
+        
         // load settings
         if($request->isMethod('get')){
             $settings = Setting::where('user_id',Auth::user()->id)->first();
@@ -249,14 +250,21 @@ class PedigreeController extends Controller
 
         // update settings
         if($request->isMethod('post')){
-            $inputs = $request->except(['_token']);
 
+            $inputs = $request->except(['_token']);
+            
             Validator::make($inputs, [
                 'spouse_link_color' => ['required',new HexColor],
                 'bio_child_link_color' => ['required',new HexColor],
                 'adop_child_link_color' => ['required',new HexColor],
+                'male_color' => ['required',new HexColor],
+                'male_text_color' => ['required',new HexColor],
+                'female_color' => ['required',new HexColor],
+                'female_text_color' => ['required',new HexColor],
+                'node_template' => ['required',Rule::in(['1', '2', '3', '4'])]
             ])->validate();
 
+            
             Setting::where('user_id',Auth::user()->id)->update($inputs);
 
             return redirect()->back()->with('success','settings updated with success');
@@ -325,7 +333,6 @@ class PedigreeController extends Controller
 
     // update person
     public function update(Request $request){
-        
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
 
@@ -406,8 +413,14 @@ class PedigreeController extends Controller
 
         // generate new Family id
         $families = array_keys($gedcom->getFam());
-        $maxFamId = max(array_map([$this, 'extractNumber'], $families));
-        $newFamId = 'F' . ($maxFamId + 1);
+        if($families != []){
+            $maxFamId = max(array_map([$this, 'extractNumber'], $families));
+            $newFamId = 'F' . ($maxFamId + 1);
+        }
+        else{
+            $newFamId = 'F1';
+        }
+        
 
         // add FAMS to spouse and person
         $fams = new IndiFams();
@@ -625,8 +638,14 @@ class PedigreeController extends Controller
 
         // generate id for new indi,
         $indis = array_keys($gedcom->getIndi());
-        $maxIndiId = max(array_map([$this, 'extractNumber'], $indis));
-        $newIndiId = 'I' . ($maxIndiId + 1);
+        if($indis != []){
+            $maxIndiId = max(array_map([$this, 'extractNumber'], $indis));
+            $newIndiId = 'I' . ($maxIndiId + 1);
+        }
+        else{
+            $newIndiId = 'I1';
+        }
+        
         // add id
         $person->setId($newIndiId);
 

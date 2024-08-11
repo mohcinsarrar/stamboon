@@ -67,13 +67,7 @@ function renderChart() {
             const personData = d.data;
 
             let extraCss = '';
-            if (personData.primarySpouseId !== undefined) {
-                if (personData.gender === 'M') {
-                    extraCss = 'female-spouse';
-                } else {
-                    extraCss = 'male-spouse';
-                }
-            }
+            extraCss = `template-${treeConfiguration.nodeTemplate}`
 
             let nodeHtml = `<div class="row mx-0 ${extraCss}">`;
             if (personData.primarySpouseId !== undefined) {
@@ -176,6 +170,8 @@ function renderChart() {
 
     chart.render().fit();
 
+    
+
     // change connections order (lower)
     const chartElement = document.querySelector('.center-group');
     const thirdGroup = document.querySelector('.connections-wrapper');
@@ -190,7 +186,9 @@ function renderChart() {
     });
 
     $(document).on("click", "#zoomIn", function () {
+        
         chart.zoomIn()
+        console.log(chart.getChartState());
     });
 
     $(document).on("click", "#zoomOut", function () {
@@ -235,6 +233,8 @@ function renderChart() {
     });
 
 }
+
+
 
 // generate NodeContent
 function getPersonNodeContent(personData, personType) {
@@ -296,8 +296,8 @@ function getPersonNodeContent(personData, personType) {
         drillToHide = ''; // hide drill to icon
     }
 
-
-    nodeContent += `
+    if(treeConfiguration.nodeTemplate == "1"){
+        nodeContent += `
           <div class="col px-0 person-member person-${person.personId} ">
             
             <div class="card rounded-0 w-100 overflow-hidden" style="${personCssClass}" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}">
@@ -308,19 +308,63 @@ function getPersonNodeContent(personData, personType) {
                 </div>
                 <div class="col-8 p-1 d-flex align-items-center" style="max-height:70px;">
                     <div class="card-body p-1 ms-1" style="${textColor}">
-                    <p class="card-title mb-1 ellipsis">${person.personName}</p>
+                    <p class="card-title mb-1 ellipsis fw-bold">${person.personName}</p>
                     <p class="card-text"><small class="">${getFullDate(person.birth, person.death)}</small></p>
                     </div>
                 </div>
                 </div>
             </div>
           </div>`;
+    }
+
+    if(treeConfiguration.nodeTemplate == "2"){
+        nodeContent += `
+        <div class="col px-0 person-member person-${person.personId} ">
+            <div class="card p-2 py-3 text-center w-100 overflow-hidden" style="${personCssClass}" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}">
+                ${is_death(person.status)}
+                <div class="mb-3"> <img src="${personIcon}" alt="${person.personName}" class="rounded-circle"> </div>
+                <div style="${textColor}">
+                    <p class="mb-2 fw-bold">${truncateText(person.personName,20)}</p> 
+                    <small>${getFullDate(person.birth, person.death)}</small>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    if(treeConfiguration.nodeTemplate == "3"){
+        
+        nodeContent += `
+        <div class="col px-0 person-member person-${person.personId} ">
+            <div class="card p-2 bg-white d-flex align-items-center justify-content-center" style="${personCssClass}" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}">
+            
+                <div class="w-100">
+                <img src="${personIcon}" alt="${person.personName}" class="rounded-circle">
+                </div>
+                <div class="text-center info" style="${textColor}">
+                    <p class="name mb-2">${truncateText(person.personName,15)}</p>
+                    <p class="job mb-0">${getFullDate(person.birth, person.death)}</p>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    
     return nodeContent;
     //}
 }
 
+
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) {
+        return text;
+    }
+    return text.substring(0, maxLength) + '...';
+}
+
 function is_death(status) {
     if (status == "Deceased") {
+
         return `<div class="diagonal-text"><span></span></div>`;
     }
     else {

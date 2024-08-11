@@ -1,89 +1,96 @@
 <!DOCTYPE html>
 
-<html lang="{{ session()->get('locale') ?? app()->getLocale() }}" class="{{ $configData['style'] }}-style {{ $navbarFixed ?? '' }} {{ $menuFixed ?? '' }} {{ $menuCollapsed ?? '' }} {{ $footerFixed ?? '' }} {{ $customizerHidden ?? '' }}" dir="{{ $configData['textDirection'] }}" data-theme="{{ $configData['theme'] }}" data-assets-path="{{ asset('/assets') . '/' }}" data-base-url="{{url('/')}}" data-framework="laravel" data-template="{{ $configData['layout'] . '-menu-' . $configData['theme'] . '-' . $configData['style'] }}">
+<html lang="{{ session()->get('locale') ?? app()->getLocale() }}"
+    class="{{ $configData['style'] }}-style {{ $navbarFixed ?? '' }} {{ $menuFixed ?? '' }} {{ $menuCollapsed ?? '' }} {{ $footerFixed ?? '' }} {{ $customizerHidden ?? '' }}"
+    dir="{{ $configData['textDirection'] }}" data-theme="{{ $configData['theme'] }}"
+    data-assets-path="{{ asset('/assets') . '/' }}" data-base-url="{{ url('/') }}" data-framework="laravel"
+    data-template="{{ $configData['layout'] . '-menu-' . $configData['theme'] . '-' . $configData['style'] }}">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  <title>@yield('title') |
-    {{ config('variables.templateName') ? config('variables.templateName') : 'TemplateName' }} -
-    {{ config('variables.templateSuffix') ? config('variables.templateSuffix') : 'TemplateSuffix' }}
-  </title>
-  <meta name="description" content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
-  <meta name="keywords" content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}">
-  <!-- laravel CRUD token -->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <!-- Canonical SEO -->
-  <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+    <title>@yield('title') |
+        {{ config('variables.templateName') ? config('variables.templateName') : 'TemplateName' }} -
+        {{ config('variables.templateSuffix') ? config('variables.templateSuffix') : 'TemplateSuffix' }}
+    </title>
+    <meta name="description"
+        content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
+    <meta name="keywords"
+        content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}">
+    <!-- laravel CRUD token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
 
-  <!-- toastr -->
-  <link rel="stylesheet" href="{{asset('assets/vendor/libs/toastr/toastr.css')}}" />
-  <link rel="stylesheet" href="{{asset('assets/vendor/libs/animate-css/animate.css')}}" />
+    <!-- toastr -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
 
-  <!-- Include Styles -->
-  @include('layouts/sections/styles')
+    <!-- Include Styles -->
+    @include('layouts/sections/styles')
 
-  <!-- Include Scripts for customizer, helper, analytics, config -->
-  @include('layouts/sections/scriptsIncludes')
+    <!-- Include Scripts for customizer, helper, analytics, config -->
+    @include('layouts/sections/scriptsIncludes')
 </head>
 
 <body>
 
-  <!-- Include flash messages to show errors, infos ... -->
-  @include('_partials.flash-message')
-  
+    <!-- Include flash messages to show errors, infos ... -->
+    @include('_partials.flash-message')
 
-  <!-- Layout Content -->
-  @yield('layoutContent')
-  <!--/ Layout Content -->
- <!-- Toast with Animation -->
- <div class="bs-toast toast toast-ex animate__animated my-2" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="toast-header text-white">
-    <div class="icon text-white"><i class="ti ti-bell ti-xs me-2"></i></div>
-    <div class="me-auto fw-semibold title">Bootstrap</div>
-    <small class="text-muted datetime"></small>
-    <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
-  <div class="toast-body">
-    Hello, world! This is a toast message.
-  </div>
-</div>
-  
 
-  <!-- Include Scripts -->
-  @include('layouts/sections/scripts')
+    <!-- Layout Content -->
+    @yield('layoutContent')
+    <!--/ Layout Content -->
+    <!-- Toast with Animation -->
+    <div class="bs-toast toast toast-ex animate__animated my-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="toast-header text-white">
+            <div class="icon text-white"><i class="ti ti-bell ti-xs me-2"></i></div>
+            <div class="me-auto fw-semibold title">Bootstrap</div>
+            <small class="text-muted datetime"></small>
+            <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Hello, world! This is a toast message.
+        </div>
+    </div>
 
-  <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
-  <script>
-    function show_toast(type,title,msg){
-        const toastAnimationExample = document.querySelector('.toast-ex')
-        toastAnimationExample.classList.add("animate__tada");
-        toastAnimationExample.querySelector('.toast-header').classList = ['toast-header text-white'];
-        toastAnimationExample.querySelector('.toast-header').classList.add("bg-"+type);
-        toastAnimationExample.querySelector('.title').innerHTML = title;
-        toastAnimationExample.querySelector('.toast-body').innerHTML = msg;
 
-        toastAnimation = new bootstrap.Toast(toastAnimationExample);
-        toastAnimation.show();
-    }
-</script>
-  <script>
-    var toastElList = [].slice.call(document.querySelectorAll('.toast-flash-message '))
-    var toastList = toastElList.map(function (toastEl) {
-      const toast = new bootstrap.Toast(toastEl)
-      toast.show()
+    <!-- Include Scripts -->
+    @include('layouts/sections/scripts')
 
-    })
+    <script src="{{ asset('assets/js/ui-toasts.js') }}"></script>
+    <script>
+        function show_toast(type, title, msg, delay = "5000") {
+            const toastAnimationExample = document.querySelector('.toast-ex')
+            toastAnimationExample.setAttribute("data-bs-delay", delay);
+            toastAnimationExample.classList.add("animate__tada");
+            toastAnimationExample.querySelector('.toast-header').classList = ['toast-header text-white'];
+            toastAnimationExample.querySelector('.toast-header').classList.add("bg-" + type);
+            toastAnimationExample.querySelector('.title').innerHTML = title;
+            toastAnimationExample.querySelector('.toast-body').innerHTML = msg;
 
-  </script>
-  <script>
-    $(function () {
-      $('[data-toggle="tooltip"]').tooltip()
-    })
-  </script>
+            toastAnimation = new bootstrap.Toast(toastAnimationExample);
+            toastAnimation.show();
+        }
+    </script>
+    <script>
+        var toastElList = [].slice.call(document.querySelectorAll('.toast-flash-message '))
+        var toastList = toastElList.map(function(toastEl) {
+            const toast = new bootstrap.Toast(toastEl)
+            toast.show()
+
+        })
+    </script>
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 
 </body>
 

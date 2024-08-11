@@ -4,8 +4,8 @@ new Cleave('.death_date_add_spouse', {
     numericOnly: true,
     onValueChanged: function(e) {
         let value = e.target.value;
-        if (value.length === 4) {
-            e.target.setRawValue(value); // remove delimiters if only the year is entered
+        if (value.length === 5) {
+            $('.death_date_add_spouse').val(value.replace('-',''))
         }
     }
 });
@@ -15,8 +15,8 @@ new Cleave('.birth_date_add_spouse', {
     numericOnly: true,
     onValueChanged: function(e) {
         let value = e.target.value;
-        if (value.length === 4) {
-            e.target.setRawValue(value); // remove delimiters if only the year is entered
+        if (value.length === 5) {
+            $('.birth_date_add_spouse').val(value.replace('-',''))
         }
     }
 });
@@ -42,12 +42,14 @@ function add_spouse() {
             formAddSpouse.querySelector('.death-container').classList.remove("d-none");
         }
         else {
+            formAddSpouse.querySelector('.death_date').value = "";
             formAddSpouse.querySelector('.death-container').classList.add("d-none");
         }
     });
 
     formAddSpouse.querySelector('.living').addEventListener('change', (event) => {
         if (event.target.checked) {
+            formAddSpouse.querySelector('.death_date').value = "";
             formAddSpouse.querySelector('.death-container').classList.add("d-none");
         }
         else {
