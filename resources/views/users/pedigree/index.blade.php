@@ -11,14 +11,14 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/pickr/pickr-themes.css') }}" />
 
+
 @endsection
 
 @section('page-style')
 
     <link rel="stylesheet" href="{{ asset('admin/pedigree/css/graph.css') }}?{{ time() }}">
-    <link rel="stylesheet" href="{{ asset('admin/pedigree/css/template1.css') }}?{{ time() }}">
-    <link rel="stylesheet" href="{{ asset('admin/pedigree/css/template2.css') }}?{{ time() }}">
-    <link rel="stylesheet" href="{{ asset('admin/pedigree/css/template3.css') }}?{{ time() }}">
+
+
 @endsection
 
 
@@ -30,11 +30,13 @@
     <script src="{{ asset('assets/vendor/libs/pickr/pickr.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         $(document).ready(function() {
-            
-            
-            
+
+
+
         });
     </script>
     <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
@@ -72,6 +74,8 @@
     <script src="{{ asset('admin/pedigree/js/settings.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/draw_graph.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/load_gedcom.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/pedigree/js/export.js') }}?{{ time() }}"></script>
+
     <script>
         draw_tree()
     </script>
@@ -92,6 +96,8 @@
     @include('users.pedigree.edit_person')
 
     @include('users.pedigree.settings')
+
+    @include('users.pedigree.export')
 
     @include('users.pedigree.edit_image')
 
@@ -124,17 +130,24 @@
     </div>
 
     <!-- min graph -->
-    <div class="card blocking-card">
+    <div class="row mb-4 mx-0" id="spinner" style="display: none;">
+        <div class="progress col px-0" style="height: 16px;">
+            <div class="progress-bar" id="progress-percentage" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                aria-valuemax="100">0%</div>
+        </div>
+    </div>
+    <div class="card" id="main_graph">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
-                <button data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddPerson" type="button" class="btn btn-primary waves-effect waves-light">
+                <button data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddPerson" type="button"
+                    class="btn btn-primary waves-effect waves-light">
                     <span class="ti-xs ti ti-plus me-1"></span>
                     Add person
                 </button>
             </div>
         </div>
         <div class="card-body position-relative tools" style="min-height: 600px;">
-            
+
             <div class="border position-absolute p-2 bg-gray rounded">
                 <div class="row  mb-2 justify-content-center">
                     <button data-bs-toggle="modal" data-bs-target="#uploadFile" type="button"
@@ -146,6 +159,16 @@
                         class="btn text-white border-0 p-2 col-auto rounded-circle" download=""><i
                             class="ti ti-download fs-4"></i></a>
                 </div>
+                <div class="row  mb-2 justify-content-center">
+                    <button id="export" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-printer fs-4"></i></button>
+                </div>
+                <div class="row  mb-2 justify-content-center">
+                    <button data-bs-toggle="modal" data-bs-target="#settings" type="button"
+                        class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-settings fs-4"></i></button>
+                </div>
+                <hr class="border-1 text-white my-2 ">
                 <div class="row  mb-2 justify-content-center">
                     <div class="btn-group dropend col-auto">
                         <button type="button" class="btn text-white border-0 p-2  rounded-circle" data-bs-toggle="dropdown"
@@ -161,12 +184,6 @@
                     </div>
                 </div>
                 <div class="row  mb-2 justify-content-center">
-                    <button data-bs-toggle="modal" data-bs-target="#settings" type="button"
-                        class="btn text-white border-0 p-2 col-auto rounded-circle"><i
-                            class="ti ti-settings fs-4"></i></button>
-                </div>
-                <hr class="border-1 text-white my-2 ">
-                <div class="row  mb-2 justify-content-center">
                     <button id="fit" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-arrows-minimize fs-4"></i></button>
                 </div>
@@ -179,7 +196,7 @@
                             class="ti ti-zoom-out fs-4"></i></button>
                 </div>
             </div>
-            <div id="graph"></div>
+            <div id="graph" class="h-100"></div>
         </div>
     </div>
 

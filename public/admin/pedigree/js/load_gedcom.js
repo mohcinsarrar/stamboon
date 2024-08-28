@@ -48,17 +48,28 @@ function draw_tree() {
                     if(data.settings.node_template == '3'){
                         node_height = 140
                     }
+                    if(data.settings.node_template == '4'){
+                        node_height = 130
+                    }
 
                     var children_margin = 60;
                     if(data.settings.node_template == '3'){
                         children_margin = 150
                     }
+                    if(data.settings.node_template == '4'){
+                        children_margin = 150
+                    }
 
+                    var connection_stroke_width = 2
+                    if(data.settings.node_template == '4'){
+                        connection_stroke_width = 5
+                    }
 
                     treeConfiguration = {
                         chartContainer: '#graph', // root svg
                         // tempale
                         nodeTemplate : data.settings.node_template,
+                        bgTemplate : data.settings.bg_template,
                         // height & width
                         nodeWidth: 190,
                         nodeWidthSpouse: 400,
@@ -83,7 +94,7 @@ function draw_tree() {
                         linkStrokeAdopted: data.settings.adop_child_link_color,
                         linkStrokeWidth: 2,
                         connectionStroke: data.settings.spouse_link_color,
-                        connectionStrokeWidth: 2,
+                        connectionStrokeWidth: connection_stroke_width,
 
                         // expand collapse button
                         nodeButtonWidth: '',
@@ -92,12 +103,18 @@ function draw_tree() {
                         nodeButtonY: -10,
 
                         // node colors
+                        boxColor: data.settings.box_color,
                         maleColor: data.settings.male_color,
                         femaleColor: data.settings.female_color,
+                        bloodColor: data.settings.blood_color,
+                        notbloodColor: data.settings.notblood_color,
 
                         // text color
+                        textColor: data.settings.text_color,
                         maleTextColor: data.settings.male_text_color,
-                        femaleTextColor: data.settings.female_text_color
+                        femaleTextColor: data.settings.female_text_color,
+                        bloodTextColor: data.settings.blood_text_color,
+                        notbloodTextColor: data.settings.notblood_text_color
                     }
                     // after loading settings draw chart with treeData and treeConfiguration
                     renderChart();

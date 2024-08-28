@@ -190,7 +190,7 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
         event.preventDefault(); // Prevent form submission
         show_toast('danger', 'error', msg)
     }
-    /*
+    
     const formData = $(this).serialize();
     console.log(formData);
     event.preventDefault();
@@ -207,19 +207,20 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
         encode: true,
         dataType: 'json',
         success: function(data) {
-            if (data.error === false) {
+            if (data.error == false) {
                 // Handle success - you can display a success message or process the data
-                alert('Form submitted successfully');
+                show_toast('success', 'success', msg)
+                draw_tree();
             } else {
                 // Handle the error - display an error message or take appropriate action
-                alert("Error: " + data.message);
+                show_toast('danger', 'error', msg)
             }
         },
         error: function(xhr, status, error) {
             // Handle any errors from the request
-            alert("AJAX error: " + error);
+            show_toast('danger', 'error', error)
         }
     });
-    */
+    
 
 });

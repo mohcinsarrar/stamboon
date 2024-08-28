@@ -1,5 +1,6 @@
 // render chart //
 function renderChart() {
+
     d3.select(treeConfiguration.chartContainer).selectAll("*").remove();
     var data = familyData;
     chart = new d3.OrgChart()
@@ -69,7 +70,15 @@ function renderChart() {
             let extraCss = '';
             extraCss = `template-${treeConfiguration.nodeTemplate}`
 
-            let nodeHtml = `<div class="row mx-0 ${extraCss}">`;
+            let nodeHtml = `<div class="${extraCss}" 
+            style="
+                display: flex;
+                flex-wrap: wrap;
+                margin-top: 0;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                box-sizing: border-box;
+            ">`;
             if (personData.primarySpouseId !== undefined) {
                 // additional spouses
                 nodeHtml += getPersonNodeContent(personData, 'spouse', treeConfiguration);
@@ -130,9 +139,9 @@ function renderChart() {
             allNodes.forEach((node) => {
                 if (node.x === d.x && node.y === d.y) {
                     if (node.data.gender === 'M') {
-                        x = d.x - d.width / 2 - 1;
+                        x = d.x - d.width / 2;
                     } else {
-                        x = d.x + d.width / 2 + 1;
+                        x = d.x + d.width / 2;
                     }
                 }
             });
@@ -171,6 +180,10 @@ function renderChart() {
     chart.render().fit();
 
     
+    // set background from settings
+    set_background()
+
+    
 
     // change connections order (lower)
     const chartElement = document.querySelector('.center-group');
@@ -186,9 +199,7 @@ function renderChart() {
     });
 
     $(document).on("click", "#zoomIn", function () {
-        
         chart.zoomIn()
-        console.log(chart.getChartState());
     });
 
     $(document).on("click", "#zoomOut", function () {
@@ -238,6 +249,10 @@ function renderChart() {
 
 // generate NodeContent
 function getPersonNodeContent(personData, personType) {
+    // apply background from settings
+    /*
+    
+    */
     // get the layout type to change nodeContent depending on layout type
     //console.log(chart.layout())
     const person = {};
@@ -265,29 +280,148 @@ function getPersonNodeContent(personData, personType) {
     }
 
     let personCssClass, personIcon, textColor;
-    let photoClass = '';
-    if (person.gender === 'M') {
-        personCssClass = `background-color: ${treeConfiguration.maleColor} !important;`;
-        textColor = `color: ${treeConfiguration.maleTextColor} !important;`;
-        personIcon = maleIcon;
-    } else {
-        personCssClass = `background-color: ${treeConfiguration.femaleColor} !important; `;
-        textColor = `color: ${treeConfiguration.femaleTextColor} !important;`;
-        personIcon = femaleIcon;
-    }
 
+    // init portrait
     if (person.photo !== undefined && person.photo !== null) {
         personIcon = "/storage/portraits/" + person.photo;
-        photoClass = 'profile-photo';
+    }
+    else{
+        if (person.gender === 'M') {
+            personIcon = maleIcon;
+        } else {
+            personIcon = femaleIcon;
+        }
     }
 
+    // init box color
+    /// if color box type is gender
+    if(treeConfiguration.boxColor == "gender"){
+        if (person.gender === 'M') {
+            personCssClass = `background-color: ${treeConfiguration.maleColor} !important;`;
+        } else {
+            personCssClass = `background-color: ${treeConfiguration.femaleColor} !important; `;
+        }
+    }
+    /// if color box type is blood relative
+    else{
+        if (personType === 'spouse') {
+            personCssClass = `background-color: ${treeConfiguration.notbloodColor} !important;`;
+        } else {
+            if(personData.adopted == true){
+                personCssClass = `background-color: ${treeConfiguration.notbloodColor} !important;`;
+            }
+            else{
+                personCssClass = `background-color: ${treeConfiguration.bloodColor} !important;`;
+            }
+        }
+    }
+
+    // init box color
+    /// if color box type is gender
+    
+    if(treeConfiguration.textColor == "gender"){
+        if (person.gender === 'M') {
+            textColor = `color: ${treeConfiguration.maleTextColor} !important;`;
+        } else {
+            textColor = `color: ${treeConfiguration.femaleTextColor} !important;`;
+        }
+    }
+    /// if color box type is blood relative
+    else{
+        if (personType === 'spouse') {
+            textColor = `color: ${treeConfiguration.notbloodTextColor} !important;`;
+        } else {
+            if(personData.adopted == true){
+                textColor = `color: ${treeConfiguration.notbloodTextColor} !important;`;
+            }
+            else{
+                textColor = `color: ${treeConfiguration.bloodTextColor} !important;`;
+            }
+        }
+    }
+    
+
+    
+    // add line between person and spouse if exist according to the template
     let nodeContent = '';
     if (
         personData.spouseId !== undefined &&
         personType === 'spouse' &&
         personData.primarySpouseId === undefined
     ) {
-        nodeContent += `<div class="line" style="border-color :${treeConfiguration.connectionStroke}"><hr/></div>`;
+        if(treeConfiguration.nodeTemplate == "1"){
+            nodeContent += `
+                            <div class="" 
+                            style="
+                                box-sizing: border-box;
+                                border-color :${treeConfiguration.connectionStroke};
+                                margin-top: 34px;
+                                width: 0px;
+                                border-style: solid;
+                                border-width: 2px 0 0;
+                                cursor: auto;
+                            ">
+                                <hr 
+                                style="
+                                    box-sizing: border-box;
+                                    border-style: solid;
+                                    border-width: 5px 0 0;
+                                "/>
+                            </div>`;
+        }
+        if(treeConfiguration.nodeTemplate == "2"){
+            nodeContent += `
+                            <div class="" 
+                            style="
+                                box-sizing: border-box;
+                                border-color :${treeConfiguration.connectionStroke};
+                                margin-top: 89px;
+                                width: 0px;
+                                border-style: solid;
+                                border-width: 2px 0 0;
+                                cursor: auto;
+                            ">
+                                <hr 
+                                />
+                            </div>`;
+        }
+        if(treeConfiguration.nodeTemplate == "3"){
+            nodeContent += `
+                            <div class="" 
+                            style="
+                                box-sizing: border-box;
+                                border-color :${treeConfiguration.connectionStroke};
+                                margin-top: 69px;
+                                width: 2px;
+                                border-style: solid;
+                                border-width: 2px 0 0;
+                                cursor: auto;
+                            ">
+                                <hr 
+                                />
+                            </div>`;
+        }
+        if(treeConfiguration.nodeTemplate == "4"){
+            nodeContent += `
+                            <div class="" 
+                            style="
+                                box-sizing: border-box;
+                                border-color :${treeConfiguration.connectionStroke};
+                                margin-top: 64px;
+                                width: 0px;
+                                border-style: solid;
+                                border-width: 2px 0 0;
+                                cursor: auto;
+                                padding: 0;
+                            ">
+                                <hr 
+                                />
+                            </div>`;
+        }
+        else{
+            nodeContent += `<div class="line" style="border-color :${treeConfiguration.connectionStroke}"><hr/></div>`;
+        }
+        
     }
 
 
@@ -298,18 +432,129 @@ function getPersonNodeContent(personData, personType) {
 
     if(treeConfiguration.nodeTemplate == "1"){
         nodeContent += `
-          <div class="col px-0 person-member person-${person.personId} ">
+          <div class="person-${person.personId}" 
+          style="
+            /* col */
+            flex: 1 0 0%;
+            /* px-0 */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            /* style */
+            display: flex;
+            flex-wrap: wrap;
+            height: 70px;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+          "
+          >
             
-            <div class="card rounded-0 w-100 overflow-hidden" style="${personCssClass}" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}">
-                ${is_death(person.status)}
-                <div class="row g-0 mx-0 overflow-hidden h-100">
-                <div class="col-4" style="max-height:70px;">
-                    <img class="card-img card-img-left rounded-0 h-100" src="${personIcon}" alt="${person.personName}" style="object-fit: cover;">
+            <div class="" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
+            style="
+                ${personCssClass};
+                box-sizing: border-box;
+                /* card */
+                word-wrap: break-word;
+                border: 0 solid #dbdade;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                position: relative;
+                /* rounded-0 */
+                border-radius: 0 !important;
+                /* w-100 */
+                width: 100% !important;
+                /* overflow-hidden */
+                overflow: hidden !important;
+                /* style */
+                height: 70px !important;
+                position: relative;
+            "
+            >
+                <div class="" 
+                style="
+                    box-sizing: border-box;
+                    /*row*/
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-top: 0;
+                    /* mx-0 */
+                    margin-left: 0 !important;
+                    margin-right: 0 !important;
+                    /* overflow-hidden */
+                    overflow: hidden !important;
+                    /* h-100 */
+                    height: 100% !important;
+                ">
+                <div class="" 
+                    style="
+                        box-sizing: border-box;
+                        max-height:70px;
+                        /* col-4 */
+                        width: 33.33333333%;
+                    ">
+                    <img class="" src="${personIcon}" alt="${person.personName}" 
+                    style="
+                        vertical-align: middle;
+                        box-sizing: border-box;
+                        object-fit: cover;
+                        /* card-img */
+                        width: 100%;
+                        /* rounded-0 */
+                        border-radius: 0 !important;
+                        /* h-100 */
+                        height: 100% !important;
+                    ">
                 </div>
-                <div class="col-8 p-1 d-flex align-items-center" style="max-height:70px;">
-                    <div class="card-body p-1 ms-1" style="${textColor}">
-                    <p class="card-title mb-1 ellipsis fw-bold">${person.personName}</p>
-                    <p class="card-text"><small class="">${getFullDate(person.birth, person.death)}</small></p>
+                <div class="" 
+                style="
+                    box-sizing: border-box;
+                    max-height:70px;
+                    /* col-8 */
+                    width: 66.66666667%;
+                    /* p-1 */
+                    padding: .25rem !important;
+                    /* d-flex */
+                    display: flex !important;
+                    /* align-items-center */
+                    align-items: center !important;
+                ">
+                    <div class="" 
+                    style="
+                        box-sizing: border-box;
+                        ${textColor};
+                        /* card-body */
+                        flex: 1 1 auto;
+                        /* p-1 */
+                        padding: .25rem !important;
+                        /* ms-1 */
+                        margin-left: .25rem !important;
+                    ">
+                    <p class="" 
+                    style="
+                        box-sizing: border-box;
+                        margin-top: 0;
+                        /* mb-1 */
+                        margin-bottom: .25rem !important;
+                        /* fw-bold */
+                        font-weight: 700 !important;
+                        /* style */
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    ">${person.personName}</p>
+                    <p class="" 
+                    style="
+                        box-sizing: border-box;
+                        margin-bottom: 0;
+                        margin-top: 0;
+                    "><small class="" 
+                    style="
+                        font-size: .8125rem;
+                    ">
+                    ${getFullDate(person.birth, person.death)}</small></p>
                     </div>
                 </div>
                 </div>
@@ -319,31 +564,288 @@ function getPersonNodeContent(personData, personType) {
 
     if(treeConfiguration.nodeTemplate == "2"){
         nodeContent += `
-        <div class="col px-0 person-member person-${person.personId} ">
-            <div class="card p-2 py-3 text-center w-100 overflow-hidden" style="${personCssClass}" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}">
-                ${is_death(person.status)}
-                <div class="mb-3"> <img src="${personIcon}" alt="${person.personName}" class="rounded-circle"> </div>
-                <div style="${textColor}">
-                    <p class="mb-2 fw-bold">${truncateText(person.personName,20)}</p> 
-                    <small>${getFullDate(person.birth, person.death)}</small>
+        <div class="person-${person.personId}" 
+        style="
+            /* col */
+            flex: 1 0 0%;
+            /* px-0 */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            /* style */
+            display: flex;
+            flex-wrap: wrap;
+            height: 180px;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        ">
+            <div class="" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
+            style="
+                ${personCssClass};
+                box-sizing: border-box;
+                /* card */
+                background-clip: padding-box;
+                box-shadow: 0 .25rem 1.125rem rgba(75,70,92,.1);
+                word-wrap: break-word;
+                border: 0 solid #dbdade;
+                border-radius: 0.375rem;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                /* rounded-0 */
+                border-radius: 0 !important;
+                /* w-100 */
+                width: 100% !important;
+                /* overflow-hidden */
+                overflow: hidden !important;
+                /* py-3 */
+                padding-bottom: 1rem !important;
+                padding-top: 1rem !important;
+                /* px-2 */
+                padding-left: .5rem !important;
+                padding-right: .5rem !important;
+                /* text-center*/
+                text-align: center !important;
+                /* style */
+                height: 180px !important;
+                position: relative;
+            "
+            >
+                <div class="" style="margin-bottom: 1rem !important; box-sizing: border-box;"> 
+                <img src="${personIcon}" alt="${person.personName}" class="" 
+                style="
+                    box-sizing: border-box;
+                    /* style */
+                    height: 100px;
+                    width: 100px;
+                    object-fit: cover;
+                    vertical-align: middle;
+                    /* rounded-circle */
+                    border-radius: 50% !important;
+                "
+                > 
+                </div>
+                <div style="${textColor}; box-sizing: border-box;">
+                    <p class=""
+                    style="
+                        /* fw-bold */
+                        font-weight: 700 !important;
+                        /* mb-2 */
+                        margin-bottom: .5rem !important;
+                        margin-top: 0;
+                        box-sizing: border-box;
+                    "
+                    >${truncateText(person.personName,20)}
+                    </p> 
+                    <small style="font-size: .8125rem;">${getFullDate(person.birth, person.death)}</small>
                 </div>
             </div>
         </div>
         `;
     }
-
+    
     if(treeConfiguration.nodeTemplate == "3"){
         
         nodeContent += `
-        <div class="col px-0 person-member person-${person.personId} ">
-            <div class="card p-2 bg-white d-flex align-items-center justify-content-center" style="${personCssClass}" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}">
+        <div class="person-${person.personId}" 
+        style="
+            /* col */
+            flex: 1 0 0%;
+            /* px-0 */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            /* style */
+            display: flex;
+            flex-wrap: wrap;
+            height: 140px;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        "
+        >
+            <div class="" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
+            style="
+            ${personCssClass};
+            /* style */
+            height: 140px !important;
+            position: relative;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+            /* p-2 */
+            padding: .5rem !important;
+            /* align-item-center */
+            align-items: center !important;
+            justify-content: center !important;
+            display: flex !important;
+            /* card */
+            background-clip: padding-box;
+            box-shadow: 0 .25rem 1.125rem rgba(75,70,92,.1);
+            word-wrap: break-word;
+            flex-direction: column;
+            min-width: 0;
+            box-sizing: border-box;
+            "
+            >
             
-                <div class="w-100">
-                <img src="${personIcon}" alt="${person.personName}" class="rounded-circle">
+                <div style="width: 100% !important; box-sizing: border-box;">
+                <img src="${personIcon}" alt="${person.personName}" class="" 
+                style="
+                    /* style */
+                    height: 100px;
+                    width: 100px;
+                    object-fit: cover;
+                    border: 4px solid #eee;
+                    position: absolute;
+                    left: 50%;
+                    top: 0;
+                    transform: translate(-50%, -50%);
+                    /* rounded-circle */
+                    border-radius: 50% !important;
+                    box-sizing: border-box;
+                "
+                >
                 </div>
-                <div class="text-center info" style="${textColor}">
-                    <p class="name mb-2">${truncateText(person.personName,15)}</p>
-                    <p class="job mb-0">${getFullDate(person.birth, person.death)}</p>
+                <div class="" 
+                style="
+                    ${textColor};
+                    /* text-center */
+                    text-align: center !important;
+                    /* style */
+                    font-size: 20px;
+                    margin-top: 55px;
+                    box-sizing: border-box;
+                "
+                >
+                    <p style="margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
+                    ${truncateText(person.personName,15)}
+                    </p>
+                    <p 
+                    style="
+                        font-size: 12px;
+                        font-weight: 700;
+                        margin-bottom: 0 !important;
+                        margin-top: 0;
+                        box-sizing: border-box;
+                    "
+                    >${getFullDate(person.birth, person.death)}</p>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    
+    if(treeConfiguration.nodeTemplate == "4"){
+        
+        nodeContent += `
+        <div class="person-member person-${person.personId}" 
+        style="
+            /* col */
+            flex: 1 0 0%;
+            /* px-0 */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            /* style */
+            display: flex;
+            flex-wrap: wrap;
+            height: 130px;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        "
+        >
+            <div class="card" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
+            style="
+            /* style*/
+            height: 130px !important;
+            position: relative;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+            /* card */
+            background-clip: padding-box;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            box-sizing: border-box;
+            "
+            >
+                <img src="${personIcon}" alt="${person.personName}" class=""
+                style="
+                    /* style */
+                    position: absolute;
+                    left: 50%;
+                    top: 0;
+                    transform: translate(-50%, -50%);
+                    height: 100px;
+                    width: 100px;
+                    object-fit: cover;
+                    border: 4px solid #eee;
+                    /* rounded */
+                    border-radius: 50% !important;
+                    box-sizing: border-box;
+                ">
+                <div class="" 
+                style="
+                    /* style */
+                    margin-top: 50px;
+                    height: 100% !important;
+                    /* row */
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-left: calc(1.5rem*-.5);
+                    margin-right: calc(1.5rem*-.5);
+                    box-sizing: border-box;
+                "
+                >
+                    <div 
+                    style="
+                        flex: 1 0 0%;
+                        margin-top: var(--bs-gutter-y);
+                        max-width: 100%;
+                        padding-left: calc(1.5rem*.5);
+                        padding-right: calc(1.5rem*.5);
+                        width: 100%;
+                        box-sizing: border-box;
+                    ">
+                        <div class="h-100 text-center py-3 px-2" 
+                        style="
+                            ${personCssClass};
+                            text-align: center !important;
+                            padding-bottom: 1rem !important;
+                            padding-top: 1rem !important;
+                            padding-left: .5rem !important;
+                            padding-right: .5rem !important;
+                            height: 100% !important;
+                            box-sizing: border-box;
+
+                        ">
+                            <h6 class="mb-2" 
+                            style="
+                                ${textColor}; 
+                                margin-bottom: .5rem !important; 
+                                font-size: .9375rem;
+                                font-weight: 600;
+                                line-height: 1.37;
+                                margin-top: 0;
+                                box-sizing: border-box;
+                            "
+                            >
+                            ${truncateText(person.personName,15)}</h6>
+                            <p class="mb-0" 
+                            style="
+                                ${textColor};
+                                margin-bottom: 0 !important;
+                                margin-top: 0;
+                                box-sizing: border-box;
+                            "
+                            >
+                            ${getFullDate(person.birth, person.death)}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -351,7 +853,7 @@ function getPersonNodeContent(personData, personType) {
     }
     
     return nodeContent;
-    //}
+    
 }
 
 
@@ -362,14 +864,24 @@ function truncateText(text, maxLength) {
     return text.substring(0, maxLength) + '...';
 }
 
-function is_death(status) {
-    if (status == "Deceased") {
-
-        return `<div class="diagonal-text"><span></span></div>`;
-    }
-    else {
+function is_death(status,template) {
+    if(status != "Deceased"){
         return "";
     }
+
+
+    if (template == "1") {
+        return `
+            <div class="diagonal-text">
+                <span></span>
+            </div>
+        `;
+    }
+    if (template == "2") {
+        return `<div class="diagonal-text"><span></span></div>`;
+    }
+
+
 }
 
 function parseDate(dateStr) {

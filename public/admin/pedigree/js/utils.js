@@ -81,5 +81,51 @@ function isValidDate(dateString) {
     }
 
     return false
-    
+
+}
+
+
+// set graph background from settings
+
+function set_background() {
+
+    const imageUrl = "/admin/images/Parchment_small" + treeConfiguration.bgTemplate + ".png";
+    convertImageToBase64(imageUrl, function (base64String) {
+        const replaced = base64String.replace(/(\r\n|\n|\r)/gm);
+        d3.select('.svg-chart-container')
+            .style(
+                'background',
+                '#ffffff'
+            )
+            .style(
+                'background-image',
+                `url(${replaced}), radial-gradient(circle at center, rgba(255,0,0,0) 0, rgba(255,0,0,0) 100%)`
+            )
+            .style(
+                'background-size',
+                '100% 99%'
+            ).style(
+                'background-repeat',
+                'no-repeat'
+            );
+    });
+
+}
+
+
+function convertImageToBase64(imageUrl, callback) {
+    fetch(imageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                // Base64 string result
+                const base64String = reader.result;
+                callback(base64String); // Send the base64 string to the callback
+            };
+            reader.readAsDataURL(blob);
+        })
+        .catch(error => {
+            console.error("Error converting image to Base64:", error);
+        });
 }

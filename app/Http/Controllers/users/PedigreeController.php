@@ -254,14 +254,24 @@ class PedigreeController extends Controller
             $inputs = $request->except(['_token']);
             
             Validator::make($inputs, [
+                'box_color' => ['required',Rule::in(['gender', 'blood'])],
+                'male_color' => ['required',new HexColor],
+                'female_color' => ['required',new HexColor],
+                'blood_color' => ['required',new HexColor],
+                'notblood_color' => ['required',new HexColor],
+
+                'text_color' => ['required',Rule::in(['gender', 'blood'])],
+                'male_text_color' => ['required',new HexColor],
+                'female_text_color' => ['required',new HexColor],
+                'blood_text_color' => ['required',new HexColor],
+                'notblood_text_color' => ['required',new HexColor],
+
                 'spouse_link_color' => ['required',new HexColor],
                 'bio_child_link_color' => ['required',new HexColor],
                 'adop_child_link_color' => ['required',new HexColor],
-                'male_color' => ['required',new HexColor],
-                'male_text_color' => ['required',new HexColor],
-                'female_color' => ['required',new HexColor],
-                'female_text_color' => ['required',new HexColor],
-                'node_template' => ['required',Rule::in(['1', '2', '3', '4'])]
+                
+                'node_template' => ['required',Rule::in(['1', '2', '3', '4'])],
+                'bg_template' => ['required',Rule::in(['1', '2', '3', '4'])]
             ])->validate();
 
             
@@ -375,7 +385,9 @@ class PedigreeController extends Controller
         // write modification to gedcom file
         $gedcomService->writer($gedcom,$gedcom_file);
 
-        return redirect()->back()->with('success','person updated with success');
+        return response()->json(['error'=>false,'msg' => 'success']);
+
+        //return redirect()->back()->with('success','person updated with success');
     }
 
     // add spouse
