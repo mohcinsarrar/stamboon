@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\User;
-
+use App\Models\Product;
 
 Route::get('/roles/create', function () {
     $role = Role::create(['name' => 'admin']);
@@ -29,3 +29,29 @@ Route::get('/admin/create', function () {
 
     return "admin created";
 })->name('admin.create');
+
+Route::get('/products/createseed', function () {
+    $product = Product::create([
+        'name' => 'Basic',
+        'amount' => 30,
+        'description' => 'Basic',
+        'features' => ['Basic'],
+    ]);
+
+    $product = Product::create([
+        'name' => 'Standard',
+        'amount' => 100,
+        'description' => 'Standard',
+        'features' => ['Standard'],
+    ]);
+
+    $product = Product::create([
+        'name' => 'Pro',
+        'amount' => 150,
+        'description' => 'Pro',
+        'features' => ['Pro'],
+    ]);
+
+
+    return "products created";
+})->name('prducts.createseed');
