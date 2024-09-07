@@ -21,6 +21,19 @@ new Cleave('.birth_date', {
     }
 });
 
+document.getElementById('formUpdatePerson').querySelector('.firstname').addEventListener('input', function (event) { 
+    
+    var firstname = document.getElementById('formUpdatePerson').querySelector('.firstname').value
+    
+    if(firstname.length > 55){
+        document.getElementById('formUpdatePerson').querySelector('#firstname_feedback').innerHTML="your name is too long, try to short your name "
+    }
+    else{
+        document.getElementById('formUpdatePerson').querySelector('#firstname_feedback').innerHTML=""
+    }
+});
+
+
 function edit_person() {
     // clear update form
     var personInfo = selectedPerson
@@ -192,7 +205,6 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
     }
     
     const formData = $(this).serialize();
-    console.log(formData);
     event.preventDefault();
     $.ajaxSetup({
         headers: {
@@ -209,11 +221,19 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
         success: function(data) {
             if (data.error == false) {
                 // Handle success - you can display a success message or process the data
-                show_toast('success', 'success', msg)
+                
+                // hide update person offcanvas
+                var offCanvasElement = document.getElementById('offcanvasUpdatePerson');
+                var offCanvas = bootstrap.Offcanvas.getInstance(offCanvasElement);
+                offCanvas.hide();
+                // hide show person info modal
+                var modal = document.getElementById('nodeModal');
+                modal.style.display = 'none';
                 draw_tree();
+                show_toast('success', 'success', data.msg)
             } else {
                 // Handle the error - display an error message or take appropriate action
-                show_toast('danger', 'error', msg)
+                show_toast('danger', 'error', data.msg)
             }
         },
         error: function(xhr, status, error) {

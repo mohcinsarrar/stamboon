@@ -29,9 +29,9 @@ return new class extends Migration
             $table->string('blood_text_color')->default("#222423");
             $table->string('notblood_text_color')->default("#222423");
 
-            $table->string('spouse_link_color')->default('#D3D3D3');
-            $table->string('bio_child_link_color')->default('#D3D3D3');
-            $table->string('adop_child_link_color')->default('#D3D3D3');
+            $table->string('spouse_link_color')->default('#000000');
+            $table->string('bio_child_link_color')->default('#000000');
+            $table->string('adop_child_link_color')->default('#000000');
             
             
 

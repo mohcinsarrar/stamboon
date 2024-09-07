@@ -17,7 +17,7 @@
                     </label>
                     <input type="text" class="form-control firstname" placeholder="First name" name="firstname"
                         aria-label="John" autocomplete="off" />
-                    <span class="text-danger d-none" id="firstname_feedback"></span>
+                    <span class="text-danger" id="firstname_feedback"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="name">Last name <span class="text-danger">*</span> </label>

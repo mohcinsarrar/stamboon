@@ -10,11 +10,9 @@
                     </div>
                     <div class="col-8">
                         <div class="card-body p-0 ms-3">
-                            <h5 class="card-title name mb-2">Card title</h5>
-                            <p class="card-text mb-1">Birth : <small class="text-muted birth">Last updated 3 mins
-                                    ago</small></p>
-                            <p class="card-text mb-1">Death : <small class="text-muted death">Last updated 3 mins
-                                    ago</small></p>
+                            <h6 class="card-title name mb-2"></h6>
+                            <p class="card-text mb-1">Birth : <small class="text-muted birth"></small></p>
+                            <p class="card-text mb-1">Death : <small class="text-muted death"></small></p>
                         </div>
                     </div>
                 </div>

@@ -84,9 +84,9 @@ data-bs-backdrop="false">
 
 
         <div class="row mx-0 my-5 justify-content-center">
-            <button type="submit" class="col-auto btn btn-warning me-sm-3 me-1 data-submit col-md-4">
-                <span class="ti-xs ti ti-edit me-1"></span>
-                Update
+            <button type="submit" class="col-auto btn btn-primary me-sm-3 me-1 data-submit col-md-4">
+                <span class="ti-xs ti ti-plus me-1"></span>
+                Add
             </button>
         </div>
     </form>

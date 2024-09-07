@@ -5,10 +5,18 @@ function renderChart() {
     var data = familyData;
     chart = new d3.OrgChart()
         .container(treeConfiguration.chartContainer)
+        //.initialZoom(treeConfiguration.zoomLevel)
         .data(data)
         .initialExpandLevel(5)
         .layout('top')
         .onNodeClick((nodeId) => nodeClicked(nodeId))
+        .onExpandOrCollapse((nodeId) => {
+            //editChartStatus();
+        }
+        )
+        .onZoomEnd( e => { 
+            //editChartStatus();
+        })
         .rootMargin(treeConfiguration.rootMargin)
         .nodeWidth((d) => {
             if (d.data.id === constants.rootId) return 0;
@@ -153,13 +161,23 @@ function renderChart() {
     };
 
     chart.layoutBindings().top.linkJoinY = (d) => {
-
-        if (d.data === undefined) {
-            // connections
-            return d.y + d.height / 2;
-        } else {
-            return d.y;
+        if(treeConfiguration.nodeTemplate == 4){
+            if (d.data === undefined) {
+                // connections
+                return d.y + d.height / 2 + 25;
+            } else {
+                return d.y;
+            }
         }
+        else{
+            if (d.data === undefined) {
+                // connections
+                return d.y + d.height / 2;
+            } else {
+                return d.y;
+            }
+        }
+        
     };
 
     // checking for multiple spouses
@@ -177,13 +195,31 @@ function renderChart() {
 
     chart.connections(multipleSpouseConnections);
 
-    chart.render().fit();
+    // apply stored chart statu
+    //applyChartStatus()
 
-    
+    // render the chart
+    chart.render();
+
+    // get first hidden_root children and center chart on it
+    /*
+    var hidden_root_children 
+
+    familyData.forEach(node => {
+        if (node.parentId == "hidden_root") {
+            hidden_root_children = node.id
+            return;
+        }
+    });
+    chart.setCentered(hidden_root_children).render();
+    */
+
     // set background from settings
     set_background()
 
-    
+    // get notes from DB and draw them
+    get_notes()
+
 
     // change connections order (lower)
     const chartElement = document.querySelector('.center-group');
@@ -196,40 +232,48 @@ function renderChart() {
     // add tools zoom, expand ...
     $(document).on("click", "#fit", function () {
         chart.fit()
+        //editChartStatus()
     });
 
     $(document).on("click", "#zoomIn", function () {
         chart.zoomIn()
+        //editChartStatus()
     });
 
     $(document).on("click", "#zoomOut", function () {
         chart.zoomOut()
+        //editChartStatus()
     });
 
     $(document).on("click", "#viewVertical", function () {
-        chart.layout('top').render().fit()
+        chart.layout('top').fit()
+        //editChartStatus()
     });
 
     $(document).on("click", "#viewHorizontal", function () {
-        chart.layout('left').render().fit()
+        chart.layout('left').fit()
+       //editChartStatus()
     });
 
     $(document).on("click", "#compactView", function () {
 
         if ($('#compactView').data('compact') == false) {
-            chart.compact(true).render().fit()
+            chart.compact(true).fit()
             $('#compactView').data('compact', true)
             $('#compactView').html('Decompact')
         } else {
-            chart.compact(false).render().fit()
+            chart.compact(false).fit()
             $('#compactView').data('compact', false)
             $('#compactView').html('Compact')
         }
+        //editChartStatus()
 
     });
 
     $(document).on("click", "#expandView", function () {
-        chart.expandAll().render().fit();
+
+        chart.expandAll().fit();
+        //editChartStatus()
     });
 
     $(document).on("click", "#collpaseView", function () {
@@ -241,6 +285,7 @@ function renderChart() {
         allNodes.forEach(d => d.data._expanded = false);
         chart.initialExpandLevel(1)
         chart.render().fit();
+        //editChartStatus()
     });
 
 }
@@ -279,13 +324,13 @@ function getPersonNodeContent(personData, personType) {
         person.photo = personData.photo;
     }
 
-    let personCssClass, personIcon, textColor;
+    let personCssClass, personIcon, textColor, selectedBoxColor;
 
     // init portrait
     if (person.photo !== undefined && person.photo !== null) {
         personIcon = "/storage/portraits/" + person.photo;
     }
-    else{
+    else {
         if (person.gender === 'M') {
             personIcon = maleIcon;
         } else {
@@ -295,31 +340,38 @@ function getPersonNodeContent(personData, personType) {
 
     // init box color
     /// if color box type is gender
-    if(treeConfiguration.boxColor == "gender"){
+    if (treeConfiguration.boxColor == "gender") {
         if (person.gender === 'M') {
             personCssClass = `background-color: ${treeConfiguration.maleColor} !important;`;
+            selectedBoxColor = treeConfiguration.maleColor
         } else {
             personCssClass = `background-color: ${treeConfiguration.femaleColor} !important; `;
+            selectedBoxColor = treeConfiguration.femaleColor
         }
     }
     /// if color box type is blood relative
-    else{
+    else {
         if (personType === 'spouse') {
             personCssClass = `background-color: ${treeConfiguration.notbloodColor} !important;`;
+            selectedBoxColor = treeConfiguration.notbloodColor
         } else {
-            if(personData.adopted == true){
+            if (personData.adopted == true) {
                 personCssClass = `background-color: ${treeConfiguration.notbloodColor} !important;`;
+                selectedBoxColor = treeConfiguration.notbloodColor
+
             }
-            else{
+            else {
                 personCssClass = `background-color: ${treeConfiguration.bloodColor} !important;`;
+                selectedBoxColor = treeConfiguration.bloodColor
+
             }
         }
     }
 
     // init box color
     /// if color box type is gender
-    
-    if(treeConfiguration.textColor == "gender"){
+
+    if (treeConfiguration.textColor == "gender") {
         if (person.gender === 'M') {
             textColor = `color: ${treeConfiguration.maleTextColor} !important;`;
         } else {
@@ -327,21 +379,21 @@ function getPersonNodeContent(personData, personType) {
         }
     }
     /// if color box type is blood relative
-    else{
+    else {
         if (personType === 'spouse') {
             textColor = `color: ${treeConfiguration.notbloodTextColor} !important;`;
         } else {
-            if(personData.adopted == true){
+            if (personData.adopted == true) {
                 textColor = `color: ${treeConfiguration.notbloodTextColor} !important;`;
             }
-            else{
+            else {
                 textColor = `color: ${treeConfiguration.bloodTextColor} !important;`;
             }
         }
     }
-    
 
-    
+
+
     // add line between person and spouse if exist according to the template
     let nodeContent = '';
     if (
@@ -349,7 +401,7 @@ function getPersonNodeContent(personData, personType) {
         personType === 'spouse' &&
         personData.primarySpouseId === undefined
     ) {
-        if(treeConfiguration.nodeTemplate == "1"){
+        if (treeConfiguration.nodeTemplate == "1") {
             nodeContent += `
                             <div class="" 
                             style="
@@ -369,7 +421,7 @@ function getPersonNodeContent(personData, personType) {
                                 "/>
                             </div>`;
         }
-        if(treeConfiguration.nodeTemplate == "2"){
+        if (treeConfiguration.nodeTemplate == "2") {
             nodeContent += `
                             <div class="" 
                             style="
@@ -385,7 +437,7 @@ function getPersonNodeContent(personData, personType) {
                                 />
                             </div>`;
         }
-        if(treeConfiguration.nodeTemplate == "3"){
+        if (treeConfiguration.nodeTemplate == "3") {
             nodeContent += `
                             <div class="" 
                             style="
@@ -401,7 +453,7 @@ function getPersonNodeContent(personData, personType) {
                                 />
                             </div>`;
         }
-        if(treeConfiguration.nodeTemplate == "4"){
+        if (treeConfiguration.nodeTemplate == "4") {
             nodeContent += `
                             <div class="" 
                             style="
@@ -418,10 +470,10 @@ function getPersonNodeContent(personData, personType) {
                                 />
                             </div>`;
         }
-        else{
+        else {
             nodeContent += `<div class="line" style="border-color :${treeConfiguration.connectionStroke}"><hr/></div>`;
         }
-        
+
     }
 
 
@@ -430,7 +482,7 @@ function getPersonNodeContent(personData, personType) {
         drillToHide = ''; // hide drill to icon
     }
 
-    if(treeConfiguration.nodeTemplate == "1"){
+    if (treeConfiguration.nodeTemplate == "1") {
         nodeContent += `
           <div class="person-${person.personId}" 
           style="
@@ -562,7 +614,7 @@ function getPersonNodeContent(personData, personType) {
           </div>`;
     }
 
-    if(treeConfiguration.nodeTemplate == "2"){
+    if (treeConfiguration.nodeTemplate == "2") {
         nodeContent += `
         <div class="person-${person.personId}" 
         style="
@@ -635,7 +687,7 @@ function getPersonNodeContent(personData, personType) {
                         margin-top: 0;
                         box-sizing: border-box;
                     "
-                    >${truncateText(person.personName,20)}
+                    >${truncateText(person.personName, 20)}
                     </p> 
                     <small style="font-size: .8125rem;">${getFullDate(person.birth, person.death)}</small>
                 </div>
@@ -643,9 +695,9 @@ function getPersonNodeContent(personData, personType) {
         </div>
         `;
     }
-    
-    if(treeConfiguration.nodeTemplate == "3"){
-        
+
+    if (treeConfiguration.nodeTemplate == "3") {
+
         nodeContent += `
         <div class="person-${person.personId}" 
         style="
@@ -695,7 +747,7 @@ function getPersonNodeContent(personData, personType) {
                     height: 100px;
                     width: 100px;
                     object-fit: cover;
-                    border: 4px solid #eee;
+                    border: 4px solid ${selectedBoxColor};
                     position: absolute;
                     left: 50%;
                     top: 0;
@@ -718,7 +770,7 @@ function getPersonNodeContent(personData, personType) {
                 "
                 >
                     <p style="margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
-                    ${truncateText(person.personName,15)}
+                    ${truncateText(person.personName, 15)}
                     </p>
                     <p 
                     style="
@@ -734,9 +786,9 @@ function getPersonNodeContent(personData, personType) {
         </div>
         `;
     }
-    
-    if(treeConfiguration.nodeTemplate == "4"){
-        
+
+    if (treeConfiguration.nodeTemplate == "4") {
+
         nodeContent += `
         <div class="person-member person-${person.personId}" 
         style="
@@ -748,16 +800,17 @@ function getPersonNodeContent(personData, personType) {
             /* style */
             display: flex;
             flex-wrap: wrap;
-            height: 130px;
+            height: ${treeConfiguration.nodeHeight}px;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
+            width: ${treeConfiguration.nodeWidth}px
         "
         >
-            <div class="card" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
+            <div class="" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
             style="
             /* style*/
-            height: 130px !important;
+            height: ${treeConfiguration.nodeHeight}px !important;
             position: relative;
             width: 100%;
             border-radius: 5px;
@@ -781,9 +834,9 @@ function getPersonNodeContent(personData, personType) {
                     top: 0;
                     transform: translate(-50%, -50%);
                     height: 100px;
-                    width: 100px;
+                    width: 80px;
                     object-fit: cover;
-                    border: 4px solid #eee;
+                    border: 4px solid ${selectedBoxColor};
                     /* rounded */
                     border-radius: 50% !important;
                     box-sizing: border-box;
@@ -811,39 +864,44 @@ function getPersonNodeContent(personData, personType) {
                         width: 100%;
                         box-sizing: border-box;
                     ">
-                        <div class="h-100 text-center py-3 px-2" 
+                        <div class="" 
                         style="
                             ${personCssClass};
                             text-align: center !important;
-                            padding-bottom: 1rem !important;
-                            padding-top: 1rem !important;
-                            padding-left: .5rem !important;
-                            padding-right: .5rem !important;
+                            padding-bottom: .4rem !important;
+                            padding-top: .4rem !important;
+                            padding-left: .3rem !important;
+                            padding-right: .3rem !important;
                             height: 100% !important;
                             box-sizing: border-box;
+                            /* align center */
+                            display: flex !important;
+                            align-items: center !important;
 
                         ">
-                            <h6 class="mb-2" 
-                            style="
-                                ${textColor}; 
-                                margin-bottom: .5rem !important; 
-                                font-size: .9375rem;
-                                font-weight: 600;
-                                line-height: 1.37;
-                                margin-top: 0;
-                                box-sizing: border-box;
-                            "
-                            >
-                            ${truncateText(person.personName,15)}</h6>
-                            <p class="mb-0" 
-                            style="
-                                ${textColor};
-                                margin-bottom: 0 !important;
-                                margin-top: 0;
-                                box-sizing: border-box;
-                            "
-                            >
-                            ${getFullDate(person.birth, person.death)}</p>
+                            <div class="" style="  width: 100% !important;">
+                                <h6 class="" 
+                                style="
+                                    ${textColor}; 
+                                    margin-bottom: .5rem !important; 
+                                    font-size: .7rem;
+                                    font-weight: 600;
+                                    line-height: 1.37;
+                                    margin-top: 0;
+                                    box-sizing: border-box;
+                                "
+                                >
+                                ${person.personName}</h6>
+                                <p class="" 
+                                style="
+                                    ${textColor};
+                                    margin-bottom: 0 !important;
+                                    margin-top: 0;
+                                    box-sizing: border-box;
+                                "
+                                >
+                                ${getFullDate(person.birth, person.death)}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -851,9 +909,9 @@ function getPersonNodeContent(personData, personType) {
         </div>
         `;
     }
-    
+
     return nodeContent;
-    
+
 }
 
 
@@ -861,11 +919,11 @@ function truncateText(text, maxLength) {
     if (text.length <= maxLength) {
         return text;
     }
-    return text.substring(0, maxLength) + '...';
+    return text.substring(0, maxLength);
 }
 
-function is_death(status,template) {
-    if(status != "Deceased"){
+function is_death(status, template) {
+    if (status != "Deceased") {
         return "";
     }
 
@@ -965,7 +1023,7 @@ function getFullDate(birth, death) {
         return ''
     }
 
-    return `(${birthDate}-${deathDate})`
+    return `${birthDate}-${deathDate}`
 
 
 }

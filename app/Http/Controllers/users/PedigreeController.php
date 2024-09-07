@@ -26,7 +26,7 @@ use App\Models\Tree;
 use App\Models\Node;
 use App\Models\Pedigree;
 use App\Models\Setting;
-
+use App\Models\Note;
 
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
@@ -163,6 +163,28 @@ class PedigreeController extends Controller
         
     }
 
+    public function getChartStatus(Request $request){
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        if($pedigree == null){
+            return response()->json(['error'=>true,'msg' => 'error']);
+        }
+        $chart_status = $pedigree->chart_status;
+        return response()->json(['error'=>false,'chart_status' => $chart_status]);
+    }
+
+    public function editChartStatus(Request $request){
+        $chart_status = $request->input('chart_status');
+
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        if($pedigree == null){
+            return response()->json(['error'=>true,'msg' => 'error']);
+        }
+        
+        $pedigree->chart_status = $chart_status;
+        $pedigree->save();
+        return response()->json(['error'=>false,'msg' => 'error']);
+    }
+
     public function saveimage(Request $request){
 
 
@@ -244,7 +266,14 @@ class PedigreeController extends Controller
         
         // load settings
         if($request->isMethod('get')){
-            $settings = Setting::where('user_id',Auth::user()->id)->first();
+            $settings = Setting::where('user_id',Auth::user()->id)->first()->toArray();
+            $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            if($pedigree == null){
+                return response()->json(['error'=>true,'msg' => 'error']);
+            }
+            $chart_status = $pedigree->chart_status;
+            // get zoomlevel
+            $settings['zoom_level'] = $chart_status['zoom'];
             return response()->json(['error'=>false,'settings' => $settings]);
         }
 
@@ -309,6 +338,7 @@ class PedigreeController extends Controller
                 Storage::delete($pedigree->gedcom_file);
               }
         }
+        
 
         $file = $request->file('file');
         $destinationPath = 'gedcoms';
@@ -318,6 +348,10 @@ class PedigreeController extends Controller
 
         $pedigree->gedcom_file = $gedcom_file;
         $pedigree->save();
+        
+        // delete all notes
+        $notes = Note::where('pedigree_id',$pedigree->id)->pluck('id')->toArray();
+        Note::destroy($notes);
 
         return response()->json(['error'=>false,'msg' => 'gedcom file imported']);
         
@@ -385,7 +419,7 @@ class PedigreeController extends Controller
         // write modification to gedcom file
         $gedcomService->writer($gedcom,$gedcom_file);
 
-        return response()->json(['error'=>false,'msg' => 'success']);
+        return response()->json(['error'=>false,'msg' => 'Person updated with success']);
 
         //return redirect()->back()->with('success','person updated with success');
     }

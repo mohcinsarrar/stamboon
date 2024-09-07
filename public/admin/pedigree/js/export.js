@@ -1,6 +1,7 @@
 
 
 $(document).on("click", "#export", function () {
+  d3.selectAll(".toolbar").remove();
   var myModal = new bootstrap.Modal(document.getElementById('exportModal'))
   myModal.show()
 

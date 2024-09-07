@@ -129,3 +129,116 @@ function convertImageToBase64(imageUrl, callback) {
             console.error("Error converting image to Base64:", error);
         });
 }
+
+
+function editChartStatus() {
+
+    const nodes = chart.getChartState().allNodes;
+    const zoom = chart.getChartState().lastTransform.k;
+    const { x: currentX, y: currentY } = getCurrentPosition(d3.select("#graph svg .chart"));
+
+    const nodeStatuses = nodes.map(node => ({
+        id: node.data.id,
+        expanded: node.data._expanded // or use the actual property name
+    }));
+
+    var chart_status = {
+        'expand': nodeStatuses,
+        'zoom': zoom,
+        'xpos': currentX,
+        'ypos': currentY
+    }
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/pedigree/editchartstatus",
+        type: 'POST',
+        data: {
+            'chart_status': chart_status,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.error == false) {
+            } else {
+                show_toast('danger', 'error', "can't store chart status, please try again !")
+                return null;
+            }
+
+        },
+        error: function (xhr, status, error) {
+            show_toast('danger', 'error', "can't store chart status please try again !")
+            return null;
+        }
+    });
+
+}
+
+
+function applyChartStatus() {
+
+
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: '/pedigree/getchartstatus',
+        method: 'GET',
+        success: function (data) {
+            if (data.error == false) {
+
+                // get chart status
+                const chart_status = data.chart_status;
+                const getChartState = chart.getChartState()
+
+                var transform = { x: -100, y: 200, k: 40 }
+                // Get d3 event's transform object
+
+                // Store it
+                
+                console.log(chart.lastTransform())
+
+                // apply position
+
+                // apply expand
+                const nodes = getChartState.allNodes;
+                nodes.forEach(node => {
+                    const status = chart_status['expand'].find(s => s.id === node.data.id);
+                    if (status) {
+                        if (status.expanded == "true") {
+
+                            chart.setExpanded(node.data.id)
+                        }
+                        else {
+                            chart.setExpanded(node.data.id, false)
+                        }
+                    }
+
+                });
+
+                chart.render();
+            } else {
+                show_toast('danger', 'error', "can't get chart status, please try again !")
+                return null;
+            }
+
+        },
+        error: function (xhr) {
+            show_toast('danger', 'error', "can't get chart status please try again !")
+            return null;
+        }
+    });
+
+
+
+
+}
+

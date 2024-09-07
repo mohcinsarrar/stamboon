@@ -75,6 +75,8 @@
     <script src="{{ asset('admin/pedigree/js/draw_graph.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/load_gedcom.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/export.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/pedigree/js/add_note.js') }}?{{ time() }}"></script>
+
 
     <script>
         draw_tree()
@@ -98,6 +100,8 @@
     @include('users.pedigree.settings')
 
     @include('users.pedigree.export')
+
+    @include('users.pedigree.add_note')
 
     @include('users.pedigree.edit_image')
 
@@ -146,9 +150,9 @@
                 </button>
             </div>
         </div>
-        <div class="card-body position-relative tools" style="min-height: 600px;">
+        <div class="card-body position-relative tools p-2" style="min-height: 600px;">
 
-            <div class="border position-absolute p-2 bg-gray rounded">
+            <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px">
                 <div class="row  mb-2 justify-content-center">
                     <button data-bs-toggle="modal" data-bs-target="#uploadFile" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
@@ -158,6 +162,10 @@
                     <a id="downloadFile" type="button" href="{{ asset('storage/' . $gedcom_file) }}"
                         class="btn text-white border-0 p-2 col-auto rounded-circle" download=""><i
                             class="ti ti-download fs-4"></i></a>
+                </div>
+                <div class="row  mb-2 justify-content-center">
+                    <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-note fs-4"></i></button>
                 </div>
                 <div class="row  mb-2 justify-content-center">
                     <button id="export" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i

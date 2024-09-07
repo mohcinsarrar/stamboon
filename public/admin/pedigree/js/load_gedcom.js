@@ -38,6 +38,7 @@ function draw_tree() {
             dataType: 'json',
             success: function (data) {
                 if (data.error == false) {
+
                     var node_height = 70;
                     if(data.settings.node_template == '1'){
                         node_height = 70
@@ -62,17 +63,28 @@ function draw_tree() {
 
                     var connection_stroke_width = 2
                     if(data.settings.node_template == '4'){
-                        connection_stroke_width = 5
+                        connection_stroke_width = 2
+                    }
+
+                    var node_width = 190
+                    if(data.settings.node_template == '4'){
+                        node_width = 115
+                    }
+
+                    var node_width_spouse = 400
+                    if(data.settings.node_template == '4'){
+                        node_width_spouse = 230
                     }
 
                     treeConfiguration = {
                         chartContainer: '#graph', // root svg
+                        zoomLevel: data.settings.zoom_level,
                         // tempale
                         nodeTemplate : data.settings.node_template,
                         bgTemplate : data.settings.bg_template,
                         // height & width
-                        nodeWidth: 190,
-                        nodeWidthSpouse: 400,
+                        nodeWidth: node_width,
+                        nodeWidthSpouse: node_width_spouse,
                         get nodeWidthDiff() {
                             return this.nodeWidthSpouse - this.nodeWidth * 2;
                         },

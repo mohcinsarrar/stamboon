@@ -75,7 +75,7 @@ function add_child() {
           }
     }
     if(parents == ""){
-        show_toast('warning', 'warning', "can't add child without parents");
+        show_toast('warning', 'warning', "can't add child without partner, you need to add a unknown partner after that you can add children");
         return;
     }
 
