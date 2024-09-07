@@ -273,7 +273,7 @@ class PedigreeController extends Controller
             }
             $chart_status = $pedigree->chart_status;
             // get zoomlevel
-            $settings['zoom_level'] = $chart_status['zoom'];
+            //$settings['zoom_level'] = $chart_status['zoom'];
             return response()->json(['error'=>false,'settings' => $settings]);
         }
 
