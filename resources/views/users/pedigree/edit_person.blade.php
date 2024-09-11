@@ -23,7 +23,7 @@
                     <label class="form-label" for="name">Last name <span class="text-danger">*</span> </label>
                     <input type="text" class="form-control lastname" placeholder="Last name" name="lastname"
                         aria-label="Doe" autocomplete="off" />
-                    <span class="text-danger d-none" id="lastname_feedback"></span>
+                    <span class="text-danger" id="lastname_feedback"></span>
                 </div>
                 <div class="mb-3">
                     <label class="d-block form-label">Status</label>

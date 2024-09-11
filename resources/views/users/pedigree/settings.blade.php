@@ -84,76 +84,6 @@
                             <div class="row">
                                 <div class="divider text-start mb-0">
                                     <div class="divider-text">
-                                        <h5>Text colors</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <p class="mt-2">Text colors</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col justify-content-start">
-                                            <select id="textColor" class="form-select" name="text_color">
-                                                <option value="gender">By gender</option>
-                                                <option value="blood">By blood</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <p class="mt-2">Male</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col justify-content-start">
-                                            <div id="color-picker-text-male"></div>
-                                            <input type="hidden" name="male_text_color">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <p class="mt-2">Female</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col justify-content-start">
-                                            <div id="color-picker-text-female"></div>
-                                            <input type="hidden" name="female_text_color">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <p class="mt-2">Blood relative</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col justify-content-start">
-                                            <div id="color-picker-text-blood"></div>
-                                            <input type="hidden" name="blood_text_color">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <p class="mt-2">Not Blood relative</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col justify-content-start">
-                                            <div id="color-picker-text-notblood"></div>
-                                            <input type="hidden" name="notblood_text_color">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col">
-                            <div class="row">
-                                <div class="divider text-start mb-0">
-                                    <div class="divider-text">
                                         <h5>Links colors</h5>
                                     </div>
                                 </div>
@@ -200,11 +130,60 @@
                             <div class="row">
                                 <div class="divider text-start mb-0">
                                     <div class="divider-text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-start">
+                                <div class="col-3">
+                                    <div class="row">
+                                        <p class="mt-2">Text color</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col justify-content-start">
+                                            <div id="color-picker-text"></div>
+                                            <input type="hidden" name="text_color">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="row">
+                                        <p class="mt-2">Portrait band color</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col justify-content-start">
+                                            <div id="color-picker-band"></div>
+                                            <input type="hidden" name="band_color">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="row">
+                                <div class="divider text-start mb-0">
+                                    <div class="divider-text">
                                         <h5>Node template</h5>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md">
+                                    <div
+                                        class="form-check custom-option custom-option-image custom-option-image-check">
+                                        <input class="form-check-input customimagescheckbox" type="checkbox"
+                                            name="node_template" value="4" id="customCheckboxImg4">
+                                        <label class="form-check-label custom-option-content" for="customCheckboxImg4"
+                                            style="height: 140px;">
+                                            <span class="custom-option-body">
+                                                <img src="{{ asset('admin/images/template4.png') }}" alt="cbImg"
+                                                    style="object-fit: scale-down;">
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-md mb-md-0 mb-5">
                                     <div
                                         class="form-check custom-option custom-option-image custom-option-image-check checked">
@@ -247,20 +226,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md">
-                                    <div
-                                        class="form-check custom-option custom-option-image custom-option-image-check">
-                                        <input class="form-check-input customimagescheckbox" type="checkbox"
-                                            name="node_template" value="4" id="customCheckboxImg4">
-                                        <label class="form-check-label custom-option-content" for="customCheckboxImg4"
-                                            style="height: 140px;">
-                                            <span class="custom-option-body">
-                                                <img src="{{ asset('admin/images/template4.png') }}" alt="cbImg"
-                                                    style="object-fit: scale-down;">
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

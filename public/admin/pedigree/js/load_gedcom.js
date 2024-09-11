@@ -123,10 +123,10 @@ function draw_tree() {
 
                         // text color
                         textColor: data.settings.text_color,
-                        maleTextColor: data.settings.male_text_color,
-                        femaleTextColor: data.settings.female_text_color,
-                        bloodTextColor: data.settings.blood_text_color,
-                        notbloodTextColor: data.settings.notblood_text_color
+
+                        // band color
+                        bandColor: data.settings.band_color,
+
                     }
                     // after loading settings draw chart with treeData and treeConfiguration
                     renderChart();

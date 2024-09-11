@@ -23,13 +23,29 @@ new Cleave('.birth_date', {
 
 document.getElementById('formUpdatePerson').querySelector('.firstname').addEventListener('input', function (event) { 
     
+    var maxLength = 20;
     var firstname = document.getElementById('formUpdatePerson').querySelector('.firstname').value
     
-    if(firstname.length > 55){
+    if(firstname.length > maxLength){
         document.getElementById('formUpdatePerson').querySelector('#firstname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
     }
     else{
         document.getElementById('formUpdatePerson').querySelector('#firstname_feedback').innerHTML=""
+    }
+});
+
+document.getElementById('formUpdatePerson').querySelector('.lastname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var lastname = document.getElementById('formUpdatePerson').querySelector('.lastname').value
+    
+    if(lastname.length > maxLength){
+        document.getElementById('formUpdatePerson').querySelector('#lastname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formUpdatePerson').querySelector('#lastname_feedback').innerHTML=""
     }
 });
 

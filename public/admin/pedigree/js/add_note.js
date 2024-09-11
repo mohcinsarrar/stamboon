@@ -164,7 +164,7 @@ function showToolbar(rectGroup) {
 // function to add note to DB and draw the note in the chart
 function add_note(text, xPos, yPos) {
 
-
+    
     // save note to DB if its a new note
     $.ajaxSetup({
         headers: {
@@ -393,6 +393,7 @@ function wrapText(text, maxWidth) {
 
 // show modal to add a note
 $(document).on("click", "#addNote", function () {
+    apply_change_node_position()
     document.querySelector('#addNoteModal #note').value = "";
     document.querySelector('#addNoteModal #addNoteBtn').disabled = true;
     var myModal = new bootstrap.Modal(document.getElementById('addNoteModal'))

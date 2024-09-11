@@ -134,8 +134,6 @@ function convertImageToBase64(imageUrl, callback) {
 function editChartStatus() {
 
     const nodes = chart.getChartState().allNodes;
-    const zoom = chart.getChartState().lastTransform.k;
-    const { x: currentX, y: currentY } = getCurrentPosition(d3.select("#graph svg .chart"));
 
     const nodeStatuses = nodes.map(node => ({
         id: node.data.id,
@@ -144,9 +142,6 @@ function editChartStatus() {
 
     var chart_status = {
         'expand': nodeStatuses,
-        'zoom': zoom,
-        'xpos': currentX,
-        'ypos': currentY
     }
 
     $.ajaxSetup({
@@ -197,16 +192,10 @@ function applyChartStatus() {
 
                 // get chart status
                 const chart_status = data.chart_status;
+                if(chart_status == null){
+                    return;
+                }
                 const getChartState = chart.getChartState()
-
-                var transform = { x: -100, y: 200, k: 40 }
-                // Get d3 event's transform object
-
-                // Store it
-                
-                console.log(chart.lastTransform())
-
-                // apply position
 
                 // apply expand
                 const nodes = getChartState.allNodes;
@@ -223,8 +212,8 @@ function applyChartStatus() {
                     }
 
                 });
+                chart.render().fit();
 
-                chart.render();
             } else {
                 show_toast('danger', 'error', "can't get chart status, please try again !")
                 return null;
@@ -242,3 +231,70 @@ function applyChartStatus() {
 
 }
 
+function extract_cord(pos) {
+    const regex = /translate\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
+    const x = parseFloat(pos.match(regex)[1]);
+    const y = parseFloat(pos.match(regex)[3]);
+
+    return {
+        "x": x,
+        "y": y
+    }
+}
+
+function update_path_position(position, x) {
+    return position.replace(/L-?\d+(\.\d+)?,/, `L${x},`);
+}
+
+function change_node_position(staticNodeId, changedNodeId, index) {
+
+    // After rendering, manually adjust the position of the two specific nodes
+    const staticNode = d3.select(`[data-nodeId="${staticNodeId}"]`); // Replace `node_id_1` with the actual node ID or class
+    const changedNode = d3.select(`[data-nodeId="${changedNodeId}"]`); // Replace `node_id_2` with the actual node ID or class
+    if (staticNode.node() == null || changedNode.node() == null) {
+        return false;
+    }
+
+    // Get current positions (x and y) of the two nodes
+
+    const staticNodeCord = extract_cord(staticNode.attr('transform'))
+    const changedNodeCord = extract_cord(changedNode.attr('transform'))
+
+    // Adjust the margin by changing the x position of the second node
+    const customMargin = (treeConfiguration.nodeWidthSpouse + 25) + ((treeConfiguration.nodeWidth + 25) * (index - 1)) ; // Set a custom margin between these two nodes
+    console.log(changedNodeId,customMargin)
+    changedNode.attr('transform', `translate(${staticNodeCord.x + customMargin}, ${changedNodeCord.y})`); // Adjust x position only
+
+    const newnode1cord = extract_cord(changedNode.attr('transform'))
+    /////////////////
+    const path = d3.select(`[data-from="${staticNodeId}"][data-to="${changedNodeId}"]`);
+
+    path.attr("d", update_path_position(path.attr("d"), newnode1cord.x))
+
+}
+
+
+function apply_change_node_position() {
+
+    if(chart == undefined){
+        return false;
+    }
+    
+    allNodes = chart.getChartState().allNodes
+    console.log(allNodes)
+    allNodes.forEach((node) => {
+        // the node has no children
+        if (node.children == undefined) {
+            // the node is a spouse
+            if (node.data.primarySpouseId != undefined) {
+                // is not the primary spouse
+                if (node.data.id != node.data.primarySpouseId) {
+                    const staticNodeId = node.data.primarySpouseId
+                    const changedNodeId = node.data.id
+                    const index = node.data.spouseIds.indexOf(node.data.spouseId);
+                    change_node_position(staticNodeId, changedNodeId,index)
+                }
+            }
+        }
+    });
+}

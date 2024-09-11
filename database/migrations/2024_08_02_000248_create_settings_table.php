@@ -17,23 +17,23 @@ return new class extends Migration
             ->constrained()
             ->onUpdate('cascade')
             ->onDelete('cascade');
+            // box color settings
             $table->string('box_color')->default("gender");
             $table->string('male_color')->default("#00CED1");
             $table->string('female_color')->default("#FF69B4");
             $table->string('blood_color')->default("#C33131");
             $table->string('notblood_color')->default("#55CF5E");
 
-            $table->string('text_color')->default("gender");
-            $table->string('female_text_color')->default("#222423");
-            $table->string('male_text_color')->default("#222423");
-            $table->string('blood_text_color')->default("#222423");
-            $table->string('notblood_text_color')->default("#222423");
+            // text color settings
+            $table->string('text_color')->default("#000000");
 
+            // link color settings
             $table->string('spouse_link_color')->default('#000000');
             $table->string('bio_child_link_color')->default('#000000');
             $table->string('adop_child_link_color')->default('#000000');
             
-            
+            // portrait band color
+            $table->string('band_color')->default("#ffffff");
 
             $table->string('node_template')->default("1");
             $table->string('bg_template')->default("1");

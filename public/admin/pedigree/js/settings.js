@@ -72,10 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const colorBlood = document.querySelector('#color-picker-blood');
     const colorNotBlood = document.querySelector('#color-picker-notblood');
 
-    const colorMaleText = document.querySelector('#color-picker-text-male');
-    const colorFemaleText = document.querySelector('#color-picker-text-female');
-    const colorBloodText = document.querySelector('#color-picker-text-blood');
-    const colorNotBloodText = document.querySelector('#color-picker-text-notblood');
+    const colorText = document.querySelector('#color-picker-text');
+    const colorBand = document.querySelector('#color-picker-band');
     
     const colorSpouse = document.querySelector('#color-picker-spouse');
     const colorBioChild = document.querySelector('#color-picker-bio-child');
@@ -84,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // init colors types
     document.getElementById('boxColor').value=settings.box_color;
-    document.getElementById('textColor').value=settings.text_color;
 
     // init node-template
     const checkbox = document.querySelector(`.customimagescheckbox[value="${settings.node_template}"]`);
@@ -212,11 +209,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    if (colorMaleText) {
-      var colorMaleTextpickr = pickr.create({
-        el: colorMaleText,
+    if (colorText) {
+      var colorTextpickr = pickr.create({
+        el: colorText,
         theme: 'classic',
-        default: settings.male_text_color,
+        default: settings.text_color,
         swatches: [],
         components: {
           // Main components
@@ -232,19 +229,19 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       }).on('init', instance => {
-        document.querySelector('input[name="male_text_color"]').value = settings.male_text_color;
+        document.querySelector('input[name="text_color"]').value = settings.text_color;
       }).on('save', (color, instance) => {
         var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="male_text_color"]').value = hexcolor;
+        document.querySelector('input[name="text_color"]').value = hexcolor;
         instance.hide()
       });
     }
 
-    if (colorFemaleText) {
-      var colorFemaleTextpickr = pickr.create({
-        el: colorFemaleText,
+    if (colorBand) {
+      var colorBandpickr = pickr.create({
+        el: colorBand,
         theme: 'classic',
-        default: settings.female_text_color,
+        default: settings.band_color,
         swatches: [],
         components: {
           // Main components
@@ -260,70 +257,13 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       }).on('init', instance => {
-        document.querySelector('input[name="female_text_color"]').value = settings.female_text_color;
+        document.querySelector('input[name="band_color"]').value = settings.band_color;
       }).on('save', (color, instance) => {
         var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="female_text_color"]').value = hexcolor;
+        document.querySelector('input[name="band_color"]').value = hexcolor;
         instance.hide()
       });
     }
-
-    if (colorBloodText) {
-      var colorBloodTextpickr = pickr.create({
-        el: colorBloodText,
-        theme: 'classic',
-        default: settings.blood_text_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
-
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="blood_text_color"]').value = settings.blood_text_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="blood_text_color"]').value = hexcolor;
-        instance.hide()
-      });
-    }
-
-    if (colorNotBloodText) {
-      var colorNotBloodTextpickr = pickr.create({
-        el: colorNotBloodText,
-        theme: 'classic',
-        default: settings.notblood_text_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
-
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="notblood_text_color"]').value = settings.notblood_text_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="notblood_text_color"]').value = hexcolor;
-        instance.hide()
-      });
-    }
-
 
     if (colorSpouse) {
       var colorSpousepickr = pickr.create({

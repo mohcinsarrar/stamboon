@@ -289,11 +289,9 @@ class PedigreeController extends Controller
                 'blood_color' => ['required',new HexColor],
                 'notblood_color' => ['required',new HexColor],
 
-                'text_color' => ['required',Rule::in(['gender', 'blood'])],
-                'male_text_color' => ['required',new HexColor],
-                'female_text_color' => ['required',new HexColor],
-                'blood_text_color' => ['required',new HexColor],
-                'notblood_text_color' => ['required',new HexColor],
+                'text_color' => ['required',new HexColor],
+                'band_color' => ['required',new HexColor],
+
 
                 'spouse_link_color' => ['required',new HexColor],
                 'bio_child_link_color' => ['required',new HexColor],

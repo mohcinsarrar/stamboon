@@ -11,10 +11,10 @@ function renderChart() {
         .layout('top')
         .onNodeClick((nodeId) => nodeClicked(nodeId))
         .onExpandOrCollapse((nodeId) => {
-            //editChartStatus();
+            editChartStatus();
         }
         )
-        .onZoomEnd( e => { 
+        .onZoomEnd(e => {
             //editChartStatus();
         })
         .rootMargin(treeConfiguration.rootMargin)
@@ -36,7 +36,9 @@ function renderChart() {
         })
         .neighbourMargin(() => treeConfiguration.neighbourMargin)
         .childrenMargin(() => treeConfiguration.childrenMargin)
-        .siblingsMargin(() => treeConfiguration.siblingsMargin)
+        .siblingsMargin((d) => {
+            return treeConfiguration.siblingsMargin
+        })
         .nodeButtonY(() => treeConfiguration.nodeButtonY)
         .nodeButtonX(() => treeConfiguration.nodeButtonX)
         .linkUpdate(function (d) {
@@ -62,13 +64,17 @@ function renderChart() {
             }
         })
         .nodeUpdate(function (d, i, arr) {
+
+            d3.select(this).attr('data-nodeId', d.data.id)
             if (d.data.id == 'hidden_root') {
                 d3.select(this).style('display', 'none');
             }
 
         })
-        .connectionsUpdate(function () {
+        .connectionsUpdate(function (d) {
             d3.select(this).lower()
+                .attr('data-from', d.from)
+                .attr('data-to', d.to)
                 .attr('stroke', () => treeConfiguration.connectionStroke)
                 .attr('stroke-width', () => treeConfiguration.connectionStrokeWidth);
         })
@@ -104,6 +110,90 @@ function renderChart() {
         })
         .compact(false);
 
+
+    /*
+    const originalRender = chart.render;
+
+    // Create a new render function that wraps the original one
+   
+    chart.render = function () {
+
+        // Call the original render method
+        originalRender.call(this);
+
+        d3.selectAll('.node')  // Assuming `.node` is the class for nodes
+            .update()
+            .on('end', function () {
+                console.log("All transitions are finished. Applying node position changes.");
+                apply_change_node_position();
+            });
+
+        console.log("before render")
+
+    };
+    */
+
+
+    // change connections link to straight
+    chart.linkGroupArc(function linkValue({ source, target }) {
+        const linkGenerationFunc = d3.link(d3.curveLinear)
+            .x((d) => d.x)
+            .y((d) => d.y);
+        if (treeConfiguration.nodeTemplate == '4') {
+            return linkGenerationFunc({
+                source: { x: source.x, y: source.y + 20 },
+                target: target,
+            });
+        }
+        else {
+            return linkGenerationFunc({
+                source: { x: source.x, y: source.y },
+                target: target,
+            });
+        }
+
+    })
+
+    // change links between nodes link to straight, change rdef from 35 to 0
+    chart.diagonal(function (s, t, m, offsets = { sy: 0 }) {
+        const x = s.x;
+        let y = s.y;
+
+        const ex = t.x;
+        const ey = t.y;
+
+        let mx = m && m.x != null ? m.x : x; // This is a changed line
+        let my = m && m.y != null ? m.y : y; // This also is a changed line
+
+        let xrvs = ex - x < 0 ? -1 : 1;
+        let yrvs = ey - y < 0 ? -1 : 1;
+
+        y += offsets.sy;
+
+        let rdef = 0;
+        let r = Math.abs(ex - x) / 2 < rdef ? Math.abs(ex - x) / 2 : rdef;
+
+        r = Math.abs(ey - y) / 2 < r ? Math.abs(ey - y) / 2 : r;
+
+        let h = Math.abs(ey - y) / 2 - r;
+        let w = Math.abs(ex - x) - r * 2;
+        //w=0;
+        const path = `
+                                M ${mx} ${my}
+                                L ${x} ${my}
+                                L ${x} ${y}
+                                L ${x} ${y + h * yrvs}
+                                C  ${x} ${y + h * yrvs + r * yrvs} ${x} ${y + h * yrvs + r * yrvs
+            } ${x + r * xrvs} ${y + h * yrvs + r * yrvs}
+                                L ${x + w * xrvs + r * xrvs} ${y + h * yrvs + r * yrvs
+            }
+                                C  ${ex}  ${y + h * yrvs + r * yrvs} ${ex}  ${y + h * yrvs + r * yrvs
+            } ${ex} ${ey - h * yrvs}
+                                L ${ex} ${ey}
+                     `;
+        return path;
+    })
+
     // changing the links for persons who has spouse
     chart.layoutBindings().top.linkX = (d) => {
         let x = d.x;
@@ -131,10 +221,22 @@ function renderChart() {
     };
 
     chart.layoutBindings().top.linkY = (d) => {
-        if (d.data === undefined) {
-            return d.y + d.height / 2;
-        } else {
-            return d.y;
+
+
+        if (treeConfiguration.nodeTemplate == 4) {
+            if (d.data === undefined) {
+                return d.y + d.height / 2;
+            } else {
+                return d.y - 80;
+            }
+        }
+        else {
+            if (d.data === undefined) {
+                return d.y + d.height / 2;
+            } else {
+                return d.y;
+            }
+
         }
     };
 
@@ -161,15 +263,15 @@ function renderChart() {
     };
 
     chart.layoutBindings().top.linkJoinY = (d) => {
-        if(treeConfiguration.nodeTemplate == 4){
+        if (treeConfiguration.nodeTemplate == 4) {
             if (d.data === undefined) {
                 // connections
-                return d.y + d.height / 2 + 25;
+                return d.y + d.height / 2 + 20;
             } else {
                 return d.y;
             }
         }
-        else{
+        else {
             if (d.data === undefined) {
                 // connections
                 return d.y + d.height / 2;
@@ -177,7 +279,7 @@ function renderChart() {
                 return d.y;
             }
         }
-        
+
     };
 
     // checking for multiple spouses
@@ -199,7 +301,8 @@ function renderChart() {
     //applyChartStatus()
 
     // render the chart
-    chart.render();
+    chart.render().fit();
+    applyChartStatus()
 
     // get first hidden_root children and center chart on it
     /*
@@ -252,11 +355,12 @@ function renderChart() {
 
     $(document).on("click", "#viewHorizontal", function () {
         chart.layout('left').fit()
-       //editChartStatus()
+        //editChartStatus()
     });
 
     $(document).on("click", "#compactView", function () {
-
+        apply_change_node_position()
+        /*
         if ($('#compactView').data('compact') == false) {
             chart.compact(true).fit()
             $('#compactView').data('compact', true)
@@ -266,6 +370,7 @@ function renderChart() {
             $('#compactView').data('compact', false)
             $('#compactView').html('Compact')
         }
+        */
         //editChartStatus()
 
     });
@@ -273,7 +378,8 @@ function renderChart() {
     $(document).on("click", "#expandView", function () {
 
         chart.expandAll().fit();
-        //editChartStatus()
+        editChartStatus()
+
     });
 
     $(document).on("click", "#collpaseView", function () {
@@ -324,7 +430,7 @@ function getPersonNodeContent(personData, personType) {
         person.photo = personData.photo;
     }
 
-    let personCssClass, personIcon, textColor, selectedBoxColor;
+    let personCssClass, personIcon, textColor, bandColor;
 
     // init portrait
     if (person.photo !== undefined && person.photo !== null) {
@@ -343,54 +449,28 @@ function getPersonNodeContent(personData, personType) {
     if (treeConfiguration.boxColor == "gender") {
         if (person.gender === 'M') {
             personCssClass = `background-color: ${treeConfiguration.maleColor} !important;`;
-            selectedBoxColor = treeConfiguration.maleColor
         } else {
             personCssClass = `background-color: ${treeConfiguration.femaleColor} !important; `;
-            selectedBoxColor = treeConfiguration.femaleColor
         }
     }
     /// if color box type is blood relative
     else {
         if (personType === 'spouse') {
             personCssClass = `background-color: ${treeConfiguration.notbloodColor} !important;`;
-            selectedBoxColor = treeConfiguration.notbloodColor
         } else {
             if (personData.adopted == true) {
                 personCssClass = `background-color: ${treeConfiguration.notbloodColor} !important;`;
-                selectedBoxColor = treeConfiguration.notbloodColor
-
             }
             else {
                 personCssClass = `background-color: ${treeConfiguration.bloodColor} !important;`;
-                selectedBoxColor = treeConfiguration.bloodColor
-
             }
         }
     }
 
     // init box color
     /// if color box type is gender
-
-    if (treeConfiguration.textColor == "gender") {
-        if (person.gender === 'M') {
-            textColor = `color: ${treeConfiguration.maleTextColor} !important;`;
-        } else {
-            textColor = `color: ${treeConfiguration.femaleTextColor} !important;`;
-        }
-    }
-    /// if color box type is blood relative
-    else {
-        if (personType === 'spouse') {
-            textColor = `color: ${treeConfiguration.notbloodTextColor} !important;`;
-        } else {
-            if (personData.adopted == true) {
-                textColor = `color: ${treeConfiguration.notbloodTextColor} !important;`;
-            }
-            else {
-                textColor = `color: ${treeConfiguration.bloodTextColor} !important;`;
-            }
-        }
-    }
+    bandColor = treeConfiguration.bandColor
+    textColor = `color: ${treeConfiguration.textColor} !important;`;
 
 
 
@@ -747,7 +827,7 @@ function getPersonNodeContent(personData, personType) {
                     height: 100px;
                     width: 100px;
                     object-fit: cover;
-                    border: 4px solid ${selectedBoxColor};
+                    border: 4px solid ${bandColor};
                     position: absolute;
                     left: 50%;
                     top: 0;
@@ -804,7 +884,8 @@ function getPersonNodeContent(personData, personType) {
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            width: ${treeConfiguration.nodeWidth}px
+            width: ${treeConfiguration.nodeWidth}px;
+            
         "
         >
             <div class="" onClick="window.personClicked='${person.personId}';" data-personId="${person.personId}"
@@ -831,15 +912,16 @@ function getPersonNodeContent(personData, personType) {
                     /* style */
                     position: absolute;
                     left: 50%;
-                    top: 0;
+                    top: -10px;
                     transform: translate(-50%, -50%);
-                    height: 100px;
-                    width: 80px;
+                    height: ${treeConfiguration.nodeWidth + 10}px;
+                    width: ${treeConfiguration.nodeWidth - 10}px;
                     object-fit: cover;
-                    border: 4px solid ${selectedBoxColor};
+                    border: 4px solid ${bandColor};
                     /* rounded */
                     border-radius: 50% !important;
                     box-sizing: border-box;
+                    background-color : ${bandColor};
                 ">
                 <div class="" 
                 style="
@@ -874,9 +956,7 @@ function getPersonNodeContent(personData, personType) {
                             padding-right: .3rem !important;
                             height: 100% !important;
                             box-sizing: border-box;
-                            /* align center */
-                            display: flex !important;
-                            align-items: center !important;
+
 
                         ">
                             <div class="" style="  width: 100% !important;">

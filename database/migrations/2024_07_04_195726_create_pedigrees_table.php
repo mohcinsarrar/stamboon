@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->string('template')->default('template1');
             $table->integer('generation')->default(4);
+            $table->json('chart_status')->nullable()->default(null);
             $table->timestamps();
         });
     }

@@ -77,7 +77,6 @@
     <script src="{{ asset('admin/pedigree/js/export.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/add_note.js') }}?{{ time() }}"></script>
 
-
     <script>
         draw_tree()
     </script>
