@@ -40,7 +40,7 @@ Route::get('/', function(){
     $data = json_decode($json, true);
 
     // get products
-    $products = Product::orderByRaw('CONVERT(amount, SIGNED) asc')->get();
+    $products = Product::orderByRaw('CONVERT(price, SIGNED) asc')->get();
 
     return view('website.index',compact('data','products'));
 });

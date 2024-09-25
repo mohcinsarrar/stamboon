@@ -58,7 +58,7 @@ function draw_tree() {
                         children_margin = 150
                     }
                     if(data.settings.node_template == '4'){
-                        children_margin = 150
+                        children_margin = 180
                     }
 
                     var connection_stroke_width = 2
@@ -79,6 +79,9 @@ function draw_tree() {
                     treeConfiguration = {
                         chartContainer: '#graph', // root svg
                         zoomLevel: data.settings.zoom_level,
+                        // product features
+                        maxGenerations : data.settings.max_generation,
+                        maxNodes : data.settings.max_nodes,
                         // tempale
                         nodeTemplate : data.settings.node_template,
                         bgTemplate : data.settings.bg_template,

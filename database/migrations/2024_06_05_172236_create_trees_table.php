@@ -19,8 +19,9 @@ return new class extends Migration
             ->constrained()
             ->onUpdate('cascade')
             ->onDelete('cascade');
-            $table->string('template')->default('template1');
-            $table->integer('generation')->default(4);
+            $table->string('template')->default('gradient');
+            $table->integer('print_number')->default(0);
+            $table->integer('generation')->default(2);
             $table->timestamps();
         });
     }

@@ -27,6 +27,19 @@ $configData = Helper::appClasses();
   <ul class="menu-inner py-1">
     @foreach ($menuData[0]->menu as $menu)
 
+     {{-- test if user has acces to this route --}}
+    @if($menu->slug == "users.fanchart.index")
+      @if(auth()->user()->product_type('fanchart') == false)
+        @continue
+      @endif
+    @endif
+
+    @if($menu->slug == "users.pedigree.index")
+      @if(auth()->user()->product_type('pedigree') == false)
+        @continue
+      @endif
+    @endif
+
     {{-- adding active and open class if child is active --}}
 
     {{-- menu headers --}}

@@ -192,7 +192,7 @@ function applyChartStatus() {
 
                 // get chart status
                 const chart_status = data.chart_status;
-                if(chart_status == null){
+                if (chart_status == null) {
                     return;
                 }
                 const getChartState = chart.getChartState()
@@ -250,7 +250,8 @@ function change_node_position(staticNodeId, changedNodeId, index) {
 
     // After rendering, manually adjust the position of the two specific nodes
     const staticNode = d3.select(`[data-nodeId="${staticNodeId}"]`); // Replace `node_id_1` with the actual node ID or class
-    const changedNode = d3.select(`[data-nodeId="${changedNodeId}"]`); // Replace `node_id_2` with the actual node ID or class
+    const changedNode = d3.select(`[data-nodeId="${changedNodeId}"]`); // Replace `node_id_2` with the actual node ID or classc
+
     if (staticNode.node() == null || changedNode.node() == null) {
         return false;
     }
@@ -261,27 +262,29 @@ function change_node_position(staticNodeId, changedNodeId, index) {
     const changedNodeCord = extract_cord(changedNode.attr('transform'))
 
     // Adjust the margin by changing the x position of the second node
-    const customMargin = (treeConfiguration.nodeWidthSpouse + 25) + ((treeConfiguration.nodeWidth + 25) * (index - 1)) ; // Set a custom margin between these two nodes
-    console.log(changedNodeId,customMargin)
+    const customMargin = (treeConfiguration.nodeWidthSpouse + 25) + ((treeConfiguration.nodeWidth + 25) * (index - 1)); // Set a custom margin between these two nodes
     changedNode.attr('transform', `translate(${staticNodeCord.x + customMargin}, ${changedNodeCord.y})`); // Adjust x position only
 
     const newnode1cord = extract_cord(changedNode.attr('transform'))
     /////////////////
     const path = d3.select(`[data-from="${staticNodeId}"][data-to="${changedNodeId}"]`);
 
-    path.attr("d", update_path_position(path.attr("d"), newnode1cord.x))
+    path.attr("d", update_path_position(path.attr("d"), newnode1cord.x));
 
 }
 
 
 function apply_change_node_position() {
 
-    if(chart == undefined){
+    if (chart == undefined) {
         return false;
     }
-    
+
+    if (compact == true) {
+        return false;
+    }
+
     allNodes = chart.getChartState().allNodes
-    console.log(allNodes)
     allNodes.forEach((node) => {
         // the node has no children
         if (node.children == undefined) {
@@ -292,9 +295,101 @@ function apply_change_node_position() {
                     const staticNodeId = node.data.primarySpouseId
                     const changedNodeId = node.data.id
                     const index = node.data.spouseIds.indexOf(node.data.spouseId);
-                    change_node_position(staticNodeId, changedNodeId,index)
+                    change_node_position(staticNodeId, changedNodeId, index)
                 }
             }
         }
     });
+
+    compat = true
+}
+
+
+function test_max_nodes(targetDepth) {
+    if (chart == undefined) {
+        return false;
+    }
+
+    nodes = chart.getChartState().allNodes
+    if (nodes == undefined || nodes == []) {
+        return false;
+    }
+    var idVisited = []
+    var count = 0;
+    nodes.forEach((node) => {
+        id = node.data.personId
+        if (node.depth == targetDepth && !idVisited.includes(id)) {
+            idVisited.push(id)
+            count = count + 1
+            if (node.data.spouseIds != undefined) {
+
+                count = count + node.data.spouseIds.length
+            }
+        }
+    });
+
+    return count
+}
+
+function test_all_max_nodes() {
+    if (chart == undefined) {
+        return false;
+    }
+
+    nodes = chart.getChartState().allNodes
+    if (nodes == undefined || nodes == []) {
+        return false;
+    }
+
+    nodes.forEach((node) => {
+        var count = test_max_nodes(node.depth);
+        if (count > treeConfiguration.maxNodes) {
+            document.querySelector('#max-node-alert').style.display = "block";
+            document.querySelector('#max-node-alert div.alert').innerHTML = "The number of persons (" + count + ") in generation " + node.depth + " exceed the max nodes available (" + treeConfiguration.maxNodes + ")";
+            disable_tools_bar()
+            return false;
+        }
+    });
+
+}
+
+function disable_tools_bar() {
+    const div = document.querySelector('#tools-bar');
+
+    // Disable all buttons inside the div
+    div.querySelectorAll('button').forEach(button => {
+        button.disabled = true;
+    });
+
+    // Disable all href elements inside the div
+    div.querySelectorAll('a').forEach(anchor => {
+        anchor.addEventListener('click', (e) => e.preventDefault()); // Prevent the default action
+        anchor.style.pointerEvents = 'none'; // Disable click
+        anchor.style.color = '#C0BEC6'; // Change appearance to indicate disabled
+        if (anchor.querySelector('i') != null) {
+            anchor.querySelector('i').style.color = "#C0BEC6"
+        }
+
+    });
+}
+
+
+function test_max_generation() {
+    if (chart == undefined) {
+        return false;
+    }
+
+    nodes = chart.getChartState().allNodes
+    if (nodes == undefined || nodes == []) {
+        return false;
+    }
+
+    const maxDepth = Math.max(...nodes.map(item => item.depth));
+    if(maxDepth > treeConfiguration.maxGenerations){
+        document.querySelector('#max-generations-alert').style.display = "block";
+        document.querySelector('#max-generations-alert div.alert').innerHTML = "The number of generations (" + maxDepth + ") exceed the max generations available (" + treeConfiguration.maxGenerations + ")";
+        disable_tools_bar()
+    }
+
+    return maxDepth
 }

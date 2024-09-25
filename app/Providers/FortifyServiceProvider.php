@@ -15,6 +15,8 @@ use Laravel\Fortify\Fortify;
 
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\RegisterResponse;
+use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
+
 
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -38,6 +40,18 @@ class FortifyServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        $this->app->instance(TwoFactorLoginResponse::class, new class implements TwoFactorLoginResponse {
+            public function toResponse($request)
+            {
+                if(auth()->user()->hasRole('admin')){
+                    return redirect()->route('admin.dashboard.index');
+                }
+                if(auth()->user()->hasRole('user')){
+                    return redirect()->route('users.dashboard.index');
+                }
+            }
+        });
         
         $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
             public function toResponse($request)
@@ -50,6 +64,8 @@ class FortifyServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        
     }
 
     /**
@@ -88,6 +104,14 @@ class FortifyServiceProvider extends ServiceProvider
             $pageConfigs = ['myLayout' => 'blank'];
             return view('auth.reset-password', ['pageConfigs' => $pageConfigs]);
         });
+
+        Fortify::confirmPasswordView(function () {
+            return view('auth.confirm-password',['pageConfigs' => ['myLayout' => 'blank']]);
+        });
+
+        Fortify::twoFactorChallengeView(function () {
+            return view('auth.two-factor-challenge',['pageConfigs' => ['myLayout' => 'blank']]);
+         });
 
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);

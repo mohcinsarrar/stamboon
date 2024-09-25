@@ -3575,8 +3575,15 @@ var t, e;
                     e(t.cloneNode(!0));
                 });
             }
-            svgToImage(t, e) {
-                const n = [4960, 3508];
+            svgToImage(t, e, format) {
+                var n;
+                if(format == null){
+                    n = [4960, 3508];
+                }
+                else{
+                    n = format;
+                }
+                
                 this.cloneSvg(t.get().node())
                     .then((e) => {
                         this.copyStylesInline(t.get().node(), e);
@@ -3585,7 +3592,66 @@ var t, e;
                             a = Math.max(n[1], r[3]);
                         return e.setAttribute("width", "" + i), e.setAttribute("height", "" + a), e.setAttribute("viewBox", "" + r), this.convertToDataUrl(e, i, a);
                     })
-                    .then((t) => this.triggerDownload(t, e))
+                    .then((t) => {this.triggerDownload(t, e)})
+                    .catch(() => {
+                        console.log("Failed to save chart as PNG image");
+                    });
+            }
+            svgToPDF(t, e,orientation,format) {
+                var n = [4960, 3508];
+                
+                this.cloneSvg(t.get().node())
+                    .then((e) => {
+                        this.copyStylesInline(t.get().node(), e);
+                        const r = this.calculateViewBox(t.get().node()),
+                            i = Math.max(n[0], r[2]),
+                            a = Math.max(n[1], r[3]);
+                        return e.setAttribute("width", "" + i), e.setAttribute("height", "" + a), e.setAttribute("viewBox", "" + r), this.convertToDataUrl(e, i, a);
+                    })
+                    .then((t) => {
+                        var pdf = new jspdf.jsPDF({ orientation: orientation, unit: 'px', format: format });
+                        var img = new Image();
+                        img.src = t;
+                        img.onload = function () {
+
+                            // get pdf sizes
+                            var pageWidth = pdf.internal.pageSize.getWidth();
+                            var pageHeight = pdf.internal.pageSize.getHeight();
+
+                            const imgAspectRatio = img.width / img.height;
+                            const pageAspectRatio = pageWidth / pageHeight;
+
+                            // compute image sizes to fit page and keep aspect ration
+                            let drawWidth, drawHeight;
+
+                            // Determine whether to scale based on width or height
+                            if (imgAspectRatio > pageAspectRatio) {
+                            // Scale based on width
+                            drawWidth = pageWidth;
+                            drawHeight = drawWidth / imgAspectRatio;
+                            } else {
+                            // Scale based on height
+                            drawHeight = pageHeight;
+                            drawWidth = drawHeight * imgAspectRatio;
+                            }
+
+                            // Center the image on the page
+                            const xOffset = (pageWidth - drawWidth) / 2;
+                            const yOffset = (pageHeight - drawHeight) / 2;
+
+
+                            pdf.addImage(
+                            img,
+                            'JPEG',
+                            5,
+                            5,
+                            drawWidth - 5,
+                            drawHeight - 5
+                            );
+                            pdf.save(e);
+
+                        };
+                     })
                     .catch(() => {
                         console.log("Failed to save chart as PNG image");
                     });
@@ -3803,6 +3869,7 @@ var t, e;
                                 .attr("startOffset", "25%");
                         i.append("tspan").text(e.data.name), this.truncateNames(i, e, 0);
                     }
+                    /*
                     if (e.data.alternativeNames.length) {
                         let r = this.createPathDefinition(n, 2, e),
                             i = t
@@ -3814,6 +3881,7 @@ var t, e;
                                 .classed("rtl", e.data.isAltRtl);
                         this.addAlternativeNames(i, e), this.truncateNames(i, e, 2);
                     }
+                    */
                     let r = this.createPathDefinition(n, 3, e),
                         i = t
                             .append("text")
@@ -4389,8 +4457,14 @@ var t, e;
             draw(t) {
                 (this._chart.data = t), this._chart.draw();
             }
-            exportPNG() {
-                this._chart.svg.export("png").svgToImage(this._chart.svg, "fan-chart.png");
+            exportPNG(format = null) {
+                if(format == null){
+                    this._chart.svg.export("png").svgToImage(this._chart.svg, "fan-chart.png",format);
+                }
+                else{
+                    this._chart.svg.export("png").svgToImage(this._chart.svg, "fan-chart.png",format);
+                }
+                
             }
             exportSVG() {
                 this._chart.svg.export("svg").svgToImage(this._chart.svg, this._cssFiles, "fan-chart.svg");

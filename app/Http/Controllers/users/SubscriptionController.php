@@ -8,14 +8,17 @@ use Illuminate\Support\Facades\Auth;
 use Mollie\Laravel\Facades\Mollie;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Pedigree;
+use App\Models\Tree;
+
 use Carbon\Carbon;
 
 class SubscriptionController extends Controller
 {
   public function index()
   {
-    $payment = Auth::user()->payment;
-    $products = Product::orderByRaw('CONVERT(amount, SIGNED) asc')->get();
+    $payment = Auth::user()->has_payment();
+    $products = Product::orderByRaw('CONVERT(price, SIGNED) asc')->get();
     return view('users.subscription.index',compact('payment','products'));
   }
 
@@ -25,18 +28,22 @@ class SubscriptionController extends Controller
 
         $product = Product::findOrFail($id);
         
-        if(Auth::user()->hasSubcription()){
-            $payment = Auth::user()->payment;
-            if($payment->product_id == $product->id){
+        $user = Auth::user();
+        if($user->has_payment()){
+            $current_payment = $user->has_payment();
+            if($current_payment->product_id == $product->id){
                 return back()->with('error','The selected Plan already purchased');
             }
+            else{
+                // user upgrade the subscription so set the current payment to expired
+                $upgrade = true;
+            }
         }
-
 
         $payment = Mollie::api()->payments->create([
             "amount" => [
                 "currency" => "USD",
-                "value" => number_format($product->amount, 2, '.', '') // You must send the correct number of decimals, thus we enforce the use of strings
+                "value" => (string)$product->price, // You must send the correct number of decimals, thus we enforce the use of strings
             ],
             "description" => $product->name,
             "redirectUrl" => route('users.subscription.success'),
@@ -50,6 +57,8 @@ class SubscriptionController extends Controller
         session()->put('productId', $product->id);
     
         // redirect customer to Mollie checkout page
+        
+        
         return redirect($payment->getCheckoutUrl(), 303);
     }
 
@@ -63,16 +72,27 @@ class SubscriptionController extends Controller
         $payment = Mollie::api()->payments->get($paymentId);
         if($payment->isPaid())
         {
-            if(Auth::user()->hasSubcription()){
-                $paymentObj = Auth::user()->payment;
-            }
-            else{
-                $paymentObj = new Payment();
-                
+            $user = Auth::user();
+            $upgrade = false;
+
+            if($user->has_payment()){
+                $current_payment = $user->has_payment();
+                if($current_payment->product_id == $product->id){
+                    return back()->with('error','The selected Plan already purchased');
+                }
+                else{
+                    // user upgrade the subscription so set the current payment to expired
+                    $upgrade = true;
+                }
             }
 
+            if($upgrade == true){
+                Payment::where('id',$current_payment->id)->update(['expired' => 1]);
+            }
+
+            $paymentObj = new Payment();
             $paymentObj->payment_id = $paymentId;
-            $paymentObj->user_id = Auth::user()->id;
+            $paymentObj->user_id = $user->id;
             $paymentObj->product_id = $productId;
             $paymentObj->currency = $payment->amount->currency;
             $paymentObj->payment_status = "Completed";
@@ -84,6 +104,19 @@ class SubscriptionController extends Controller
             session()->forget('paymentId');
             session()->forget('productId');
 
+            // add notification
+            $user->addNotification("subscription activated", "Your subscription to plan ".$product->name." paid with success");
+
+            // reset pedigree features
+            $pedigree = Pedigree::where('user_id',$user->id)->first();
+            $pedigree->print_number = 0;
+            $pedigree->save();
+
+            // reset fanchart features
+            $tree = Tree::where("user_id",$user->id)->first();
+            $tree->print_number = 0;
+            $tree->save();
+            
             return redirect()->route('users.subscription.index');
         } else {
             return redirect()->route('users.subscription.index');

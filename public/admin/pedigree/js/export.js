@@ -1,8 +1,27 @@
 
 
 $(document).on("click", "#export", function () {
+
+  var type = document.querySelector('#exportModal #type').value;
+  if (type == "pdf") {
+    document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
+    document.querySelector('#exportModal #orientationContainer').style.display = "block";
+    document.querySelector('#exportModal #formatContainer').style.display = "none";
+  }
+  else {
+    if (type == "png") {
+      document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
+      document.querySelector('#exportModal #orientationContainer').style.display = "none";
+      document.querySelector('#exportModal #formatContainer').style.display = "block";
+    }
+  }
+  
   d3.selectAll(".toolbar").remove();
   d3.selectAll(".node-button-g").attr('display','none');
+  if(chart == undefined){
+    show_toast('danger', 'error', "can't print, please add at least one person!")
+    return false
+  }
   var myModal = new bootstrap.Modal(document.getElementById('exportModal'))
   myModal.show()
 
@@ -32,18 +51,43 @@ $(document).on("change", "#exportModal #type", function () {
 $(document).on("click", "#exportBtn", function () {
   var type = document.querySelector('#exportModal #type').value;
 
-
-  if (type == "png") {
-    var format = document.querySelector('#exportModal #format').value;
-    exportGraph(format)
-  }
-  else {
-    if (type == "pdf") {
-      var format = document.querySelector('#exportModal #formatPdf').value;
-      var orientation = document.querySelector('#exportModal #orientation').value;
-      downloadPdf(format, orientation)
+  $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
-  }
+  });
+
+  $.ajax({
+      url: "/pedigree/print",
+      type: 'POST',
+      encode: true,
+      dataType: 'json',
+      success: function(data) {
+          if (data.error == false) {
+            if (type == "png") {
+              var format = document.querySelector('#exportModal #format').value;
+              exportGraph(format)
+            }
+            else {
+              if (type == "pdf") {
+                var format = document.querySelector('#exportModal #formatPdf').value;
+                var orientation = document.querySelector('#exportModal #orientation').value;
+                downloadPdf(format, orientation)
+              }
+            }
+            
+          } else {
+              show_toast('danger', 'error', "can't print, print limit reached!")
+          }
+
+      },
+      error: function(xhr, status, error) {
+          show_toast('danger', 'error', "can't print, please try again !")
+          return null;
+      }
+  });
+
+  
 
 
 });

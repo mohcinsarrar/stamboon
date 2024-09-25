@@ -13,10 +13,13 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Activity;
 use App\Models\Notification;
+use Carbon\Carbon;
+use App\Models\Payment;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +28,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'firstname',
+        'lastname',
         'email',
         'password',
         'verification_code',
@@ -56,21 +61,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /** Relations **/
 
-    public function payment(): HasOne
+    public function payments(): HasMany
     {
-        return $this->hasOne(Payment::class);
+        return $this->HasMany(Payment::class);
     }
 
-
-    public function hasSubcription()
-    {
-        if($this->payment == null){
-            return False;
-        }
-        else{
-            return True;
-        }
-    }
 
     public function setting(): HasOne
     {
@@ -125,5 +120,75 @@ class User extends Authenticatable implements MustVerifyEmail
             'subtitle' => $subtitle,
             'user_id' => $user_id
         ]);
+    }
+
+    public static function getNotification(){
+        
+        $notifications = Notification::where('user_id', Auth::user()->id)->get();
+
+        return $notifications;
+    }
+
+    public static function getNotificationUnread(){
+        
+        $notifications = Notification::where('user_id', Auth::user()->id)->where('read_at',null)->get();
+
+        return $notifications;
+    }
+
+    public function has_payment(){
+        // get all payments
+        $payments = $this->payments;
+
+        // change payment expired field
+        foreach($payments as $payment){
+            $createdAt = $payment->created_at;
+            $product_duration = $payment->product->duration;
+            
+            // Add the number of months to created_at
+            $futureDate = $createdAt->addMonths($product_duration);
+
+            if (!$futureDate->greaterThan(Carbon::today())) {
+                Payment::where('id',$payment->id)->update(['expired' => 1]);
+            }
+        }
+
+        // test if a not expired payment exist for the current user
+        $payments = $this->payments;
+        foreach($payments as $payment){
+
+            if($payment->expired == 0){
+                return $payment;
+            }
+        }
+
+        return false;
+    }
+
+    public function product_type($type){
+
+        if($this->has_payment() != false){
+            $payment = $this->has_payment();
+            $product = $payment->product;
+            if($type == 'fanchart'){
+                if($product->fanchart == true){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            if($type == 'pedigree'){
+                if($product->pedigree == true){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+
+        return false;
     }
 }

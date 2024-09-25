@@ -22,7 +22,8 @@
 @section('title', 'Page 2')
 
 @section('vendor-script')
-    <script src="{{asset('assets/vendor/libs/block-ui/block-ui.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
     <script src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js">
     </script>
 
@@ -30,30 +31,30 @@
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('js/webtree/fan-chart.js') }}?v={{ time() }}"></script>
-    <script src="{{asset('assets/vendor/libs/cleavejs/cleave.js')}}"></script>
+    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
 
 
 @endsection
 
 @section('page-script')
 
-@if(isset($status) && $status == 'waiting')
-<script>
-    $('.blocking-card').block({
-        message: '',
-        timeout: 0,
-        css: {
-          backgroundColor: 'transparent',
-          border: '0',
-          cursor: 'default'
-        },
-        overlayCSS: {
-          opacity: 0.5,
-          cursor: 'default'
-        }
-      });
-</script>
-@endif
+    @if (isset($status) && $status == 'waiting')
+        <script>
+            $('.blocking-card').block({
+                message: '',
+                timeout: 0,
+                css: {
+                    backgroundColor: 'transparent',
+                    border: '0',
+                    cursor: 'default'
+                },
+                overlayCSS: {
+                    opacity: 0.5,
+                    cursor: 'default'
+                }
+            });
+        </script>
+    @endif
     <script>
         // Check selected custom option
         window.Helpers.initCustomOptionCheck();
@@ -67,8 +68,6 @@
     <script src="{{ asset('js/webtree/js/edit-image.js') }}?v={{ time() }}"></script>
     <script>
         // init settings
-        $('#generations').val('4');
-        $('#template').val("gradient")
         document.getElementById("show_empty_node").checked == true
     </script>
     <script>
@@ -157,12 +156,12 @@
     </script>
 
     <script>
-        function send_tree(){
+        function send_tree() {
             var template = document.querySelector('#sendTree input[name="template_send"]:checked').value;
             var generation = document.querySelector('#generations').value;
             Swal.fire({
                 title: 'Are you sure?',
-                text : 'you cannot change your family tree after send it',
+                text: 'you cannot change your family tree after send it',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, send it!',
@@ -184,9 +183,9 @@
                         type: 'POST',
                         encode: true,
                         dataType: 'json',
-                        data:{
-                            'template' : template,
-                            'generation' : generation
+                        data: {
+                            'template': template,
+                            'generation': generation
                         },
                         success: function(data) {
                             if (data.error == false) {
@@ -208,50 +207,164 @@
                 }
             });
 
-            
+
+        }
+    </script>
+    <script>
+        $(document).on("click", "#export", function() {
+
+            var type = document.querySelector('#exportModal #type').value;
+            if (type == "pdf") {
+                document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
+                document.querySelector('#exportModal #orientationContainer').style.display = "block";
+                document.querySelector('#exportModal #formatContainer').style.display = "none";
+            } else {
+                if (type == "png") {
+                    document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
+                    document.querySelector('#exportModal #orientationContainer').style.display = "none";
+                    document.querySelector('#exportModal #formatContainer').style.display = "block";
+                }
+            }
+
+            var myModal = new bootstrap.Modal(document.getElementById('exportModal'))
+            myModal.show()
+
+        });
+
+        $(document).on("change", "#exportModal #type", function() {
+            var type = document.querySelector('#exportModal #type').value;
+            if (type == "pdf") {
+                document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
+                document.querySelector('#exportModal #orientationContainer').style.display = "block";
+                document.querySelector('#exportModal #formatContainer').style.display = "none";
+            } else {
+                if (type == "png") {
+                    document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
+                    document.querySelector('#exportModal #orientationContainer').style.display = "none";
+                    document.querySelector('#exportModal #formatContainer').style.display = "block";
+                }
+            }
+
+
+        });
+
+        $(document).on("click", "#exportBtn", function() {
+            var type = document.querySelector('#exportModal #type').value;
+            const modal = document.getElementById('exportModal')
+            const bsmodal = bootstrap.Modal.getInstance(modal)
+            bsmodal.hide()
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: "/fanchart/print",
+                type: 'POST',
+                encode: true,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.error == false) {
+                        if (type == "png") {
+                            var format = document.querySelector('#exportModal #format').value;
+                            exportGraph(format)
+                        } else {
+                            if (type == "pdf") {
+                                var format = document.querySelector('#exportModal #formatPdf').value;
+                                var orientation = document.querySelector('#exportModal #orientation')
+                                    .value;
+                                downloadPdf(format, orientation)
+                            }
+                        }
+
+                    } else {
+                        show_toast('danger', 'error', "can't print, print limit reached!")
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    show_toast('danger', 'error', "can't print, please try again !")
+                    return null;
+                }
+            });
+
+
+
+        });
+
+        function exportGraph(format) {
+
+            var max_output_png = []
+            max_output_png[1] = '1344 x 839 px';
+            max_output_png[2] = '2688 x 1678 px';
+            max_output_png[3] = '4032 x 2517 px';
+            max_output_png[4] = '5376 x 3356 px';
+            max_output_png[5] = '6720 x 4195 px';
+
+
+            output_png = max_output_png[format];
+            output_png = output_png.replace(' px', '');
+            var format_array = output_png.split(" x ");
+            var x = parseInt(format_array[0]);
+            var y = parseInt(format_array[1]);
+
+            var format_array = [x, y]
+
+            fanChart.exportPNG(format_array)
+
+        }
+
+        function downloadPdf(format, orientation) {
+
+            fanChart._chart.svg.export('png').svgToPDF(fanChart._chart.svg, "fan-chart.pdf", orientation, format);
         }
     </script>
 @endsection
 
 
 @section('content')
-<!-- send tree modal-->
+    @include('users.pedigree.export')
+    <!-- send tree modal-->
     <div class="modal fade" id="sendTree" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel3">Choose your template</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md mb-md-0 mb-2">
-                      <div class="form-check custom-option custom-option-image custom-option-image-radio">
-                        <label class="form-check-label custom-option-content" for="customRadioImg1">
-                          <span class="custom-option-body">
-                            <img src="{{ asset('storage/templates/template1.png') }}" alt="radioImg" />
-                          </span>
-                        </label>
-                        <input name="template_send" class="form-check-input" type="radio" value="template1" id="customRadioImg1" checked />
-                      </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel3">Choose your template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md mb-md-0 mb-2">
+                            <div class="form-check custom-option custom-option-image custom-option-image-radio">
+                                <label class="form-check-label custom-option-content" for="customRadioImg1">
+                                    <span class="custom-option-body">
+                                        <img src="{{ asset('storage/templates/template1.png') }}" alt="radioImg" />
+                                    </span>
+                                </label>
+                                <input name="template_send" class="form-check-input" type="radio" value="template1"
+                                    id="customRadioImg1" checked />
+                            </div>
+                        </div>
+                        <div class="col-md mb-md-0 mb-2">
+                            <div class="form-check custom-option custom-option-image custom-option-image-radio">
+                                <label class="form-check-label custom-option-content" for="customRadioImg2">
+                                    <span class="custom-option-body">
+                                        <img src="{{ asset('storage/templates/template2.png') }}" alt="radioImg" />
+                                    </span>
+                                </label>
+                                <input name="template_send" class="form-check-input" type="radio" value="template2"
+                                    id="customRadioImg2" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md mb-md-0 mb-2">
-                      <div class="form-check custom-option custom-option-image custom-option-image-radio">
-                        <label class="form-check-label custom-option-content" for="customRadioImg2">
-                          <span class="custom-option-body">
-                            <img src="{{ asset('storage/templates/template2.png') }}" alt="radioImg" />
-                          </span>
-                        </label>
-                        <input name="template_send" class="form-check-input" type="radio" value="template2" id="customRadioImg2" />
-                      </div>
-                    </div>
-                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="send_tree()">Send</button>
+                </div>
             </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="send_tree()">Send</button>
-            </div>
-        </div>
         </div>
     </div>
     <!-- Offcanvas to add new user -->
@@ -341,7 +454,7 @@
         </div>
     </div>
     <!-- preview -->
-    <div class="modal fade" id="previewImage" tabindex="-1" aria-hidden="true"  style="z-index:10000;">>
+    <div class="modal fade" id="previewImage" tabindex="-1" aria-hidden="true" style="z-index:10000;">>
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -349,7 +462,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img id="previewImageContainer" class="rounded-circle d-block mx-auto" src=""  style="height: 255px;object-fit: cover;"/>
+                    <img id="previewImageContainer" class="rounded-circle d-block mx-auto" src=""
+                        style="height: 255px;object-fit: cover;" />
                 </div>
             </div>
         </div>
@@ -371,10 +485,10 @@
                                 id="save_img_placeholder">Save</button>
                         </div>
                         <div class="row" id="portrait_check_container">
-    
+
                         </div>
                     </div>
-                    
+
                     <!-- import images -->
                     <img src="" class="d-none" id="img_placeholder">
                     <div class="row border-top mt-4">
@@ -397,27 +511,28 @@
             </div>
         </div>
     </div>
-    @if(isset($status) && $status == 'waiting')
-    <div class="row mx-0">
-        <div class="alert alert-primary alert-dismissible" role="alert">
-            <h5 class="alert-heading mb-2">Your familly tree — waiting!</h5>
-            <p class="mb-0">Your family tree has been sent, you will receive in your email your final product</p>
-            <p class="mb-0">Your can't modify your tree until complete, </p>
-            <p class="mb-0">If you want to abort the operation and continue editing your tree contact the administration</p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-          </div>
-    </div>
+    @if (isset($status) && $status == 'waiting')
+        <div class="row mx-0">
+            <div class="alert alert-primary alert-dismissible" role="alert">
+                <h5 class="alert-heading mb-2">Your familly tree — waiting!</h5>
+                <p class="mb-0">Your family tree has been sent, you will receive in your email your final product</p>
+                <p class="mb-0">Your can't modify your tree until complete, </p>
+                <p class="mb-0">If you want to abort the operation and continue editing your tree contact the
+                    administration</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                </button>
+            </div>
+        </div>
     @endif
-    @if(isset($status) && $status == 'completed')
-    <div class="row mx-0">
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <h5 class="alert-heading mb-2">Your familly tree — Completed!</h5>
-            <p class="mb-0">Your family tree completed, you will find your final product in your email</p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-          </div>
-    </div>
+    @if (isset($status) && $status == 'completed')
+        <div class="row mx-0">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <h5 class="alert-heading mb-2">Your familly tree — Completed!</h5>
+                <p class="mb-0">Your family tree completed, you will find your final product in your email</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                </button>
+            </div>
+        </div>
     @endif
 
     <!-- settings -->
@@ -425,8 +540,8 @@
         <div class="card-header d-flex justify-content-between border-bottom">
             <h5 class="card-title m-0 me-2">Settings</h5>
             <div>
-                <button type="button" id="send" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#sendTree">Send Your Family
-                    Tree</button>
+                <button type="button" id="export" class="btn btn-primary waves-effect waves-light"><i
+                        class="ti ti-printer me-2"></i>Print</button>
             </div>
         </div>
         <div class="card-body mt-3">
@@ -445,19 +560,31 @@
                 <div class="col-md-3">
                     <label for="generations" class="form-label">Generations</label>
                     <select class="form-select" id="generations">
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4" selected>4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
+                        @if ($max_generation >= 2)
+                            <option value="2" {{ $generation == '2' ? 'selected' : '' }}>2</option>
+                        @endif
+                        @if ($max_generation >= 3)
+                            <option value="3" {{ $generation == '3' ? 'selected' : '' }}>3</option>
+                        @endif
+                        @if ($max_generation >= 4)
+                            <option value="4" {{ $generation == '4' ? 'selected' : '' }}>4</option>
+                        @endif
+                        @if ($max_generation >= 5)
+                            <option value="5" {{ $generation == '5' ? 'selected' : '' }}>5</option>
+                        @endif
+                        @if ($max_generation >= 6)
+                            <option value="6" {{ $generation == '6' ? 'selected' : '' }}>6</option>
+                        @endif
+                        @if ($max_generation >= 7)
+                            <option value="7" {{ $generation == '7' ? 'selected' : '' }}>7</option>
+                        @endif
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="template" class="form-label">Template</label>
                     <select class="form-select" id="template">
-                        <option value="basic" selected>Basic</option>
-                        <option value="gradient">gradient</option>
+                        <option value="basic" {{ $template == 'basic' ? 'selected' : '' }}>Basic</option>
+                        <option value="gradient" {{ $template == 'gradient' ? 'selected' : '' }}>Gradient</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -467,7 +594,7 @@
                         <label class="form-check-label" for="show_empty_node" value="show"></label>
                     </div>
                 </div>
-                
+
             </div>
 
         </div>

@@ -15,6 +15,8 @@ return new class extends Migration
             //
             $table->timestamp('password_changed_at')->nullable();
             $table->string('image')->nullable();
+            $table->string('firstname')->nullable();
+            $table->string('lastname')->nullable();
         });
     }
 

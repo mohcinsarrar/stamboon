@@ -41,46 +41,46 @@
                         </div>
                         <div class="tab-pane fade" id="navs-top-choose" role="tabpanel">
                             <div class="row">
-                                @for ($i = 1; $i <= 4; $i++)
-                                    <div class="col-md-3 mb-md-4 mb-5">
+                                @for ($i = 1; $i <= 6; $i++)
+                                    <div class="col-md-2 mb-md-4 mb-5">
                                         <div
-                                            class="form-check custom-option custom-option-image custom-option-image-radio checked">
+                                            class="form-check custom-option custom-option-image custom-option-image-check">
+                                            <input class="form-check-input" name="placeholder_images" type="checkbox"
+                                                id="placeholder_images{{ $i }}"
+                                                value="female{{ $i }}">
                                             <label class="form-check-label custom-option-content"
-                                                for="customRadioImg{{ $i }}">
+                                                for="placeholder_images{{ $i }}">
                                                 <span class="custom-option-body">
                                                     <img src="{{ asset('storage/placeholder_portraits/female' . $i . '.jpg') }}"
-                                                        alt="radioImg" style="height: 320px;object-fit: cover;">
+                                                        alt="cbImg" style="height: 190px;object-fit: cover;">
                                                 </span>
                                             </label>
-                                            <input name="customRadioImage" class="form-check-input" type="radio"
-                                                value="female{{ $i }}"
-                                                id="customRadioImg{{ $i }}">
                                         </div>
                                     </div>
                                 @endfor
 
-                                @for ($i = 1; $i <= 4; $i++)
-                                    <div class="col-md-3 mb-md-4 mb-5">
-                                        <div
-                                            class="form-check custom-option custom-option-image custom-option-image-radio checked">
-                                            <label class="form-check-label custom-option-content"
-                                                for="customRadioImg{{ $i + 5 }}">
-                                                <span class="custom-option-body">
-                                                    <img src="{{ asset('storage/placeholder_portraits/man' . $i . '.jpg') }}"
-                                                        alt="radioImg" style="height: 320px;object-fit: cover;">
-                                                </span>
-                                            </label>
-                                            <input name="customRadioImage" class="form-check-input" type="radio"
-                                                value="man{{ $i }}"
-                                                id="customRadioImg{{ $i + 5 }}">
-                                        </div>
+                                @for ($i = 1; $i <= 6; $i++)
+                                <div class="col-md-2 mb-md-4 mb-5">
+                                    <div
+                                        class="form-check custom-option custom-option-image custom-option-image-check">
+                                        <input class="form-check-input" name="placeholder_images" type="checkbox"
+                                            id="placeholder_images{{ $i + 7}}"
+                                            value="man{{ $i }}">
+                                        <label class="form-check-label custom-option-content"
+                                            for="placeholder_images{{ $i + 7}}">
+                                            <span class="custom-option-body">
+                                                <img src="{{ asset('storage/placeholder_portraits/man' . $i . '.jpg') }}"
+                                                    alt="cbImg" style="height: 190px;object-fit: cover;">
+                                            </span>
+                                        </label>
                                     </div>
+                                </div>
                                 @endfor
                             </div>
                             <div class="row justify-content-end">
                                 <div class="col-auto">
                                     <button type="button" class="btn btn-primary waves-effect waves-light col-auto"
-                                        id="save_image_placeholder" disabled>Save</button>
+                                        id="save_image_placeholder">Save</button>
                                 </div>
                             </div>
                         </div>

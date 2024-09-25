@@ -3,7 +3,7 @@
  */
 
  'use strict';
- const formAuthentication = document.querySelector('#formAuthentication');
+ const formAuthentication = document.querySelector('#changePassword');
  
  document.addEventListener('DOMContentLoaded', function (e) {
    (function () {
@@ -11,34 +11,17 @@
      if (formAuthentication) {
        const fv = FormValidation.formValidation(formAuthentication, {
          fields: {
-          firstname: {
-            validators: {
-              notEmpty: {
-                message: 'Please enter your first name'
-              }
-            }
-          },
-          lastname: {
-            validators: {
-              notEmpty: {
-                message: 'Please enter your last name'
-              }
-            }
-          },
-           email: {
-             validators: {
-               notEmpty: {
-                 message: 'Please enter your email'
-               },
-               emailAddress: {
-                 message: 'Please enter valid email address'
-               }
-             }
-           },
+            password_current: {
+                validators: {
+                    notEmpty: {
+                      message: 'Please enter your current password',
+                    }
+                },
+              },
            password: {
             validators: {
                 notEmpty: {
-                    message: 'Please enter your password',
+                    message: 'Please enter your new password',
                 },
                 callback: {
                   callback: function (value, validator, $field) {
@@ -97,14 +80,7 @@
                   message: 'Password confirmation and password are not the same'
                 }
             },
-          },
-           terms: {
-             validators: {
-               notEmpty: {
-                 message: 'Please agree terms & conditions'
-               }
-             }
-           }
+          }
          },
          plugins: {
            trigger: new FormValidation.plugins.Trigger(),

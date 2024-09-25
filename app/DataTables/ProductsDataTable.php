@@ -23,22 +23,146 @@ class ProductsDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('actions', 'admin.products.actions')
-            ->editColumn('features', function(Product $model) {
+            ->editColumn('chart_type', function(Product $model) {
 
-                $raw_features = '<ul class="list-group">';
-
-                foreach($model->features as $feature){
-                    $raw_features .= '<li class="list-group-item d-flex align-items-center border-0">';
-                    $raw_features .= '<i class="ti ti-circle-check ti-sm me-2"></i>';
-                    $raw_features .= $feature;
-                    $raw_features .= '</li>';
+                $chart_type = "";
+                if($model->fanchart == true){
+                    $chart_type .= 'Fanchart,';
                 }
 
-                $raw_features .= "</ul>";
-                return $raw_features;
+                if($model->pedigree == true){
+                    $chart_type .= ' Pedigree';
+                }
+
+                return $chart_type;
+            })
+            ->editColumn('fanchart_features', function(Product $model) {
+
+                if($model->fanchart != true){
+                    return '';
+                }
+
+
+                $max_output_png = [
+                    '1' => '1344 x 839 px',
+                    '2' => '2688 x 1678 px',
+                    '3' => '4032 x 2517 px',
+                    '4' => '5376 x 3356 px',
+                    '5' => '6720 x 4195 px',
+                ];
+
+                $max_output_pdf = [
+                    'a0' => 'A0',
+                    'a1' => 'A1',
+                    'a2' => 'A2',
+                    'a3' => 'A3',
+                    'a4' => 'A4',
+                ];
+
+
+                $print_type = "";
+                if($model->fanchart_output_png == true){
+                    $print_type .= 'PNG,';
+                }
+
+                if($model->fanchart_output_pdf == true){
+                    $print_type .= ' PDF';
+                }
+
+                $features = "<ul>";
+                $features .= "<li>Max generations : ".$model->fanchart_max_generation.'</li>';
+                $features .= "<li>Print type : ".$print_type.'</li>';
+                $features .= "<li>Max png size : ".$max_output_png[$model->fanchart_max_output_png].'</li>';
+                $features .= "<li>Max pdf size : ".$max_output_pdf[$model->fanchart_max_output_pdf].'</li>';
+                $features .= "</ul>";
+                return $features;
 
             })
-            ->rawColumns(['actions','features'])
+            ->editColumn('pedigree_features', function(Product $model) {
+
+                if($model->pedigree != true){
+                    return '';
+                }
+
+                $max_output_png = [
+                    '1' => '1344 x 839 px',
+                    '2' => '2688 x 1678 px',
+                    '3' => '4032 x 2517 px',
+                    '4' => '5376 x 3356 px',
+                    '5' => '6720 x 4195 px',
+                ];
+
+                $max_output_pdf = [
+                    'a0' => 'A0',
+                    'a1' => 'A1',
+                    'a2' => 'A2',
+                    'a3' => 'A3',
+                    'a4' => 'A4',
+                ];
+
+                $print_type = "";
+                if($model->pedigree_output_png == true){
+                    $print_type .= 'PNG,';
+                }
+
+                if($model->pedigree_output_pdf == true){
+                    $print_type .= ' PDF';
+                }
+
+                $features = "<ul>";
+                $features = "<li>Max generations : ".$model->pedigree_max_generation.'</li>';
+                $features .= "<li>Max nodes : ".$model->max_nodes.'</li>';
+                $features .= "<li>Print type : ".$print_type.'</li>';
+                $features .= "<li>Max png size : ".$max_output_png[$model->pedigree_max_output_png].'</li>';
+                $features .= "<li>Max pdf size : ".$max_output_pdf[$model->pedigree_max_output_pdf].'</li>';
+                $features .= "</ul>";
+
+                return $features;
+
+            })
+            /*
+            ->editColumn('print_type', function(Product $model) {
+
+                $print_type = "";
+                if($model->fanchart_output_png == true){
+                    $print_type .= 'PNG,';
+                }
+
+                if($model->output_pdf == true){
+                    $print_type .= ' PDF';
+                }
+
+                return $print_type;
+
+            })
+            ->editColumn('max_output_png', function(Product $model) {
+
+                $max_output_png = [
+                    '1' => '1344 x 839 px',
+                    '2' => '2688 x 1678 px',
+                    '3' => '4032 x 2517 px',
+                    '4' => '5376 x 3356 px',
+                    '5' => '6720 x 4195 px',
+                ];
+
+                return $max_output_png[$model->max_output_png];
+
+            })
+            ->editColumn('max_output_pdf', function(Product $model) {
+
+                $max_output_pdf = [
+                    'a0' => 'A0',
+                    'a1' => 'A1',
+                    'a2' => 'A2',
+                    'a3' => 'A3',
+                    'a4' => 'A4',
+                ];
+
+                return $max_output_pdf[$model->max_output_pdf];
+
+            })
+            */
+            ->rawColumns(['actions','chart_type','fanchart_features','pedigree_features'])
             ->setRowId('id');
     }
 
@@ -92,9 +216,15 @@ class ProductsDataTable extends DataTable
     {
         return [
             Column::make('name'),
-            Column::make('amount'),
+            Column::make('price'),
             Column::make('description'),
-            Column::make('features'),
+            Column::computed('chart_type')->title('Chart types'),
+            Column::make('duration'),
+            Column::make('print_number')->title('Max print'),
+
+            Column::make('fanchart_features')->title('Fanchart features'),
+            Column::make('pedigree_features')->title('pedigree features'),
+
             Column::make('created_at'),
             Column::computed('actions')
                   ->exportable(false)

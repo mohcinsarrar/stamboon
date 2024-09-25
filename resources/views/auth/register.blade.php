@@ -48,6 +48,14 @@ $customizerHidden = 'customizer-hide';
           <form id="formAuthentication" class="mb-3" action="{{route('register')}}" method="POST">
             @csrf
             <div class="mb-3">
+              <label for="firstname" class="form-label">First name</label>
+              <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter your first name">
+            </div>
+            <div class="mb-3">
+              <label for="lastname" class="form-label">Last name</label>
+              <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your last name">
+            </div>
+            <div class="mb-3">
               <label for="email" class="form-label">Email</label>
               <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email">
             </div>

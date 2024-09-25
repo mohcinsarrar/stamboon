@@ -20,6 +20,7 @@ use App\Exports\TreeExport;
 use App\Models\User;
 use App\Models\Tree;
 use App\Models\Node;
+use App\Models\Product;
 
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
@@ -59,6 +60,28 @@ class FanchartController extends Controller
 
 
     }
+
+    public function change_generations(Request $request){
+        $user = Auth::user();
+        $tree = Tree::where("user_id",$user->id)->where('status','!=','waiting')->first();
+
+        $tree->generation = $request->generation;
+        $tree->save();
+
+        return response()->json(['error'=>false, 'msg' => 'generation changed']);
+
+    }
+
+    public function change_template(Request $request){
+        $user = Auth::user();
+        $tree = Tree::where("user_id",$user->id)->where('status','!=','waiting')->first();
+
+        $tree->template = $request->template;
+        $tree->save();
+
+        return response()->json(['error'=>false, 'msg' => 'template changed']);
+
+    }
     
 
     public function importexcel(Request $request){
@@ -81,7 +104,7 @@ class FanchartController extends Controller
             $file = $request->file('file');
             Excel::import(new TreeImport, $file);
             $user->addActivity('Family Tree imported','family tree imported with success via excel file');
-            return response()->json(['error'=>false,'msg' => 'File Added','redirect_url'=>route('trees.index')]);
+            return response()->json(['error'=>false,'msg' => 'File Added','redirect_url'=>route('users.fanchart.index')]);
 
         }
         else{
@@ -324,6 +347,49 @@ class FanchartController extends Controller
 
             $user = Auth::user();
             $tree = Tree::where("user_id",$user->id)->first();
+
+            // get product features
+            $current_payment = $user->has_payment();
+            if($current_payment == false){
+                return redirect()->route('users.dashboard');
+            }
+            $product = Product::where('id',$current_payment->product_id)->first();
+
+            $fanchart_output_png = $product->fanchart_output_png;
+            $fanchart_output_pdf = $product->fanchart_output_pdf;
+            
+            $print_types = [];
+            if($fanchart_output_png == true){
+                $print_types[] = 'png';
+            }
+            if($fanchart_output_pdf == true){
+                $print_types[] = 'pdf';
+            }
+
+            $fanchart_max_output_png = $product->fanchart_max_output_png;
+            $fanchart_max_output_pdf = $product->fanchart_max_output_pdf;
+
+            $max_output_png = [
+                '1' => '1344 x 839 px',
+                '2' => '2688 x 1678 px',
+                '3' => '4032 x 2517 px',
+                '4' => '5376 x 3356 px',
+                '5' => '6720 x 4195 px',
+            ];
+            $selected_output_png = array_slice($max_output_png, 0, $fanchart_max_output_png, true);
+
+            $max_output_pdf = [
+                'a0' => 'A0',
+                'a1' => 'A1',
+                'a2' => 'A2',
+                'a3' => 'A3',
+                'a4' => 'A4',
+            ];
+            $selected_output_pdf = array_slice($max_output_pdf, str_replace('a', '', $fanchart_max_output_pdf), 5,true);
+
+            $max_generation = $product->fanchart_max_generation;
+
+
             if($tree != null){
                 return view('users.fanchart.index',[
                     'id'                => uniqid(),
@@ -339,12 +405,45 @@ class FanchartController extends Controller
                     'javascript'        => asset('js/webtree/fan-chart.js'),
                     'showColorGradients'=> true,
                     'status'            => $tree->status,
+                    'print_types' => $print_types,
+                    'selected_output_png' => $selected_output_png,
+                    'selected_output_pdf' => $selected_output_pdf,
+                    'generation' => $tree->generation,
+                    'template' => $tree->template,
+                    'max_generation' => $max_generation,
                 ]);
             }
             else{
-                return view('users.fanchart.index',[]);
+                return view('users.fanchart.index',[
+                    'print_types' => $print_types,
+                    'selected_output_png' => $selected_output_png,
+                    'selected_output_pdf' => $selected_output_pdf,
+                    'generation' => $tree->generation,
+                    'template' => $tree->template,
+                    'max_generation' => $max_generation,
+                ]);
             }
 
+        
+    }
+
+    public function print(Request $request){
+        $user = Auth::user();
+        $tree = Tree::where("user_id",$user->id)->first();
+        $current_payment = $user->has_payment();
+        if($current_payment == false){
+            return redirect()->route('users.dashboard');
+        }
+        $product = Product::where('id',$current_payment->product_id)->first();
+        // limit reached
+        if($tree->print_number >= $product->print_number){
+            return response()->json(['error'=>true,'msg' => 'limit reached']);
+        }
+        else{
+            $tree->print_number = $tree->print_number + 1;
+            $tree->save();
+            return response()->json(['error'=>false,'msg' => 'limit unreached']);
+        }
         
     }
 

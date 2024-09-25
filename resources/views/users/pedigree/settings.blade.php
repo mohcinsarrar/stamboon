@@ -172,7 +172,7 @@
                             <div class="row">
                                 <div class="col-md">
                                     <div
-                                        class="form-check custom-option custom-option-image custom-option-image-check">
+                                        class="form-check custom-option custom-option-image custom-option-image-check checked">
                                         <input class="form-check-input customimagescheckbox" type="checkbox"
                                             name="node_template" value="4" id="customCheckboxImg4">
                                         <label class="form-check-label custom-option-content" for="customCheckboxImg4"
@@ -186,7 +186,7 @@
                                 </div>
                                 <div class="col-md mb-md-0 mb-5">
                                     <div
-                                        class="form-check custom-option custom-option-image custom-option-image-check checked">
+                                        class="form-check custom-option custom-option-image custom-option-image-check">
                                         <input class="form-check-input customimagescheckbox" type="checkbox"
                                             name="node_template" value="1" id="customCheckboxImg1">
                                         <label class="form-check-label custom-option-content" for="customCheckboxImg1"

@@ -32,25 +32,70 @@ Route::get('/admin/create', function () {
 
 Route::get('/products/createseed', function () {
     $product = Product::create([
-        'name' => 'Basic',
-        'amount' => 30,
-        'description' => 'Basic',
-        'features' => ['Basic'],
+        'name' => "Basic",
+        'description' => "Basic",
+        'fanchart' => 1,
+        'pedigree' => 0,
+        'duration' => 3,
+        'print_number' => 25,
+        'price' => 14.95,
+        'fanchart_max_generation' => 7,
+        'pedigree_max_generation' => 7,
+        'max_nodes' => 50,
+        'fanchart_max_output_png' => "5",
+        'pedigree_max_output_png' => "4",
+        'fanchart_max_output_pdf' => "a0",
+        'pedigree_max_output_pdf' => "a1",
+        'fanchart_output_png' => 1,
+        'pedigree_output_png' => 1,
+        'fanchart_output_pdf' => 1,
+        'pedigree_output_pdf' => 1,
     ]);
 
     $product = Product::create([
-        'name' => 'Standard',
-        'amount' => 100,
-        'description' => 'Standard',
-        'features' => ['Standard'],
+        'name' => "Standard",
+        'description' => "Standard",
+        'fanchart' => 1,
+        'pedigree' => 1,
+        'duration' => 3,
+        'print_number' => 100,
+        'price' => 25.95,
+        'fanchart_max_generation' => 7,
+        'pedigree_max_generation' => 25,
+        'max_nodes' => 100,
+        'fanchart_max_output_png' => "5",
+        'pedigree_max_output_png' => "5",
+        'fanchart_max_output_pdf' => "a0",
+        'pedigree_max_output_pdf' => "a0",
+        'fanchart_output_png' => 1,
+        'pedigree_output_png' => 1,
+        'fanchart_output_pdf' => 1,
+        'pedigree_output_pdf' => 1,
     ]);
 
     $product = Product::create([
-        'name' => 'Pro',
-        'amount' => 150,
-        'description' => 'Pro',
-        'features' => ['Pro'],
+        'name' => "Pro",
+        'description' => "Pro",
+        'fanchart' => 1,
+        'pedigree' => 1,
+        'duration' => 12,
+        'print_number' => 0,
+        'price' => 49.95,
+        'fanchart_max_generation' => 7,
+        'pedigree_max_generation' => 25,
+        'max_nodes' => 100,
+        'fanchart_max_output_png' => "5",
+        'pedigree_max_output_png' => "5",
+        'fanchart_max_output_pdf' => "a0",
+        'pedigree_max_output_pdf' => "a0",
+        'fanchart_output_png' => 1,
+        'pedigree_output_png' => 1,
+        'fanchart_output_pdf' => 1,
+        'pedigree_output_pdf' => 1,
     ]);
+
+
+
 
 
     return "products created";

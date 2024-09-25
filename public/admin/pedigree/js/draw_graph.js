@@ -303,7 +303,7 @@ function renderChart() {
     // render the chart
     chart.render().fit();
     applyChartStatus()
-
+    console.log(chart.getChartState())
     // get first hidden_root children and center chart on it
     /*
     var hidden_root_children 
@@ -322,6 +322,9 @@ function renderChart() {
 
     // get notes from DB and draw them
     get_notes()
+
+    test_all_max_nodes()
+    test_max_generation()
 
 
     // change connections order (lower)
@@ -378,7 +381,8 @@ function renderChart() {
     $(document).on("click", "#expandView", function () {
 
         chart.expandAll().fit();
-        editChartStatus()
+        editChartStatus();
+        
 
     });
 
@@ -912,10 +916,10 @@ function getPersonNodeContent(personData, personType) {
                     /* style */
                     position: absolute;
                     left: 50%;
-                    top: -10px;
+                    top: -20px;
                     transform: translate(-50%, -50%);
-                    height: ${treeConfiguration.nodeWidth + 10}px;
-                    width: ${treeConfiguration.nodeWidth - 10}px;
+                    height: ${treeConfiguration.nodeWidth + 30}px;
+                    width: ${treeConfiguration.nodeWidth - 5}px;
                     object-fit: cover;
                     border: 4px solid ${bandColor};
                     /* rounded */
@@ -959,14 +963,20 @@ function getPersonNodeContent(personData, personType) {
 
 
                         ">
-                            <div class="" style="  width: 100% !important;">
+                            <div class="" 
+                            style="  
+                                width: 100% !important;
+                                flex-direction: column !important;
+                                height: 100% !important;
+                                display: flex !important;
+                                ">
                                 <h6 class="" 
                                 style="
                                     ${textColor}; 
-                                    margin-bottom: .5rem !important; 
+                                    margin-bottom: auto !important; 
                                     font-size: .7rem;
                                     font-weight: 600;
-                                    line-height: 1.37;
+                                    line-height: 0.9rem;
                                     margin-top: 0;
                                     box-sizing: border-box;
                                 "

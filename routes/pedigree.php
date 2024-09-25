@@ -10,7 +10,7 @@ use App\Http\Controllers\users\NoteController;
 
 
 
-Route::middleware(['auth:sanctum','verified','active','role:user'])
+Route::middleware(['auth:sanctum','verified','active','role:user','product_type:pedigree'])
     ->name('users.')
     ->group( function(){
 
@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum','verified','active','role:user'])
         Route::post('/pedigree/addspouse', [PedigreeController::class,'addspouse'])->name('pedigree.addspouse');
         Route::post('/pedigree/addchild', [PedigreeController::class,'addchild'])->name('pedigree.addchild');
         Route::post('/pedigree/addperson', [PedigreeController::class,'addperson'])->name('pedigree.addperson');
+        Route::post('/pedigree/print', [PedigreeController::class,'print'])->name('pedigree.print');
 
         // notes
         Route::post('/pedigree/savenote', [NoteController::class,'save'])->name('pedigree.savenote');
@@ -37,6 +38,8 @@ Route::middleware(['auth:sanctum','verified','active','role:user'])
         Route::post('/pedigree/editnotetext', [NoteController::class,'edit_text'])->name('pedigree.editnotetext');
         Route::post('/pedigree/deletenote', [NoteController::class,'delete'])->name('pedigree.deletenote');
         Route::get('/pedigree/getnotes', [NoteController::class,'index'])->name('pedigree.getnotes');
+        
+
 
 
     

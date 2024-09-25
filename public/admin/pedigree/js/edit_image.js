@@ -26,6 +26,22 @@ document.getElementById('upload_image').addEventListener('change', function () {
 });
 
 
+document.querySelectorAll('#modalEditImage input[name="placeholder_images"]').forEach((checkbox) => {
+    checkbox.addEventListener('click', function(event) {
+      // If the checkbox is already checked, prevent it from being unchecked
+      if (this.checked) {
+        document.querySelectorAll('#modalEditImage input[name="placeholder_images"]').forEach((cb) => {
+          if (cb !== this) {
+            cb.checked = false;
+            cb.parentElement.classList.remove("checked")
+          }
+        });
+      } else {
+        // If trying to uncheck the only checked checkbox, prevent it
+        event.preventDefault();
+      }
+    });
+  });
 
 
 function edit_image(personInfo) {
@@ -36,9 +52,22 @@ function edit_image(personInfo) {
 
     var image = document.createElement('img');
 
-    if (personInfo.photo != null) {
+    if (personInfo.photo != undefined) {
         image.src = "/storage/portraits/" + personInfo.photo;
         render_imageditor(image);
+    }
+    else{
+        $('#modalEditImage input[name="placeholder_images"]').prop("checked", false);
+        $('#modalEditImage div.custom-option-image-check').removeClass('checked')
+        // if perso image is undefined check placehoder images man1 or female1
+        if(personInfo.sex == "M"){
+            document.querySelector('#modalEditImage input[value="man1"]').checked = true
+            document.querySelector('#modalEditImage input[value="man1"]').parentElement.classList.add("checked")
+        }
+        else{
+            document.querySelector('#modalEditImage input[value="female1"]').checked = true
+            document.querySelector('#modalEditImage input[value="female1"]').parentElement.classList.add("checked")
+        }
     }
 
 }
@@ -159,11 +188,6 @@ document.getElementById('modalEditImage').addEventListener('hidden.bs.modal', ev
     parentDiv.appendChild(newDiv);
     document.getElementById('upload_image').value = '';
     document.getElementById('save_image').disabled = true;
-    document.getElementById('save_image_placeholder').disabled = true;
-    const radioButtons = document.querySelectorAll('input[name="customRadioImage"]');
-    radioButtons.forEach(radio => {
-        radio.checked = false;
-    });
     const customOptionImage = document.querySelectorAll('div.custom-option-image');
     customOptionImage.forEach(customOption => {
         customOption.classList.remove("checked");
@@ -175,19 +199,17 @@ document.getElementById('modalEditImage').addEventListener('hidden.bs.modal', ev
 
 // select placeholder image
 
-const radioButtons = document.querySelectorAll('input[name="customRadioImage"]');
 const save_image_placeholder = document.getElementById('save_image_placeholder');
-
-radioButtons.forEach(radio => {
-    radio.addEventListener('click', function () {
-        const checkedRadio = document.querySelector('input[name="customRadioImage"]:checked');
-        save_image_placeholder.disabled = !checkedRadio;
-    });
-});
 
 // save image
 save_image_placeholder.addEventListener('click', function () {
-    const checkedRadio = document.querySelector('input[name="customRadioImage"]:checked').value;
+    var checkedRadio = document.querySelector('input[name="placeholder_images"]:checked');
+    if(checkedRadio == null){
+        return false;
+    }
+    checkedRadio = checkedRadio.value
+
+    
     var personInfo = selectedPerson
     $.ajaxSetup({
         headers: {

@@ -11,17 +11,56 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rules\File;
+use App\Models\Notification;
+use Carbon\Carbon;
+use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\DB;
 
 
 class ProfileController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
     $user = Auth::user();
+    
 
     return view('users.profile.index', compact('user'));
   }
 
+  public function security(Request $request){
+    $user = Auth::user();
+    $devices = collect(
+      DB::table(config('session.table', 'sessions'))
+          ->where('user_id', auth()->user()->id)
+          ->orderBy('last_activity', 'desc')
+          ->get()
+      )->map(
+          function ($session) use ($request) {
+              $agent = tap(new Agent, fn($agent) => $agent->setUserAgent($session->user_agent));
+
+              return [
+                  'id' => $session->id,
+                  'agent'           => [
+                      'platform' => $agent->platform(),
+                      'browser'  => $agent->browser(),
+                  ],
+                  'ip'              => $session->ip_address,
+                  'isCurrentDevice' => $session->id === $request->session()->getId(),
+                  'lastActive'      => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+              ];
+          }
+      )->toArray();
+    return view('users.profile.security', compact('user','devices'));
+  }
+
+  public function notifications(){
+    return view('users.profile.notifications');
+  }
+
+  public function account_delete(){
+    return view('users.profile.account_delete');
+  }
+  
   public function edit(Request $request){
 
     $user = Auth::user();
@@ -35,29 +74,16 @@ class ProfileController extends Controller
             Rule::unique('users')->ignore($user->id)
         ],
         'password' => ['nullable','confirmed',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
-        'fullname' => 'required|string',
-        'image' => ['nullable',File::image()->max(3*1024*1024)]
+        'firstname' => 'required|string',
+        'lastname' => 'required|string',
     ])->validate();
-    //dd(Hash::make($request->password));
 
-
-    // update name
-    $user->name = $request->fullname;
+    // change firstname lastname and email
+    $user->firstname = $request->firstname;
+    $user->lastname = $request->lastname;
     $user->save();
     
-    // update image if changed
-    if($request->hasFile('image') && $request->file('image')->isValid()) {
-        // delete old image if exist
-        if($user->image != null){
-            if(Storage::exists($user->image)){
-                Storage::delete($user->image);
-            }
-        }
-        $image = $request->file('image')->store('profile');
-        $user->image = $image;
-        $user->save();
-    }  
-
+    $changed = false;
     // update email if changed
     if($user->email != $request->email){
         $user->email = $request->email;
@@ -65,6 +91,7 @@ class ProfileController extends Controller
         $user->email_verified_at = null;
         $user->sendEmailVerificationNotification();
         $user->save();
+        $changed = true;
     }
 
     // update password if changed
@@ -72,16 +99,74 @@ class ProfileController extends Controller
         if(!Hash::check($request->password , $user->password)){
             $user->password = Hash::make($request->password);
             $user->save();
+            $changed = true;
         }
         else{
             return redirect()->back()->with('error','New password must be different of your current password');
         }
+    }
+
+    if($changed == true){
+        Auth::guard('web')->logout();
+
+        // Invalidate the session
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Redirect to the login page
+        return redirect()->route('login');
     }
     
     return redirect()->back()->with('success','Profile updated with success');
 
   }
 
+  public function delete(Request $request){
+    $user = Auth::user();
+    $user->delete();
+    return redirect()->route('login');
+  }
+
+  public function notifications_markasread(Request $request){
+    if($request->notifications != null){
+      Notification::whereIn('id',$request->notifications)->update(['read_at'=> Carbon::now()]);
+      return response()->json(['error'=>false,'msg' => 'notifications mark as read with success']);
+    }
+    else{
+      return response()->json(['error'=>true,'msg' => 'no notification selected']);
+    }
+  }
+
+  public function notifications_delete(Request $request){
+    if($request->notifications != null){
+      Notification::whereIn('id',$request->notifications)->delete();
+      return response()->json(['error'=>false,'msg' => 'notifications deleted with success']);
+    }
+    else{
+      return response()->json(['error'=>true,'msg' => 'no notification selected']);
+    }
+  }
+
+  public function notifications_load(Request $request){
+    $user = Auth::user();
+    $notifications = $user->getNotification();
+    return response()->json(['error'=>false,'notifications' => $notifications]);
+  }
+
+  public function session_delete(Request $request,$id)
+    {
+        DB::beginTransaction();
+        try{
+            $deleted = DB::table(config('session.table', 'sessions'))->where('id', $id)->delete();
+            DB::commit();
+            return redirect()->route('users.profile.security')->with('success','device supprime avec succès');
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('users.profile.security')->with('error', "Erreur lors de la suppression du device, réessayez plus tard"); 
+        }
+    }
+  
 
 
 }

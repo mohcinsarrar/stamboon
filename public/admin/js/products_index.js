@@ -15,18 +15,33 @@ function updateProduct($product){
         // reset forms
         document.getElementById('updateProductForm').reset()
 
-        document.querySelector('#updateProductForm #update-product-features').innerHTML = ""
         // fill out the form
         document.getElementById('updateProductForm').action = "/admin/webshop/products/" + $product.id
         document.querySelector('#updateProductForm #update-product-name').value = $product.name;
-        document.querySelector('#updateProductForm #update-product-amount').value = $product.amount;
+        document.querySelector('#updateProductForm #update-product-price').value = $product.price;
         document.querySelector('#updateProductForm #update-product-description').innerHTML = $product.description;
-        console.log($product.features);
+        document.querySelector('#updateProductForm #update-product-duration').value = $product.duration;
+        document.querySelector('#updateProductForm #update-product-print_number').value = $product.print_number;
+        document.querySelector('#updateProductForm #update-product-chart_type1').checked = $product.fanchart;
+        document.querySelector('#updateProductForm #update-product-chart_type2').checked = $product.pedigree;
+        
+        document.querySelector('#updateProductForm #update-product-fanchart_max_generation').value = $product.fanchart_max_generation;
+        document.querySelector('#updateProductForm #update-product-pedigree_max_generation').value = $product.pedigree_max_generation;
 
-        $product.features.forEach((value, index, array) => {
-            options = "<option selected>"+value+"</option>";
-            document.querySelector('#updateProductForm #update-product-features').innerHTML += options;
-        });
+        document.querySelector('#updateProductForm #update-product-max_nodes').value = $product.max_nodes;
+
+        document.querySelector('#updateProductForm #update-product-fanchart_print_type1').checked = $product.fanchart_output_png;
+        document.querySelector('#updateProductForm #update-product-fanchart_print_type2').checked = $product.fanchart_output_pdf;
+
+        document.querySelector('#updateProductForm #update-product-pedigree_print_type1').checked = $product.pedigree_output_png;
+        document.querySelector('#updateProductForm #update-product-pedigree_print_type2').checked = $product.pedigree_output_pdf;
+
+        document.querySelector('#updateProductForm #update-product-fanchart_max_output_png').value = $product.fanchart_max_output_png;
+        document.querySelector('#updateProductForm #update-product-fanchart_max_output_pdf').value = $product.fanchart_max_output_pdf;
+
+        document.querySelector('#updateProductForm #update-product-pedigree_max_output_png').value = $product.pedigree_max_output_png;
+        document.querySelector('#updateProductForm #update-product-pedigree_max_output_pdf').value = $product.pedigree_max_output_pdf;
+
 
         bsOffcanvas.show()
 }

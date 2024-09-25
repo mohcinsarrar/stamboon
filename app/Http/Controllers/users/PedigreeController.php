@@ -27,6 +27,7 @@ use App\Models\Node;
 use App\Models\Pedigree;
 use App\Models\Setting;
 use App\Models\Note;
+use App\Models\Product;
 
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
@@ -172,6 +173,27 @@ class PedigreeController extends Controller
         return response()->json(['error'=>false,'chart_status' => $chart_status]);
     }
 
+    public function print(Request $request){
+        $user = Auth::user();
+        $pedigree = Pedigree::where('user_id',$user->id)->first();
+        $current_payment = $user->has_payment();
+        if($current_payment == false){
+            return redirect()->route('users.dashboard');
+        }
+        $product = Product::where('id',$current_payment->product_id)->first();
+
+        // limit reached
+        if($pedigree->print_number >= $product->print_number){
+            return response()->json(['error'=>true,'msg' => 'limit reached']);
+        }
+        else{
+            $pedigree->print_number = $pedigree->print_number + 1;
+            $pedigree->save();
+            return response()->json(['error'=>false,'msg' => 'limit unreached']);
+        }
+        
+    }
+
     public function editChartStatus(Request $request){
         $chart_status = $request->input('chart_status');
 
@@ -266,14 +288,21 @@ class PedigreeController extends Controller
         
         // load settings
         if($request->isMethod('get')){
-            $settings = Setting::where('user_id',Auth::user()->id)->first()->toArray();
-            $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            $user = Auth::user();
+            $settings = Setting::where('user_id',$user->id)->first()->toArray();
+            $pedigree = Pedigree::where('user_id',$user->id)->first();
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
-            $chart_status = $pedigree->chart_status;
-            // get zoomlevel
-            //$settings['zoom_level'] = $chart_status['zoom'];
+            // get product features
+            $current_payment = $user->has_payment();
+            if($current_payment == false){
+                return redirect()->route('users.dashboard');
+            }
+            $product = Product::where('id',$current_payment->product_id)->first();
+            $settings['max_nodes'] = $product->max_nodes;
+            $settings['max_generation'] = $product->pedigree_max_generation;
+
             return response()->json(['error'=>false,'settings' => $settings]);
         }
 
@@ -310,9 +339,54 @@ class PedigreeController extends Controller
 
 
     public function index(Request $request){
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+
+        $user = Auth::user();
+        $pedigree = Pedigree::where('user_id',$user->id)->first();
         $gedcom_file = $pedigree->gedcom_file;
-        return view('users.pedigree.index',compact('gedcom_file'));
+
+        // get product features
+        $current_payment = $user->has_payment();
+        if($current_payment == false){
+            return redirect()->route('users.dashboard');
+        }
+        $product = Product::where('id',$current_payment->product_id)->first();
+
+        
+
+        $pedigree_output_png = $product->pedigree_output_png;
+        $pedigree_output_pdf = $product->pedigree_output_pdf;
+        
+        $print_types = [];
+        if($pedigree_output_png == true){
+            $print_types[] = 'png';
+        }
+        if($pedigree_output_pdf == true){
+            $print_types[] = 'pdf';
+        }
+
+        $pedigree_max_output_png = $product->pedigree_max_output_png;
+        $pedigree_max_output_pdf = $product->pedigree_max_output_pdf;
+
+        $max_output_png = [
+            '1' => '1344 x 839 px',
+            '2' => '2688 x 1678 px',
+            '3' => '4032 x 2517 px',
+            '4' => '5376 x 3356 px',
+            '5' => '6720 x 4195 px',
+        ];
+        $selected_output_png = array_slice($max_output_png, 0, $pedigree_max_output_png, true);
+
+        $max_output_pdf = [
+            'a0' => 'A0',
+            'a1' => 'A1',
+            'a2' => 'A2',
+            'a3' => 'A3',
+            'a4' => 'A4',
+        ];
+        $selected_output_pdf = array_slice($max_output_pdf, str_replace('a', '', $pedigree_max_output_pdf), 5,true);
+
+
+        return view('users.pedigree.index',compact('gedcom_file','print_types','selected_output_png','selected_output_pdf'));
     }
 
 

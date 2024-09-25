@@ -8,23 +8,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
 
-class Active
+class ProductType
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $type): Response
     {
         if (Auth::check()) {
             // get all payments of the auth user and check if a not expired exist
             $user = Auth::user();
-            if($user->has_payment() == false){
-                return redirect()->route('users.subscription.index');
+            if($user->product_type($type) == false){
+                if(auth()->user()->hasRole('admin')){
+                    return redirect()->route('admin.dashboard.index');
+                }
+                if(auth()->user()->hasRole('user')){
+                    return redirect()->route('users.dashboard.index');
+                }
             }
 
         }
         return $next($request);
+ 
     }
+ 
 }

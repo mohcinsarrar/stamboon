@@ -1518,7 +1518,6 @@ only screen and (min-width: 1400px) {
 /*===== PRICING THIRTEEN =====*/
 .pricing-fourteen {
   padding: 100px 0;
-  background-color: var(--light-3);
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -1537,7 +1536,6 @@ only screen and (min-width: 1400px) {
   border: 1px solid var(--light-1);
   border-radius: 10px;
   margin-top: 30px;
-  background-color: var(--white);
   transition: all 0.4s ease;
   padding: 50px 35px;
   text-align: center;
@@ -1550,6 +1548,13 @@ only screen and (min-width: 1400px) {
 
 .pricing-style-fourteen.middle {
   box-shadow: var(--shadow-4);
+  border-color: var(--primary);
+}
+
+.pricing-style-fourteen .purchase-btn a.current{
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color:white;
 }
 
 .pricing-style-fourteen.middle .title {
@@ -1599,6 +1604,7 @@ only screen and (min-width: 1400px) {
   font-size: 18px;
   color: var(--dark-3);
   font-weight: 400;
+  font-size: 20px;
 }
 
 .pricing-style-fourteen .light-rounded-buttons {

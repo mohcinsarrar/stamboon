@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -12,21 +12,34 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'amount',
         'description',
-        'features',
+        'fanchart',
+        'pedigree',
+        'duration',
+        'print_number',
+        'price',
+        'fanchart_max_generation',
+        'pedigree_max_generation',
+        'max_nodes',
+        'fanchart_max_output_png',
+        'fanchart_max_output_pdf',
+        'pedigree_max_output_png',
+        'pedigree_max_output_pdf',
+        'fanchart_output_png',
+        'fanchart_output_pdf',
+        'pedigree_output_png',
+        'pedigree_output_pdf',
     ];
 
     protected $casts = [
-        'features' => 'array',
         'created_at' => 'datetime:Y-m-d'
     ];
 
     
     /** Relations **/
     
-    public function payment(): HasOne
+    public function payments(): HasOne
     {
-        return $this->hasOne(Payment::class);
+        return $this->HasMany(Payment::class);
     }
 }

@@ -29,6 +29,12 @@
       "icon": "menu-icon tf-icons ti ti-credit-card",
       "name": "Subscription",
       "slug": "users.subscription.index"
+    },
+    {
+      "url": "/documentation",
+      "icon": "menu-icon tf-icons ti ti-file-description",
+      "name": "Documentation",
+      "slug": ""
     }
   ]
 }

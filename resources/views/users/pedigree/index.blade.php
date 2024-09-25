@@ -48,15 +48,11 @@
     <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/read-gedcom/dist/read-gedcom.min.js"></script>
-    <!-- apex dTree -->
-    <!-- required for dTree -->
-    <!-- load dTree -->
-    <!-- load treant -->
+
     <!-- d3-org-chart -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-org-chart@3"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-flextree@2.1.2/build/d3-flextree.js"></script>
-    <!-- elgrapho -->
 
 
 @endsection
@@ -132,13 +128,28 @@
         </div>
     </div>
 
-    <!-- min graph -->
+    
+    <div class="row mb-4" style="display: none;" id="max-node-alert">
+        <div class="col">
+            <div class="alert alert-warning" role="alert">
+              </div>
+        </div>
+    </div>
+
+    <div class="row mb-4" style="display: none;" id="max-generations-alert">
+        <div class="col">
+            <div class="alert alert-warning" role="alert">
+              </div>
+        </div>
+    </div>
+
     <div class="row mb-4 mx-0" id="spinner" style="display: none;">
         <div class="progress col px-0" style="height: 16px;">
             <div class="progress-bar" id="progress-percentage" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
                 aria-valuemax="100">0%</div>
         </div>
     </div>
+    <!-- main graph -->
     <div class="card" id="main_graph">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
@@ -151,7 +162,7 @@
         </div>
         <div class="card-body position-relative tools p-2" style="min-height: 600px;">
 
-            <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px">
+            <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px" id="tools-bar">
                 <div class="row  mb-2 justify-content-center">
                     <button data-bs-toggle="modal" data-bs-target="#uploadFile" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
