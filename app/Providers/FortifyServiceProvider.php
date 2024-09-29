@@ -13,6 +13,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 
+use Illuminate\Support\Facades\Auth;
+
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\RegisterResponse;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
@@ -32,10 +34,21 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->instance(LoginResponse::class, new class implements LoginResponse {
             public function toResponse($request)
             {
-                if(auth()->user()->hasRole('admin')){
+                $user = auth()->user();
+                if($user->active == 0){
+                    Auth::guard('web')->logout();
+
+                    // Invalidate the session
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+
+                    // Redirect to the login page
+                    return redirect()->route('login')->with('error','These credentials do not match our records.');
+                }
+                if($user->hasRole('admin')){
                     return redirect()->route('admin.dashboard.index');
                 }
-                if(auth()->user()->hasRole('user')){
+                if($user->hasRole('user')){
                     return redirect()->route('users.dashboard.index');
                 }
             }

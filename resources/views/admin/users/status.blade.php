@@ -1,5 +1,1 @@
-@if($active == 1)
-<span class="badge bg-label-success" text-capitalized="">Active</span>
-@else
-<span class="badge bg-label-danger" text-capitalized="">Inactive</span>
-@endif
+<span class="badge bg-label-{{$model->status()['color']}}" text-capitalized="" style="min-width: 60px;">{{$model->status()['status']}}</span>

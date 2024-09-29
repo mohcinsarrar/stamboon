@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Activity;
 use App\Models\Notification;
 use Carbon\Carbon;
@@ -122,6 +123,22 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
+    public static function addNotificationToAdmin($title,$subtitle = null, $user = null){
+        
+        $admin = User::role('admin')->first();
+        if($admin == null){
+            return null;
+        }
+
+        Notification::create([
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'user_id' => $admin->id
+        ]);
+    }
+
+    
+
     public static function getNotification(){
         
         $notifications = Notification::where('user_id', Auth::user()->id)->get();
@@ -139,6 +156,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function has_payment(){
         // get all payments
         $payments = $this->payments;
+        if($payments->count() == 0){
+            return false;
+        }
 
         // change payment expired field
         foreach($payments as $payment){
@@ -163,6 +183,28 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    public function last_payment(){
+        // get all payments
+        $payments = $this->payments;
+
+        if($payments->count() == 0){
+            return false;
+        }
+        // test if a not expired payment exist for the current user
+        $payments = $this->payments;
+        foreach($payments as $payment){
+
+            if($payment->expired == 0){
+                return $payment;
+            }
+        }
+
+        $payment = $payments->sortBy([['created_at', 'desc']])->first();
+
+        return $payment;
+
     }
 
     public function product_type($type){
@@ -190,5 +232,38 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    public function status(){
+
+        if($this->active == 0){
+            return [
+                'status' => 'Deactivated',
+                'color' => 'danger'
+            ];
+        }
+
+        $payments = $this->payments;
+        
+        if($payments->count() == 0){
+            return [
+                'status' => 'New',
+                'color' => 'info'
+            ];
+        }
+
+        if($this->has_payment() != false){
+            return [
+                'status' => 'Active',
+                'color' => 'success'
+            ];
+        }
+
+
+        return [
+            'status' => 'Expired',
+            'color' => 'warning'
+        ];
+        
     }
 }

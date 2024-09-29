@@ -5,7 +5,7 @@
         </span>
     </div>
     <div class="d-flex flex-column">
-        <a href="{{route('admin.users.show',$id)}}"><span class="emp_name text-truncate">{{ $name }}</span></a>
+        <a href="javascript:void(0)"><span class="emp_name text-truncate">{{ $name }}</span></a>
         <small class="emp_post text-truncate text-muted"></small>
     </div>
 </div>

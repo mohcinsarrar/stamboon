@@ -81,6 +81,7 @@ class ProfileController extends Controller
     // change firstname lastname and email
     $user->firstname = $request->firstname;
     $user->lastname = $request->lastname;
+    $user->name = $request->firstname .' '.$request->lastname;
     $user->save();
     
     $changed = false;

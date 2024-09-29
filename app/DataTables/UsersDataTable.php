@@ -11,6 +11,7 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Carbon\Carbon;
 
 class UsersDataTable extends DataTable
 {
@@ -25,7 +26,64 @@ class UsersDataTable extends DataTable
             ->addColumn('actions', 'admin.users.actions')
             ->editColumn('name', 'admin.users.name')
             ->editColumn('status', 'admin.users.status')
-            ->rawColumns(['actions','name','status'])
+            ->editColumn('plan', function(User $model) {
+
+                $payment = $model->has_payment();
+
+                if($payment != false){
+                    return $payment->product->name;
+                }
+                else{
+                    $payment = $model->last_payment();
+                    if($payment != false){
+                        return $payment->product->name;
+                    }
+                    else{
+                        return '';
+                    }
+                    
+                }
+
+            })
+            ->editColumn('billing_date', function(User $model) {
+
+                $payment = $model->has_payment();
+                
+                if($payment != false){
+                    return Carbon::parse($payment->created_at)->format('Y-m-d');
+                }
+                else{
+                    $payment = $model->last_payment();
+
+                    if($payment != false){
+                        return Carbon::parse($payment->created_at)->format('Y-m-d');
+                    }
+                    else{
+                        return '';
+                    }
+                    
+                }
+
+            })
+            ->editColumn('expired_date', function(User $model) {
+
+                $payment = $model->has_payment();
+                if($payment != false){
+                    return $payment->active_until();
+                }
+                else{
+                    $payment = $model->last_payment();
+                    if($payment != false){
+                        return $payment->active_until();
+                    }
+                    else{
+                        return '';
+                    }
+                    
+                }
+
+            })
+            ->rawColumns(['actions','name','status','plan', 'billing_date', 'expired_date'])
             ->setRowId('id');
     }
 
@@ -34,7 +92,7 @@ class UsersDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        $query = $model->with('payment.product')->newQuery();
+        $query = $model->with('payments.product')->newQuery();
         $query = $query->role('user');
 
         return $query;
@@ -76,8 +134,9 @@ class UsersDataTable extends DataTable
             Column::make('name'),
             Column::make('email'),
             Column::make('status'),
-            Column::make('payment.product.name')->title('Plan'),
-            Column::make('payment.created_at')->title('Billing date'),
+            Column::computed('plan')->title('Plan'),
+            Column::computed('billing_date')->title('Billing at'),
+            Column::computed('expired_date')->title('Active until'),
             Column::computed('actions')
                   ->exportable(false)
                   ->printable(false)

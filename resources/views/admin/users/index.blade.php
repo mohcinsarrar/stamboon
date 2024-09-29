@@ -281,7 +281,7 @@
                     <div class="d-flex align-items-start justify-content-between">
                         <div class="content-left">
                             <div class="d-flex align-items-center my-1">
-                                <h4 class="mb-0 me-2">0</h4>
+                                <h4 class="mb-0 me-2">{{$total_users}}</h4>
                             </div>
                             <span>Total Users</span>
                         </div>
@@ -298,26 +298,9 @@
                     <div class="d-flex align-items-start justify-content-between">
                         <div class="content-left">
                             <div class="d-flex align-items-center my-1">
-                                <h4 class="mb-0 me-2">0</h4>
+                                <h4 class="mb-0 me-2">{{$new_users}}</h4>
                             </div>
-                            <span>Pending Users</span>
-                        </div>
-                        <span class="badge bg-label-warning rounded p-2">
-                            <i class="ti ti-user-exclamation ti-sm"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-start justify-content-between">
-                        <div class="content-left">
-                            <div class="d-flex align-items-center my-1">
-                                <h4 class="mb-0 me-2">0</h4>
-                            </div>
-                            <span>Waiting Users</span>
+                            <span>New Users</span>
                         </div>
                         <span class="badge bg-label-info rounded p-2">
                             <i class="ti ti-user-plus ti-sm"></i>
@@ -332,15 +315,33 @@
                     <div class="d-flex align-items-start justify-content-between">
                         <div class="content-left">
                             <div class="d-flex align-items-center my-1">
-                                <h4 class="mb-0 me-2">0</h4>
+                                <h4 class="mb-0 me-2">{{$active_users}}</h4>
                             </div>
-                            <span>Completed Users</span>
+                            <span>Active Users</span>
                         </div>
                         <div class="avatar">
                             <span class="avatar-initial rounded bg-label-success">
                               <i class="ti ti-user-check ti-sm"></i>
                             </span>
                           </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div class="content-left">
+                            <div class="d-flex align-items-center my-1">
+                                <h4 class="mb-0 me-2">{{$expired_users}}</h4>
+                            </div>
+                            <span>Expired Users</span>
+                        </div>
+                        <span class="badge bg-label-warning rounded p-2">
+                            <i class="ti ti-user-x ti-sm"></i>
+                        </span>
                     </div>
                 </div>
             </div>

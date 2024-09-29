@@ -20,6 +20,9 @@ class Active
         if (Auth::check()) {
             // get all payments of the auth user and check if a not expired exist
             $user = Auth::user();
+            if($user->hasRole('admin')){
+                return redirect()->route('admin.dashboard.index');
+            }
             if($user->has_payment() == false){
                 return redirect()->route('users.subscription.index');
             }

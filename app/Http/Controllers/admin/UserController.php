@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\DataTables\UsersDataTable;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class UserController extends Controller
@@ -15,7 +16,23 @@ class UserController extends Controller
      */
     public function index(UsersDataTable $dataTable)
     {
-        return $dataTable->render('admin.users.index');
+        $total_users = User::role('user')->count();
+        $new_users = User::role('user')->get()->filter(
+            function ($user) {
+                return $user->status()['status'] == 'New';
+            }
+        )->count();
+        $active_users = User::role('user')->get()->filter(
+            function ($user) {
+                return $user->status()['status'] == 'Active';
+            }
+        )->count();
+        $expired_users = User::role('user')->get()->filter(
+            function ($user) {
+                return $user->status()['status'] == 'Expired';
+            }
+        )->count();
+        return $dataTable->render('admin.users.index',compact('total_users','new_users','expired_users','active_users'));
     }
 
     /**
@@ -84,6 +101,7 @@ class UserController extends Controller
         else{
             $user->active = 0;
             $user->save();
+            DB::table('sessions')->where('user_id', $user->id)->delete();
             return redirect()->back()->with('success','User Deactivated with success');
         }
 

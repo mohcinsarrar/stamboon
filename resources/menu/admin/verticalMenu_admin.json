@@ -13,6 +13,12 @@
       "slug": "admin.users.index"
     },
     {
+      "url": "/admin/notifications",
+      "name": "Notifications",
+      "icon": "menu-icon tf-icons ti ti-bell",
+      "slug": "admin.notifications"
+    },
+    {
       "name": "Webshop Admin",
       "icon": "menu-icon tf-icons ti ti-building-store",
       "slug": "webshop",

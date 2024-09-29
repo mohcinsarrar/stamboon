@@ -1,5 +1,4 @@
 <div class="d-flex align-items-center">
-    <a data-toggle="tooltip" data-placement="top" title="Edit" href="javascript:;" onclick="updateUser({{$model}})" class="text-body"><i class="ti ti-edit ti-sm me-2"></i></a>
     <a data-toggle="tooltip" data-placement="top" title="Delete" href="javascript:;" class="text-body delete-record" onclick="if(confirm('Are you sure ?')) document.getElementById('delete-{{ $id }}').submit()"><i class="ti ti-trash ti-sm mx-2"></i></a>
     <form id="delete-{{ $id }}" action="{{ route('admin.users.destroy', $id) }}" method="POST">
         @method('DELETE')

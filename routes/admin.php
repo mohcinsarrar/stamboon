@@ -12,6 +12,10 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
     ->group( function(){
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/notifications', [DashboardController::class,'notifications'])->name('notifications');
+    Route::post('/notifications/markasread', [DashboardController::class,'notifications_markasread'])->name('notifications.markasread');
+    Route::post('/notifications/delete', [DashboardController::class,'notifications_delete'])->name('notifications.delete');
+    Route::get('/notifications/load', [DashboardController::class,'notifications_load'])->name('notifications.load');
 
     Route::resource('webshop/products', ProductController::class)->names('webshop.products');
     

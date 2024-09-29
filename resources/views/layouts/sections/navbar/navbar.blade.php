@@ -75,9 +75,16 @@
             </ul>
           </li>
           <li class="dropdown-menu-footer border-top">
+            @role('user')
             <a href="{{route('users.profile.notifications')}}" class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40 mb-1 align-items-center">
               View all notifications
             </a>
+            @endrole
+            @role('admin')
+            <a href="{{route('admin.notifications')}}" class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40 mb-1 align-items-center">
+                View all notifications
+              </a>
+            @endrole
           </li>
         </ul>
       </li>
@@ -127,6 +134,8 @@
                         </div>
                     </a>
                 </li>
+                
+                @role('user')
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
@@ -144,6 +153,7 @@
                         </span>
                     </a>
                 </li>
+                @endrole
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>

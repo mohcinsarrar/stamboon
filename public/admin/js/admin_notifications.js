@@ -39,7 +39,7 @@
             });
         
             $.ajax({
-                url: "/profile/notifications/load",
+                url: "/admin/notifications/load",
                 type: 'GET',
                 encode: true,
                 dataType: 'json',
@@ -50,7 +50,7 @@
                         var notifications_unread = 0;
 
                         var list = document.querySelector('div.email-list ul');
-                        console.log(list)
+
                         list.innerHTML = "";
                         notifications.forEach(notification => {
                             var notification_html = `<li class="email-list-item" data-starred="true" data-bs-toggle="sidebar" data-target="#app-email-view">
@@ -79,10 +79,10 @@
                             list.innerHTML += notification_html;
                         });
 
+                        // notification unread count
                         if(document.querySelector('#notifications-count') == null){
                             return false;
                         }
-                        // notification unread count
                         document.querySelector('#notifications-count').innerHTML = notifications_unread;
 
                         // mars as read single
@@ -97,7 +97,7 @@
                                 });
                             
                                 $.ajax({
-                                    url: "/profile/notifications/markasread",
+                                    url: "/admin/notifications/markasread",
                                     type: 'POST',
                                     data: {
                                         'notifications': item_selected,
@@ -135,7 +135,7 @@
                                 });
                             
                                 $.ajax({
-                                    url: "/profile/notifications/delete",
+                                    url: "/admin/notifications/delete",
                                     type: 'POST',
                                     data: {
                                         'notifications': item_selected,
@@ -233,7 +233,7 @@
         });
     
         $.ajax({
-            url: "/profile/notifications/markasread",
+            url: "/admin/notifications/markasread",
             type: 'POST',
             data: {
                 'notifications': item_selected,
@@ -283,7 +283,7 @@
         });
     
         $.ajax({
-            url: "/profile/notifications/delete",
+            url: "/admin/notifications/delete",
             type: 'POST',
             data: {
                 'notifications': item_selected,
