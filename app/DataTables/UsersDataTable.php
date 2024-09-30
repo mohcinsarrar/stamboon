@@ -45,6 +45,24 @@ class UsersDataTable extends DataTable
                 }
 
             })
+            ->editColumn('price', function(User $model) {
+
+                $payment = $model->has_payment();
+                if($payment != false){
+                    return $payment->price.' $';
+                }
+                else{
+                    $payment = $model->last_payment();
+                    if($payment != false){
+                        return $payment->price.' $';
+                    }
+                    else{
+                        return '';
+                    }
+                    
+                }
+
+            })
             ->editColumn('billing_date', function(User $model) {
 
                 $payment = $model->has_payment();
@@ -135,6 +153,7 @@ class UsersDataTable extends DataTable
             Column::make('email'),
             Column::make('status'),
             Column::computed('plan')->title('Plan'),
+            Column::computed('price')->title('Price'),
             Column::computed('billing_date')->title('Billing at'),
             Column::computed('expired_date')->title('Active until'),
             Column::computed('actions')
