@@ -86,7 +86,7 @@
                                 label: function(context) {
                                     const label = context.label || '',
                                         value = context.parsed;
-                                    const output = ' ' + label + ' : ' + value + ' %';
+                                    const output = ' ' + label + ' : ' + value;
                                     return output;
                                 }
                             },
