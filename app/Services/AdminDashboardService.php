@@ -109,4 +109,38 @@ class AdminDashboardService
 
         return $result;
     }
+
+    public function last13j_sales(){
+
+        $last13Days = DB::table('payments')
+        ->select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('SUM(price) as total')
+        )
+        ->where('created_at', '>=', Carbon::now()->subDays(13))
+        ->groupBy('date')
+        ->get();
+
+        // Fill in days with no payments
+        $dates = [];        
+        $totals = [];
+        for ($i = 0; $i <= 12; $i++) {
+            $date = Carbon::now()->subDays($i);
+            $formattedDate = $date->format('d/m');
+            $payment = $last13Days->firstWhere('date', $date->toDateString());
+            // Add the date to the dates array
+            $dates[] = $formattedDate;
+            
+            // Add the total (or 0 if no payment) to the totals array
+            $totals[] = $payment ? $payment->total : 0;
+        }
+
+        $dates = array_reverse($dates);
+        $totals = array_reverse($totals);
+
+        return [
+            'dates' => $dates,
+            'totals' => $totals
+        ];
+    }
 }

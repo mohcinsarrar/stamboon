@@ -59,6 +59,8 @@ class DashboardController extends Controller
       $cyanColor,
     ];
 
+    $last13j_sales = $adminDashboardService->last13j_sales();
+
     return view('admin.dashboard.index',compact(
       'total_users',
       'last_month_users',
@@ -67,7 +69,8 @@ class DashboardController extends Controller
       'total_fanchart_print',
       'total_pedigree_print',
       'products',
-      'colors'
+      'colors',
+      'last13j_sales'
     ));
   }
 

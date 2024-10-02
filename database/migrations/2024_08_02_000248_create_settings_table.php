@@ -35,7 +35,7 @@ return new class extends Migration
             // portrait band color
             $table->string('band_color')->default("#ffffff");
 
-            $table->string('node_template')->default("1");
+            $table->string('node_template')->default("4");
             $table->string('bg_template')->default("1");
             $table->timestamps();
         });

@@ -1,6 +1,6 @@
 <!-- modal settings -->
 <div class="modal fade" id="settings" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="exampleModalLabel1">Family tree settings</h4>
@@ -295,6 +295,56 @@
                                             </span>
                                         </label>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="row">
+                                <div class="divider text-start mb-0">
+                                    <div class="divider-text">
+                                        <h5>Default Portrait</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="row">
+                                    @for ($i = 1; $i <= 6; $i++)
+                                        <div class="col-md-2 mb-md-4 mb-5">
+                                            <div
+                                                class="form-check custom-option custom-option-image custom-option-image-check">
+                                                <input class="form-check-input" name="placeholder_images_female" type="checkbox"
+                                                    id="placeholder_images_female{{ $i }}"
+                                                    value="female{{ $i }}">
+                                                <label class="form-check-label custom-option-content"
+                                                    for="placeholder_images_female{{ $i }}">
+                                                    <span class="custom-option-body">
+                                                        <img src="{{ asset('storage/placeholder_portraits/female' . $i . '.jpg') }}"
+                                                            alt="cbImg" style="height: 190px;object-fit: cover;">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endfor
+    
+                                    @for ($i = 1; $i <= 6; $i++)
+                                    <div class="col-md-2 mb-md-4 mb-5">
+                                        <div
+                                            class="form-check custom-option custom-option-image custom-option-image-check">
+                                            <input class="form-check-input" name="placeholder_images_male" type="checkbox"
+                                                id="placeholder_images_male{{ $i + 7}}"
+                                                value="man{{ $i }}">
+                                            <label class="form-check-label custom-option-content"
+                                                for="placeholder_images_male{{ $i + 7}}">
+                                                <span class="custom-option-body">
+                                                    <img src="{{ asset('storage/placeholder_portraits/man' . $i . '.jpg') }}"
+                                                        alt="cbImg" style="height: 190px;object-fit: cover;">
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @endfor
                                 </div>
                             </div>
                         </div>

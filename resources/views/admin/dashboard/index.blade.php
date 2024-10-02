@@ -105,26 +105,13 @@
 
         const barChart = document.getElementById('barChart');
         if (barChart) {
+            let last13j_sales = @json($last13j_sales);
             const barChartVar = new Chart(barChart, {
                 type: 'bar',
                 data: {
-                    labels: [
-                        '7/12',
-                        '8/12',
-                        '9/12',
-                        '10/12',
-                        '11/12',
-                        '12/12',
-                        '13/12',
-                        '14/12',
-                        '15/12',
-                        '16/12',
-                        '17/12',
-                        '18/12',
-                        '19/12'
-                    ],
+                    labels: last13j_sales.dates,
                     datasets: [{
-                        data: [275, 90, 190, 205, 125, 85, 55, 87, 127, 150, 230, 280, 190],
+                        data: last13j_sales.totals,
                         backgroundColor: cyanColor,
                         borderColor: 'transparent',
                         maxBarThickness: 15,
@@ -275,7 +262,7 @@
         <div class="col-xl-8 col-lg-8 col-12 mb-4">
             <div class="card h-100">
                 <div class="card-header header-elements">
-                    <h5 class="card-title mb-0">Latest Statistics</h5>
+                    <h5 class="card-title mb-0">Sales in last 13J</h5>
                     <div class="card-action-element ms-auto py-0">
                         <div class="dropdown">
                             <button type="button" class="btn dropdown-toggle px-0" data-bs-toggle="dropdown"

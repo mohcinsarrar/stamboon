@@ -67,9 +67,10 @@
     <script src="{{ asset('admin/pedigree/js/add_spouse.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/delete_person.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/edit_image.js') }}?{{ time() }}"></script>
-    <script src="{{ asset('admin/pedigree/js/settings.js') }}?{{ time() }}"></script>
+    
     <script src="{{ asset('admin/pedigree/js/draw_graph.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/load_gedcom.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/pedigree/js/settings.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/export.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/add_note.js') }}?{{ time() }}"></script>
 
@@ -173,16 +174,18 @@
                         class="btn text-white border-0 p-2 col-auto rounded-circle" download=""><i
                             class="ti ti-download fs-4"></i></a>
                 </div>
-                <div class="row  mb-2 justify-content-center">
-                    <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
-                            class="ti ti-note fs-4"></i></button>
-                </div>
+                <!--
+                    <div class="row  mb-2 justify-content-center">
+                        <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                                class="ti ti-note fs-4"></i></button>
+                    </div>
+                -->
                 <div class="row  mb-2 justify-content-center">
                     <button id="export" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-printer fs-4"></i></button>
                 </div>
                 <div class="row  mb-2 justify-content-center">
-                    <button data-bs-toggle="modal" data-bs-target="#settings" type="button"
+                    <button id="open_settings" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-settings fs-4"></i></button>
                 </div>

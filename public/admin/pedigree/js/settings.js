@@ -1,71 +1,123 @@
-document.addEventListener("DOMContentLoaded", () => {
 
 
-  document.querySelectorAll('.customimagescheckbox').forEach((checkbox) => {
-    checkbox.addEventListener('click', function(event) {
-      // If the checkbox is already checked, prevent it from being unchecked
-      if (this.checked) {
-        document.querySelectorAll('.customimagescheckbox').forEach((cb) => {
-          if (cb !== this) {
-            cb.checked = false;
-          }
-        });
-      } else {
-        // If trying to uncheck the only checked checkbox, prevent it
-        event.preventDefault();
+
+  
+  document.querySelector('#open_settings').addEventListener('click', function(event) {
+    
+    document.querySelectorAll('#settings input[name="placeholder_images_male"]').forEach((checkbox) => {
+      checkbox.addEventListener('click', function(event) {
+        // If the checkbox is already checked, prevent it from being unchecked
+        if (this.checked) {
+          document.querySelectorAll('#settings input[name="placeholder_images_male"]').forEach((cb) => {
+            if (cb !== this) {
+              cb.checked = false;
+              cb.parentElement.classList.remove("checked")
+            }
+          });
+        } else {
+          // If trying to uncheck the only checked checkbox, prevent it
+          event.preventDefault();
+        }
+      });
+    });
+
+    document.querySelectorAll('#settings input[name="placeholder_images_female"]').forEach((checkbox) => {
+      checkbox.addEventListener('click', function(event) {
+        // If the checkbox is already checked, prevent it from being unchecked
+        if (this.checked) {
+          document.querySelectorAll('#settings input[name="placeholder_images_female"]').forEach((cb) => {
+            if (cb !== this) {
+              cb.checked = false;
+              cb.parentElement.classList.remove("checked")
+            }
+          });
+        } else {
+          // If trying to uncheck the only checked checkbox, prevent it
+          event.preventDefault();
+        }
+      });
+    });
+
+    document.querySelectorAll('.customimagescheckbox').forEach((checkbox) => {
+      checkbox.addEventListener('click', function(event) {
+        // If the checkbox is already checked, prevent it from being unchecked
+        if (this.checked) {
+          document.querySelectorAll('.customimagescheckbox').forEach((cb) => {
+            if (cb !== this) {
+              cb.checked = false;
+            }
+          });
+        } else {
+          // If trying to uncheck the only checked checkbox, prevent it
+          event.preventDefault();
+        }
+      });
+    });
+
+    document.querySelectorAll('.customimagescheckboxbg').forEach((checkbox) => {
+      checkbox.addEventListener('click', function(event) {
+        // If the checkbox is already checked, prevent it from being unchecked
+        if (this.checked) {
+          document.querySelectorAll('.customimagescheckboxbg').forEach((cb) => {
+            if (cb !== this) {
+              cb.checked = false;
+            }
+          });
+        } else {
+          // If trying to uncheck the only checked checkbox, prevent it
+          event.preventDefault();
+        }
+      });
+    });
+
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
-  });
-
-  document.querySelectorAll('.customimagescheckboxbg').forEach((checkbox) => {
-    checkbox.addEventListener('click', function(event) {
-      // If the checkbox is already checked, prevent it from being unchecked
-      if (this.checked) {
-        document.querySelectorAll('.customimagescheckboxbg').forEach((cb) => {
-          if (cb !== this) {
-            cb.checked = false;
-          }
-        });
-      } else {
-        // If trying to uncheck the only checked checkbox, prevent it
-        event.preventDefault();
+  
+    $.ajax({
+      url: "/pedigree/settings",
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        if (data.error == false) {
+          init_settings(data.settings)
+        } else {
+          show_toast('error', 'error', data.error)
+        }
+  
+      },
+      error: function (xhr, status, error) {
+        if ('responseJSON' in xhr) {
+          show_toast('error', 'error', xhr.responseJSON.message)
+        } else {
+          show_toast('error', 'error', error)
+        }
+  
+        return null;
       }
     });
-  });
 
+    var myModal = new bootstrap.Modal(document.getElementById('settings'))
+    myModal.show()
 
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
-
-  $.ajax({
-    url: "/pedigree/settings",
-    type: 'GET',
-    dataType: 'json',
-    success: function (data) {
-      if (data.error == false) {
-        init_settings(data.settings)
-      } else {
-        show_toast('error', 'error', data.error)
-      }
-
-    },
-    error: function (xhr, status, error) {
-      if ('responseJSON' in xhr) {
-        show_toast('error', 'error', xhr.responseJSON.message)
-      } else {
-        show_toast('error', 'error', error)
-      }
-
-      return null;
-    }
   });
 
 
   function init_settings(settings) {
     
+    // select default portrait already selected
+    maleIcon = settings.default_male_image.split(".")[0]
+    femaleIcon = settings.default_female_image.split(".")[0]
+
+    maleIconElement = document.querySelector('#settings input[name="placeholder_images_male"][value="'+maleIcon+'"]')
+    maleIconElement.checked = true
+    maleIconElement.parentElement.classList.add("checked")
+
+    femaleIconElement = document.querySelector('#settings input[name="placeholder_images_female"][value="'+femaleIcon+'"]')
+    femaleIconElement.checked = true
+    femaleIconElement.parentElement.classList.add("checked")
 
     const colorMale = document.querySelector('#color-picker-male');
     const colorFemale = document.querySelector('#color-picker-female');
@@ -360,4 +412,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-});
+

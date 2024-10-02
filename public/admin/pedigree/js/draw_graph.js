@@ -442,9 +442,9 @@ function getPersonNodeContent(personData, personType) {
     }
     else {
         if (person.gender === 'M') {
-            personIcon = maleIcon;
+            personIcon = treeConfiguration.maleIcon;
         } else {
-            personIcon = femaleIcon;
+            personIcon = treeConfiguration.femaleIcon;
         }
     }
 
@@ -1181,10 +1181,10 @@ function nodeClicked(d) {
     }
     else {
         if (personInfo.sex == 'M') {
-            modalBody.querySelector('.personImage').src = maleIcon;
+            modalBody.querySelector('.personImage').src = treeConfiguration.maleIcon;
         }
         else {
-            modalBody.querySelector('.personImage').src = femaleIcon;
+            modalBody.querySelector('.personImage').src = treeConfiguration.femaleIcon;
         }
     }
 

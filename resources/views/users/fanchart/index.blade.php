@@ -539,10 +539,12 @@
     <div class="card mb-5 mt-4 blocking-card">
         <div class="card-header d-flex justify-content-between border-bottom">
             <h5 class="card-title m-0 me-2">Settings</h5>
-            <div>
-                <button type="button" id="export" class="btn btn-primary waves-effect waves-light"><i
-                        class="ti ti-printer me-2"></i>Print</button>
-            </div>
+            <!--
+                <div>
+                    <button type="button" id="export" class="btn btn-primary waves-effect waves-light"><i
+                            class="ti ti-printer me-2"></i>Print</button>
+                </div>
+            -->
         </div>
         <div class="card-body mt-3">
             <div class="row g-3">
