@@ -314,11 +314,11 @@
                                         <div class="col-md-2 mb-md-4 mb-5">
                                             <div
                                                 class="form-check custom-option custom-option-image custom-option-image-check">
-                                                <input class="form-check-input" name="placeholder_images_female" type="checkbox"
-                                                    id="placeholder_images_female{{ $i }}"
+                                                <input class="form-check-input" name="default_female_image" type="checkbox"
+                                                    id="default_female_image{{ $i }}"
                                                     value="female{{ $i }}">
                                                 <label class="form-check-label custom-option-content"
-                                                    for="placeholder_images_female{{ $i }}">
+                                                    for="default_female_image{{ $i }}">
                                                     <span class="custom-option-body">
                                                         <img src="{{ asset('storage/placeholder_portraits/female' . $i . '.jpg') }}"
                                                             alt="cbImg" style="height: 190px;object-fit: cover;">
@@ -332,11 +332,11 @@
                                     <div class="col-md-2 mb-md-4 mb-5">
                                         <div
                                             class="form-check custom-option custom-option-image custom-option-image-check">
-                                            <input class="form-check-input" name="placeholder_images_male" type="checkbox"
-                                                id="placeholder_images_male{{ $i + 7}}"
+                                            <input class="form-check-input" name="default_male_image" type="checkbox"
+                                                id="default_male_image{{ $i + 7}}"
                                                 value="man{{ $i }}">
                                             <label class="form-check-label custom-option-content"
-                                                for="placeholder_images_male{{ $i + 7}}">
+                                                for="default_male_image{{ $i + 7}}">
                                                 <span class="custom-option-body">
                                                     <img src="{{ asset('storage/placeholder_portraits/man' . $i . '.jpg') }}"
                                                         alt="cbImg" style="height: 190px;object-fit: cover;">

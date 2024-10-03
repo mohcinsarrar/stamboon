@@ -42,4 +42,7 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
 
     Route::get('webshop/contact', [WebshopController::class, 'contact'])->name('webshop.contact');
     Route::post('webshop/contact', [WebshopController::class, 'contact_update'])->name('webshop.contact.update');
+
+    Route::get('webshop/colors', [WebshopController::class, 'colors'])->name('webshop.colors');
+    Route::post('webshop/colors', [WebshopController::class, 'colors_update'])->name('webshop.colors.update');
 });

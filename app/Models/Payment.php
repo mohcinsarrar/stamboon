@@ -18,7 +18,8 @@ class Payment extends Model
         'currency',
         'payment_status',
         'payment_method',
-        'expired'
+        'expired',
+        'price'
     ];
 
     protected $casts = [

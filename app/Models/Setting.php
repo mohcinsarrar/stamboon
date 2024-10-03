@@ -18,7 +18,9 @@ class Setting extends Model
         'female_color',
         'male_color',
         'node_template',
-        'bg_template'
+        'bg_template',
+        'default_male_image',
+        'default_female_image'
     ];
 
     public function user(): BelongsTo

@@ -4,11 +4,11 @@
   
   document.querySelector('#open_settings').addEventListener('click', function(event) {
     
-    document.querySelectorAll('#settings input[name="placeholder_images_male"]').forEach((checkbox) => {
+    document.querySelectorAll('#settings input[name="default_male_image"]').forEach((checkbox) => {
       checkbox.addEventListener('click', function(event) {
         // If the checkbox is already checked, prevent it from being unchecked
         if (this.checked) {
-          document.querySelectorAll('#settings input[name="placeholder_images_male"]').forEach((cb) => {
+          document.querySelectorAll('#settings input[name="default_male_image"]').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
               cb.parentElement.classList.remove("checked")
@@ -21,11 +21,11 @@
       });
     });
 
-    document.querySelectorAll('#settings input[name="placeholder_images_female"]').forEach((checkbox) => {
+    document.querySelectorAll('#settings input[name="default_female_image"]').forEach((checkbox) => {
       checkbox.addEventListener('click', function(event) {
         // If the checkbox is already checked, prevent it from being unchecked
         if (this.checked) {
-          document.querySelectorAll('#settings input[name="placeholder_images_female"]').forEach((cb) => {
+          document.querySelectorAll('#settings input[name="default_female_image"]').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
               cb.parentElement.classList.remove("checked")
@@ -111,11 +111,11 @@
     maleIcon = settings.default_male_image.split(".")[0]
     femaleIcon = settings.default_female_image.split(".")[0]
 
-    maleIconElement = document.querySelector('#settings input[name="placeholder_images_male"][value="'+maleIcon+'"]')
+    maleIconElement = document.querySelector('#settings input[name="default_male_image"][value="'+maleIcon+'"]')
     maleIconElement.checked = true
     maleIconElement.parentElement.classList.add("checked")
 
-    femaleIconElement = document.querySelector('#settings input[name="placeholder_images_female"][value="'+femaleIcon+'"]')
+    femaleIconElement = document.querySelector('#settings input[name="default_female_image"][value="'+femaleIcon+'"]')
     femaleIconElement.checked = true
     femaleIconElement.parentElement.classList.add("checked")
 

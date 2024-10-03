@@ -24,6 +24,11 @@
       "slug": "webshop",
       "submenu": [
         {
+          "url": "/admin/webshop/colors",
+          "name": "Colors & logo",
+          "slug": "admin.webshop.colors"
+        },
+        {
           "url": "/admin/webshop/hero",
           "name": "Hero",
           "slug": "admin.webshop.hero"

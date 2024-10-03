@@ -290,4 +290,12 @@ class WebshopController extends Controller
   
     }
 
+    public function colors(Request $request){
+      return view('admin.webshop.colors');
+    }
+
+    public function colors_update(Request $request){
+      dd($request);
+    }
+
 }

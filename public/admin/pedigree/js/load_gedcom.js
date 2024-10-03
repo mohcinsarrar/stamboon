@@ -80,8 +80,8 @@ function draw_tree() {
                         chartContainer: '#graph', // root svg
                         zoomLevel: data.settings.zoom_level,
                         // default portrait
-                        maleIcon : "/storage/placeholder_portraits/"+data.settings.default_male_image,
-                        femaleIcon : "/storage/placeholder_portraits/"+data.settings.default_female_image,
+                        maleIcon : "/storage/placeholder_portraits/"+data.settings.default_male_image+".jpg",
+                        femaleIcon : "/storage/placeholder_portraits/"+data.settings.default_female_image+".jpg",
                         // product features
                         maxGenerations : data.settings.max_generation,
                         maxNodes : data.settings.max_nodes,
