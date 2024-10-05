@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\File;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -88,9 +89,29 @@ class FortifyServiceProvider extends ServiceProvider
     {
 
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
+
+            $path = resource_path('views/website/website.json');
+
+            // Get the file contents
+            $json = File::get($path);
+
+            // Decode the JSON data
+            $data = json_decode($json, true);
+
+            
+            return (new MailMessage)->subject('Verify your email address')
+            ->markdown('emails.verify_email', [
+                'verification_code' => $notifiable->verification_code,
+                'data' => $data,
+                'title' => 'Verify your email address',
+                'description' => 'Hey '.$notifiable->firstname.' '.$notifiable->lastname.', Thanks so much for signing up and joining Stamboon. We are very happy to have you on board!, To verify your account, please use the verification code below:'
+            ]);
+            /*
             return (new MailMessage)
             ->line('Your verification code is: ' . $notifiable->verification_code)
             ->line('Thank you for using our application!');
+            */
+            
         });
 
         Fortify::VerifyEmailView(function () {

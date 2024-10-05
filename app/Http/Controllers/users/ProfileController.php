@@ -160,11 +160,12 @@ class ProfileController extends Controller
         try{
             $deleted = DB::table(config('session.table', 'sessions'))->where('id', $id)->delete();
             DB::commit();
-            return redirect()->route('users.profile.security')->with('success','device supprime avec succès');
+            return redirect()->route('users.profile.security')->with('success','device successfully removed');
         }
         catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('users.profile.security')->with('error', "Erreur lors de la suppression du device, réessayez plus tard"); 
+            return redirect()->route('users.profile.security')->with('error', "Error deleting device, try again later
+            "); 
         }
     }
   

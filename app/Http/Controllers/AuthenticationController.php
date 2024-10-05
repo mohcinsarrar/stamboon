@@ -27,7 +27,7 @@ class AuthenticationController extends Controller
     if($code != null){
       $user = auth()->user();
       if($code !== $user->verification_code){
-          return redirect()->back()->with('error','Le code de vérification est incorrect, veuillez réessayer');
+          return redirect()->back()->with('error','The verification code is incorrect, please try again.');
       }
       else{
           $user->email_verified_at = Carbon::now();

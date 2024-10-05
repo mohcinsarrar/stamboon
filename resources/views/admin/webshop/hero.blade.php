@@ -59,6 +59,11 @@
                     <input type="text" class="form-control" id="videoTitle" name="videoTitle"
                         value="{{ $data['videoTitle'] }}" required>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label" for="videoUrl">Video URL</label>
+                    <input type="text" class="form-control" id="videoUrl" name="videoUrl"
+                        value="{{ $data['videoUrl'] }}" required>
+                </div>
                 <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
             </form>
         </div>

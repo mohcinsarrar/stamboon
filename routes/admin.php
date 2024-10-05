@@ -45,4 +45,7 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
 
     Route::get('webshop/colors', [WebshopController::class, 'colors'])->name('webshop.colors');
     Route::post('webshop/colors', [WebshopController::class, 'colors_update'])->name('webshop.colors.update');
+
+    Route::get('webshop/footer_pages', [WebshopController::class, 'footer_pages'])->name('webshop.footer_pages');
+    Route::post('webshop/footer_pages', [WebshopController::class, 'footer_pages_update'])->name('webshop.footer_pages.update');
 });

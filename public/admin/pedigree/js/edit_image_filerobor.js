@@ -129,6 +129,7 @@ function render_imageditor(personInfo,source) {
 
     // perview edited image
     document.getElementById('preview_image').addEventListener('click', function handleClick(event) {
+        console.log('fff')
         var image = filerobotImageEditor.getCurrentImgData().imageData.imageBase64
         document.querySelector('#previewImage #previewImageContainer').src = image;
         var myModal = new bootstrap.Modal(document.getElementById('previewImage'));

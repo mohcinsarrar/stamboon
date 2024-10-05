@@ -1,3 +1,17 @@
+<div class="modal fade" id="previewImage" tabindex="-1" aria-hidden="true" style="z-index:10000;">>
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewImageTitle">Preview image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="previewImageContainer" class="rounded-circle d-block mx-auto" src=""
+                    style="width:110px;height: 145px;object-fit: cover;" />
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalEditImage" tabindex="-1" aria-hidden="true" data-bs-backdrop="false">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content h-100">
@@ -30,6 +44,10 @@
                                 <div class="mb-3">
                                     <input class="form-control" type="file" id="upload_image" autocomplete="off">
                                 </div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary waves-effect waves-light col-auto"
+                                    id="preview_image">preview</button>
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col-auto">

@@ -4,11 +4,132 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Subscriptionn')
+@section('title', 'Subscription')
 
 @section('page-style')
     <!-- Page -->
-    <link rel="stylesheet" href="{{ asset('webshop/assets/css/style.css') }}?{{ time() }}" />
+    <style>
+        /*===== PRICING THIRTEEN =====*/
+.pricing-fourteen {
+  padding: 100px 0;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .pricing-fourteen {
+    padding: 80px;
+  }
+}
+
+@media (max-width: 767px) {
+  .pricing-fourteen {
+    padding: 60px 0;
+  }
+}
+
+.pricing-style-fourteen {
+  border: 1px solid var(--bs-light);
+  border-radius: 10px;
+  margin-top: 30px;
+  transition: all 0.4s ease;
+  padding: 50px 35px;
+  text-align: center;
+  z-index: 0;
+}
+
+.pricing-style-fourteen:hover {
+  box-shadow: var(--shadow-4);
+}
+
+.pricing-style-fourteen.middle {
+  box-shadow: var(--shadow-4);
+  border-color: var(--bs-primary);
+}
+
+.pricing-style-fourteen .purchase-btn a.current{
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color:white;
+}
+
+.pricing-style-fourteen.middle .title {
+  border-color: var(--bs-primary);
+  background: var(--bs-primary);
+  color: var(--white);
+}
+
+.pricing-style-fourteen .title {
+  font-weight: 500;
+  margin-bottom: 25px;
+  color: var(--bs-primary);
+  padding: 8px 20px;
+  border: 2px solid var(--bs-primary);
+  display: inline-block;
+  border-radius: 30px;
+  font-size: 16px;
+}
+
+.pricing-style-fourteen .table-head p {
+  color: var(--dark-3);
+}
+
+.pricing-style-fourteen .price {
+  padding-top: 30px;
+}
+
+.pricing-style-fourteen .amount {
+  font-weight: 600;
+  display: inline-block;
+  position: relative;
+  padding-left: 15px;
+  font-size: 55px;
+}
+
+.pricing-style-fourteen .currency {
+  font-weight: 400;
+  color: var(--dark-3);
+  font-size: 20px;
+  position: absolute;
+  left: 0;
+  top: 6px;
+}
+
+.pricing-style-fourteen .duration {
+  display: inline-block;
+  font-size: 18px;
+  color: var(--dark-3);
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.pricing-style-fourteen .light-rounded-buttons {
+  margin: 0;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.pricing-style-fourteen .table-list li {
+  position: relative;
+  margin-bottom: 10px;
+  color: var(--dark-3);
+  text-align: left;
+}
+
+.pricing-style-fourteen .table-list li:last-child {
+  margin: 0;
+}
+
+.pricing-style-fourteen .table-list li i {
+  color: var(--bs-primary);
+  font-size: 16px;
+  padding-right: 8px;
+}
+
+.pricing-style-fourteen .table-list li i.deactive {
+  color: var(--dark-3);
+}
+
+
+    </style>
 @endsection
 
 @section('content')
@@ -27,31 +148,31 @@
     <!-- Start Pricing  Area -->
 
     @if (Auth::user()->has_payment() != false)
-        <div class="card mb-6 bg-dark bg-gradient text-white mt-4">
+        <div class="card mb-6 text-dark mt-4">
             <h5 class="card-header">Current Plan</h5>
             <div class="card-body">
                 <div class="row row-gap-4 row-gap-xl-0">
                     <div class="col-xl-6 order-1 order-xl-0">
                         <div class="mb-4">
-                            <h6 class="mb-1  text-white">Your Current Plan is {{ $payment->product->name }}</h6>
-                            <p class=" text-white">{{ $payment->product->description }}</p>
+                            <h6 class="mb-1  text-dark">Your Current Plan is {{ $payment->product->name }}</h6>
+                            <p class=" text-dark">{{ $payment->product->description }}</p>
                         </div>
                         <div class="mb-4">
-                            <h6 class="mb-1  text-white">Active until {{ $payment->active_until() }}</h6>
-                            <p class=" text-white">We will send you a notification upon Subscription expiration</p>
+                            <h6 class="mb-1  text-dark">Active until {{ $payment->active_until() }}</h6>
+                            <p class=" text-dark">We will send you a notification upon Subscription expiration</p>
                         </div>
                     </div>
                     <div class="col-xl-6 order-0 order-xl-0">
                         @if ($payment->countdown()['percentage'] > 75)
                             <div class="alert alert-warning" role="alert">
-                                <h5 class="alert-heading mb-2  text-white">We need your attention!</h5>
-                                <span class=" text-white">Your plan requires update</span>
+                                <h5 class="alert-heading mb-2  text-dark">We need your attention!</h5>
+                                <span class=" text-dark">Your plan requires update</span>
                             </div>
                         @endif
                         <div class="plan-statistics ">
                             <div class="d-flex justify-content-between">
-                                <h6 class="mb-1 text-white">Days</h6>
-                                <h6 class="mb-1 text-white">{{ $payment->countdown()['passedDays'] }} of
+                                <h6 class="mb-1 text-dark">Days</h6>
+                                <h6 class="mb-1 text-dark">{{ $payment->countdown()['passedDays'] }} of
                                     {{ $payment->countdown()['totalDays'] }} Days</h6>
                             </div>
                             <div class="progress mb-1 bg-label-primary" style="height: 10px;">
@@ -83,7 +204,7 @@
                             <div class="h-100 pricing-style-fourteen {{ $loop->index == 1 ? 'middle' : '' }}">
 
                                 <div class="table-head">
-                                    <h6 class="title">{{ $product->name }}</h4>
+                                    <h6 class="title {{ $loop->index == 1 ? 'text-white' : '' }}">{{ $product->name }}</h4>
                                         <p class="mb-0">{{ $product->description }}</p>
                                         <div class="price">
                                             <h3 class="amount">

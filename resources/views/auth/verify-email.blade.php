@@ -130,9 +130,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
           </a>
         </div>
         <!-- /Logo -->
-        <h4 class="mb-1 pt-2">Vérifier your email ✉️</h4>
+        <h4 class="mb-1 pt-2">Verify your email ✉️</h4>
         <p class="text-start mb-4">
-          Vérifier votre adresse e-mail en entrant le code reçu dans votre e-mail.
+          Verify your email address by entering the verification code received in your email.
         </p>
 
         <form id="twoStepsForm" method="POST" action="{{ route('verification_code.send') }}">
@@ -151,17 +151,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
           </div>
           <div class="row  justify-content-center mt-4">
               <div class="col-auto">
-                  <button class="btn btn-primary btn-embossed">Vérifier</button>
+                  <button class="btn btn-primary btn-embossed">Verify</button>
               </div>
           </div>
 
       </form>
 
-        <p class="text-center mb-0 mt-4">Vous n'avez pas reçu le mail ?
-          <a href="javascript:void(0);">
-            Renvoyer
-          </a>
-        </p>
       </div>
     </div>
     <!-- /Verify Email -->

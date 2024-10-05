@@ -7,7 +7,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactEmail;
-
+use Illuminate\Support\Arr;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,8 +42,51 @@ Route::get('/', function(){
     // get products
     $products = Product::orderByRaw('CONVERT(price, SIGNED) asc')->get();
 
-    return view('website.index',compact('data','products'));
-});
+    // Path to the JSON file
+    $path = resource_path('views/website/footer_pages.json');
+
+    // Get the file contents
+    $json = File::get($path);
+
+    // Decode the JSON data
+    $pages = json_decode($json, true);
+
+    $pages = $pages['pages'];
+
+    return view('website.index',compact('data','products','pages'));
+})->name('webshop.index');
+
+
+Route::get('/pages/{slug}', function($slug){
+
+    // Path to the JSON file
+    $path = resource_path('views/website/website.json');
+
+    // Get the file contents
+    $json = File::get($path);
+
+    // Decode the JSON data
+    $data = json_decode($json, true);
+
+    // Path to the JSON file
+    $path = resource_path('views/website/footer_pages.json');
+
+    // Get the file contents
+    $json = File::get($path);
+
+    // Decode the JSON data
+    $pages = json_decode($json, true);
+
+    $pages = $pages['pages'];
+
+    $page = collect($pages)->firstWhere('slug', $slug);
+
+    if($page == null){
+        abort(404, 'Page not found.'); 
+    }
+    
+    return view('website.pages',compact('data','page','pages'));
+})->name('webshop.pages');
 
 
 Route::post('/contact', function(Request $request){
@@ -70,9 +113,9 @@ Route::post('/contact', function(Request $request){
         return redirect('/#contact')->with('success','Your message sent with success !!');
     }
     catch(Exception $e){
-        return redirect('/#contact')->with('error','Unable send your message, try again !!');
+        return redirect('/#contact')->with('error','Unable to send your message, try again !!');
     }
     
-    return redirect('/#contact')->with('error','Unable send your message, try again !!');
+    return redirect('/#contact')->with('error','Unable to send your message, try again !!');
 
 })->name('contact');

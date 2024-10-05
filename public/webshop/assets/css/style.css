@@ -6,12 +6,9 @@
   COMMON css 
 ===========================*/
 :root {
-  --font-family: "Inter", sans-serif;
-  /*--primary: #155bd5;*/
-  --primary: #2D6A4F;
-  /*--primary:#1c3ab6;*/
-  --primary-dark: #00a76c;
-  /*--primary-dark: #155bd5;*/
+  --font-family: "{{$data['colors']['font']}}", sans-serif;
+  --primary: "{{$data['colors']['primary_color']}}";
+  --primary-dark: "{{$data['colors']['primary_color']}}";
   --primary-light: #e2f1ff;
   --accent: #00d4d7;
   --accent-dark: #00bac1;

@@ -112,6 +112,18 @@ function render_imageditor(source) {
 
 }
 
+
+document.getElementById('preview_image').addEventListener('click', function handleClick(event) {
+    if(filerobotImageEditor != undefined){
+        console.log('ddd');
+        var image = filerobotImageEditor.getCurrentImgData().imageData.imageBase64
+        document.querySelector('#previewImage #previewImageContainer').src = image;
+        var myModal = new bootstrap.Modal(document.getElementById('previewImage'));
+        myModal.show();
+    }
+    
+});
+
 // save image when click on save button
 document.getElementById('save_image').addEventListener('click', function () {
     var personInfo = selectedPerson
@@ -172,6 +184,8 @@ document.getElementById('save_image').addEventListener('click', function () {
 
     // send the request with image data
     request.send(JSON.stringify(imageData));
+
+    
 
 });
 

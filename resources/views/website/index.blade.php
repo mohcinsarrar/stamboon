@@ -26,11 +26,14 @@
     <!--====== gLightBox css ======-->
     <link rel="stylesheet" href="{{ asset('webshop/assets/css/glightbox.min.css') }}" />
 
-    <link rel="stylesheet" href="{{ asset('webshop/assets/css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset(mix('assets/vendor/fonts/tabler-icons.css')) }}" />
+    @include('website.style')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
 </head>
 
 <body>
@@ -42,8 +45,9 @@
             <div class="row justify-content-between align-items-center">
                 <div class="col">
                     <nav class="navbar navbar-expand-lg">
-                        <a class="navbar-brand" href="index.html">
-                            <img src="{{ asset('webshop/assets/images/white-logo.svg') }}" alt="Logo" />
+                        <a class="navbar-brand" href="{{route('webshop.index')}}">
+                            <img src="{{ asset('storage/' . $data['colors']['logo']) }}" alt="Logo" width="184"
+                                height="40" style="object-fit: contain" />
                         </a>
                         <button class="navbar-toggler" type="button" id="side-menu-left">
                             <span class="toggler-icon"></span>
@@ -99,10 +103,12 @@
 
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <li><a class="dropdown-item"
-                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}"><i class="lni lni-grid-alt pe-1"></i> Dashboard</a>
+                                        href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}"><i
+                                            class="lni lni-grid-alt pe-1"></i> Dashboard</a>
                                 </li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i class="lni lni-power-switch pe-1"></i> Logout</a>
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="lni lni-power-switch pe-1"></i> Logout</a>
                                 </li>
                                 <form method="POST" id="logout-form" action="{{ route('logout') }}">
                                     @csrf
@@ -132,13 +138,29 @@
             <a class="close"><i class="lni lni-close"></i></a>
         </div>
         <div class="sidebar-content">
-            <div class="sidebar-logo">
-                <a href="index.html"><img src="{{ asset('webshop/assets/images/logo.svg') }}" alt="Logo" /></a>
+            <div class="sidebar-logo mb-4">
+                <a href="{{ route('webshop.index') }}"><img src="{{ asset('storage/' . $data['colors']['logo']) }}"
+                        alt="Logo" width="184" height="40" style="object-fit: contain" /></a>
             </div>
             <!-- logo -->
             <div class="">
                 @if (Auth::check())
-                    <a class="text-dark" href="">{{ Auth::user()->name }}</a>
+                    <ul>
+                        <li>
+                            <h4 class="dropdown-item"> {{ Auth::user()->name }}</h4>
+                        </li>
+                        <li><a class="dropdown-item"
+                                href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}"><i
+                                    class="lni lni-grid-alt pe-1"></i> Dashboard</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="lni lni-power-switch pe-1"></i> Logout</a>
+                        </li>
+                        <form method="POST" id="logout-form" action="{{ route('logout') }}">
+                            @csrf
+                        </form>
+                    </ul>
                 @else
                     <a type="button" class="login-btn py-2 text-dark my-2" href="{{ route('register') }}">
                         <span><i class="fa-solid fa-right-to-bracket pe-lg-2 "></i></span>
@@ -147,37 +169,7 @@
                 @endif
             </div>
             <div class="sidebar-menu mt-0">
-                <ul>
-                    @if ($data['aboutus']['enable'] == true)
-                        <li>
-                            <a class="page-scroll active" href="#about-us">About Us</a>
-                        </li>
-                    @endif
 
-                    @if ($data['features']['enable'] == true)
-                        <li>
-                            <a class="page-scroll" href="#features">Features</a>
-                        </li>
-                    @endif
-
-                    @if ($data['pricing']['enable'] == true)
-                        <li>
-                            <a class="page-scroll" href="#pricing">Pricing</a>
-                        </li>
-                    @endif
-
-                    @if ($data['faq']['enable'] == true)
-                        <li>
-                            <a class="page-scroll" href="#faq">FAQ</a>
-                        </li>
-                    @endif
-
-                    @if ($data['contact']['enable'] == true)
-                        <li>
-                            <a class="page-scroll" href="#contact">Contact</a>
-                        </li>
-                    @endif
-                </ul>
             </div>
 
             <!-- menu -->
@@ -218,9 +210,9 @@
                                 {{ $data['hero']['subTitle'] }}
                             </p>
                             <div class="button">
-                                <a href="javascript:void(0)"
+                                <a href="{{ route('register') }}"
                                     class="btn primary-btn">{{ $data['hero']['buttonTitle'] }}</a>
-                                <a href="https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM"
+                                <a href="{{ $data['hero']['videoUrl'] }}"
                                     class="glightbox video-button">
                                     <span class="btn icon-btn rounded-full">
                                         <i class="lni lni-play"></i>
@@ -425,42 +417,104 @@
             </div>
             <!--======  End Section Title Five ======-->
             <div class="container">
-                <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="row row-cols-1 row-cols-lg-3 g-4">
                     @foreach ($products as $product)
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <div class="h-100 pricing-style-fourteen {{ $loop->index == 1 ? 'middle' : '' }}">
+                        <div class="col-lg-4 col-12">
+                            <div
+                                class="bg-white h-100 pricing-style-fourteen {{ $loop->index == 1 ? 'middle' : '' }}">
                                 <div class="table-head">
                                     <h6 class="title">{{ $product->name }}</h4>
                                         <p>{{ $product->description }}</p>
                                         <div class="price">
-                                            <h2 class="amount">
-                                                <span class="currency">$</span>{{ $product->amount }}<span
-                                                    class="duration">/mo </span>
-                                            </h2>
+                                            <h3 class="amount">
+                                                <span class="currency">$</span>{{ $product->price }}
+                                            </h3>
+                                            @if ($product->duration % 12 === 0)
+                                                <span class="duration">/ {{ $product->duration / 12 }} Years </span>
+                                            @else
+                                                <span class="duration">/ {{ $product->duration }} Months </span>
+                                            @endif
                                         </div>
                                 </div>
 
                                 <div class="light-rounded-buttons">
-                                    @if(Auth::check())
-                                    <a href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}" class="btn primary-btn-outline">
-                                        Purchase
-                                    </a>
+                                    @if (Auth::check())
+                                        <a href="{{ Auth::user()->hasRole('admin') ? route('admin.dashboard.index') : route('users.dashboard.index') }}"
+                                            class="btn primary-btn-outline">
+                                            Purchase
+                                        </a>
                                     @else
-                                    <a href="{{ route('register') }}" class="btn primary-btn-outline">
-                                        Purchase
-                                    </a>
+                                        <a href="{{ route('register') }}" class="btn primary-btn-outline">
+                                            Purchase
+                                        </a>
                                     @endif
                                 </div>
 
                                 <div class="table-content">
-                                    <ul class="table-list">
-                                        @if($product->features != null)
-                                            @foreach ($product->features as $feature)
-                                                <li> <i class="lni lni-checkmark-circle"></i> {{ $feature }}</li>
-                                            @endforeach
-                                        @endif
+                                    <ul class="table-list ps-0">
+                                        <li> <i class="ti ti-circle-check"></i> Chart type :
+                                            {{ $product->fanchart == true ? 'Fanchart ,' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
+                                        </li>
+                                        <li> <i class="ti ti-circle-check"></i> Max Print charts :
+                                            {{ $product->print_number > 0 ? $product->print_number . '' : 'Unlimited' }}
+                                        </li>
                                     </ul>
                                 </div>
+                                @php
+                                    $max_output_png = [
+                                        '1' => '1344 x 839 px',
+                                        '2' => '2688 x 1678 px',
+                                        '3' => '4032 x 2517 px',
+                                        '4' => '5376 x 3356 px',
+                                        '5' => '6720 x 4195 px',
+                                    ];
+
+                                    $max_output_pdf = [
+                                        'a0' => 'A0',
+                                        'a1' => 'A1',
+                                        'a2' => 'A2',
+                                        'a3' => 'A3',
+                                        'a4' => 'A4',
+                                    ];
+                                @endphp
+
+                                @if ($product->fanchart == true)
+                                    <h6 class="text-start my-3">Fanchart Features</h6>
+                                    <div class="table-content">
+                                        <ul class="table-list ps-0">
+                                            <li> <i class="ti ti-circle-check"></i> Max generations :
+                                                {{ $product->fanchart_max_generation }}</li>
+                                            <li> <i class="ti ti-circle-check"></i> Output products :
+                                                {{ $product->fanchart_output_png == true ? 'PNG ,' : '' }}{{ $product->fanchart_output_pdf == true ? 'PDF' : '' }}
+                                            </li>
+                                            <li> <i class="ti ti-circle-check"></i> Max PNG measurements :
+                                                {{ $max_output_png[$product->fanchart_max_output_png] }}</li>
+                                            <li> <i class="ti ti-circle-check"></i> Max PDF measurements :
+                                                {{ $max_output_pdf[$product->fanchart_max_output_pdf] }}</li>
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                @if ($product->pedigree == true)
+                                    <h6 class="text-start my-3">Pedigree Features</h6>
+                                    <div class="table-content">
+                                        <ul class="table-list ps-0">
+                                            <li> <i class="ti ti-circle-check"></i> Max generations :
+                                                {{ $product->pedigree_max_generation }}</li>
+                                            <li> <i class="ti ti-circle-check"></i> Max nodes :
+                                                {{ $product->max_nodes }}
+                                            </li>
+                                            <li> <i class="ti ti-circle-check"></i> Output products :
+                                                {{ $product->pedigree_output_png == true ? 'PNG ,' : '' }}{{ $product->pedigree_output_pdf == true ? 'PDF' : '' }}
+                                            </li>
+                                            <li> <i class="ti ti-circle-check"></i> Max PNG measurements :
+                                                {{ $max_output_png[$product->pedigree_max_output_png] }}</li>
+                                            <li> <i class="ti ti-circle-check"></i> Max PDF measurements :
+                                                {{ $max_output_pdf[$product->pedigree_max_output_pdf] }}</li>
+                                        </ul>
+                                    </div>
+                                @endif
+
                             </div>
                         </div>
                     @endforeach
@@ -617,57 +671,34 @@
 
 
     <!-- Start Footer Area -->
-    @if(false == true)
+
     <footer class="footer-area footer-eleven mt-0">
         <!-- Start Footer Top -->
-        <div class="footer-top">
-            <div class="container">
-                <div class="inner-content">
-                    <div class="row justify-content-between">
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <!-- Single Widget -->
-                            <div class="footer-widget f-about">
-                                <div class="logo">
-                                    <a href="index.html">
-                                        <img src="{{ asset('webshop/assets/images/logo.svg') }}" alt="#"
-                                            class="img-fluid" />
-                                    </a>
-                                </div>
-                                <p>
-                                    Making the world a better place through constructing elegant
-                                    hierarchies.
-                                </p>
-                            </div>
-                            <!-- End Single Widget -->
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-12">
-                            <!-- Single Widget -->
-                            <div class="sidebar-social align-items-center justify-content-center">
-                                <h5 class="social-title">Follow Us On</h5>
-                                <ul>
-                                    <li>
-                                        <a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)"><i class="lni lni-youtube"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- End Single Widget -->
-                        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-12 mb-lg-0 mb-4">
+                    <div class="text-lg-start text-center">
+                        <span class="mb-3 mb-md-0 ">© <span id="copyright">
+                                <script>
+                                    document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
+                                </script>
+                            </span> Stamboon,</span>
                     </div>
+                    
                 </div>
+                <div class="col-lg-8 col-12">
+                    <ul class="nav justify-content-lg-end justify-content-center pages">
+                        @foreach($pages as $page)
+                        <li class="nav-item"><a href="{{ route('webshop.pages',$page['slug']) }}" class="nav-link px-2">{{ $page['title'] }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+                
             </div>
         </div>
+
         <!--/ End Footer Top -->
     </footer>
-    @endif
     <!--/ End Footer Area -->
 
 

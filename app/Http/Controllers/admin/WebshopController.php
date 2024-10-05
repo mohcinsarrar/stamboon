@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 
 class WebshopController extends Controller
 {
@@ -63,6 +63,7 @@ class WebshopController extends Controller
     $data['hero']['subTitle'] = $request->subTitle;
     $data['hero']['buttonTitle'] = $request->buttonTitle;
     $data['hero']['videoTitle'] = $request->videoTitle;
+    $data['hero']['videoUrl'] = $request->videoUrl;
 
     if($request->enable != null){
       $data['hero']['enable'] = true;
@@ -291,11 +292,81 @@ class WebshopController extends Controller
     }
 
     public function colors(Request $request){
-      return view('admin.webshop.colors');
+      $data = $this->load_data();
+      $data = $data['colors'];
+      return view('admin.webshop.colors',compact('data'));
     }
 
     public function colors_update(Request $request){
-      dd($request);
+      $data = $this->load_data();
+
+      // update logo if loaded
+      if($request->hasFile('logo') && $request->file('logo')->isValid()) {
+        
+        // delete image if exist
+        if (Storage::exists($data['colors']['logo'])) {
+          Storage::delete($data['colors']['logo']);
+        }
+        // store the new image
+        $data['colors']['logo'] = $request->file('logo')->store('logo');
+      }
+
+      $data['colors']['primary_color'] = $request->primary_color;
+      $data['colors']['secondary_color'] = $request->secondary_color;
+      $data['colors']['font'] = $request->font;
+
+      $this->update_data($data);
+      
+      return redirect()->back()->with('success', "Colors & logo section updated");
+
+
+    }
+
+
+    private function load_footer_pages(){
+
+      $path = resource_path('views/website/footer_pages.json');
+  
+      // Get the file contents
+      $json = File::get($path);
+  
+      // Decode the JSON data
+      $data = json_decode($json, true);
+  
+      return $data;
+    }
+  
+    private function update_footer_pages($data){
+  
+      $path = resource_path('views/website/footer_pages.json');
+  
+      $newJson = json_encode($data, JSON_PRETTY_PRINT);
+  
+      File::put($path, $newJson);
+    }
+
+    public function footer_pages(Request $request){
+      $data = $this->load_footer_pages();
+      $pages = $data['pages'];
+
+      return view('admin.webshop.footer_pages',compact('pages'));
+    }
+
+    public function footer_pages_update(Request $request){
+
+      $data = $this->load_footer_pages();
+      
+      $pages = $request->pages;
+      foreach ($pages as &$page) {
+        $page['slug'] = Str::slug($page['title']);
+      }
+
+      $data['pages'] = $pages;
+      
+
+      $this->update_footer_pages($data);
+      
+      return redirect()->back()->with('success', "Footer Pages section updated");
     }
 
 }

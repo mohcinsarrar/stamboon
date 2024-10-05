@@ -42,8 +42,8 @@
                             </a>
                         </div>
                         <!-- /Logo -->
-                        <h4 class="mb-1 pt-2">Bienvenue à cnmhg-hapkido.ma</h4>
-                        <p class="mb-4">Connectez-vous à votre compte</p>
+                        <h4 class="mb-1 pt-2">Welcome to Stamboon</h4>
+                        <p class="mb-4">Log in to your account</p>
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -57,9 +57,9 @@
                             @csrf
                             <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
-                                    <label class="form-label" for="password">Mot de passe</label>
+                                    <label class="form-label" for="password">Password</label>
                                     <a href="{{ url('auth/forgot-password-basic') }}">
-                                        <small>Mot de passe oublié?</small>
+                                        <small>Forgot your password?</small>
                                     </a>
                                 </div>
                                 <div class="input-group input-group-merge">
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Confirmer</button>
+                                <button class="btn btn-primary d-grid w-100" type="submit">Confirm</button>
                             </div>
                         </form>
 

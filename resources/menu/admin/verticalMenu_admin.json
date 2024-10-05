@@ -72,6 +72,12 @@
           "name": "Contact",
           "slug": "admin.webshop.contact"
         }
+        ,
+        {
+          "url": "/admin/webshop/footer_pages",
+          "name": "Footer Pages",
+          "slug": "admin.webshop.footer_pages"
+        }
       ]
     }
   ]

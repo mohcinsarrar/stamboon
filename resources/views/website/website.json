@@ -5,7 +5,8 @@
         "subTitle": "Every person deserves to be remembered.",
         "image": "images\/QNpaYZupEpXYXYnjOCVtT25nJdj5l89RBO0xfRQZ.webp",
         "buttonTitle": "Get started",
-        "videoTitle": "Watch Video"
+        "videoTitle": "Watch Video",
+        "videoUrl": "efzrf"
     },
     "aboutus": {
         "enable": true,
@@ -43,10 +44,6 @@
             {
                 "title": "Only 4 easy steps",
                 "description": "Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt labor dolore magna."
-            },
-            {
-                "title": "Only 5 easy steps",
-                "description": "Lorem ipsum dolor sit amet, adipscing elitr, sed diam nonumy eirmod tempor ividunt labor dolore magna."
             }
         ]
     },
@@ -80,5 +77,11 @@
         "enable": true,
         "title": "Ready to Get Started",
         "subTitle": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis aut, eos saepe optio dolorum quas distinctio magnam"
+    },
+    "colors": {
+        "primary_color": "#0e3aa5",
+        "secondary_color": "#08155d",
+        "font": "Roboto",
+        "logo": "logo\/L3vBlmZWyzmvbgpVngo3HWiCF5XDkifmoGucLDIO.png"
     }
 }

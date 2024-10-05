@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('settings', function (Blueprint $table) {
             //
-            $table->string('default_male_image')->nullable()->default("man1.jpg");
-            $table->string('default_female_image')->nullable()->default("female1.jpg");
+            $table->string('default_male_image')->nullable()->default("man1");
+            $table->string('default_female_image')->nullable()->default("female1");
         });
     }
 
