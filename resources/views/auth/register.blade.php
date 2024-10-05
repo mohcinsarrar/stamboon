@@ -95,9 +95,7 @@ $customizerHidden = 'customizer-hide';
             </a>
           </p>
 
-          <div class="divider my-4">
-            <div class="divider-text">or</div>
-          </div>
+
 
         </div>
       </div>
