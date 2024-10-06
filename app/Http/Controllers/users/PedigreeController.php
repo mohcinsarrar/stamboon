@@ -99,10 +99,10 @@ class PedigreeController extends Controller
         // Define the lines you want to add
         $lines = [
             "0 HEAD",
-            "1 SOUR Stamboon",
+            "1 SOUR Stamboom",
             "2 VERS 10.1",
             "2 NAME Aldfaer",
-            "2 CORP The Stamboon",
+            "2 CORP The Stamboom",
             "3 ADDR https://www.thestamboom.nl",
             "1 DATE ".$todayDate,
             "2 TIME ".$todayTime,

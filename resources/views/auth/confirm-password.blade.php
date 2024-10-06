@@ -42,7 +42,7 @@
                             </a>
                         </div>
                         <!-- /Logo -->
-                        <h4 class="mb-1 pt-2">Welcome to Stamboon</h4>
+                        <h4 class="mb-1 pt-2">Welcome to The Stamboom</h4>
                         <p class="mb-4">Log in to your account</p>
                         @if ($errors->any())
                             <div class="alert alert-danger">

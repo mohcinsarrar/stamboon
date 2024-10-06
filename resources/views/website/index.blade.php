@@ -682,7 +682,7 @@
                                 <script>
                                     document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
                                 </script>
-                            </span> Stamboon,</span>
+                            </span> The Stamboom,</span>
                     </div>
                     
                 </div>

@@ -356,7 +356,7 @@
                                                                     style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:12px;line-height:120%;text-align:center;mso-line-height-alt:14.399999999999999px;">
                                                                     <p style="margin: 0; word-break: break-word;"><span
                                                                             style="word-break: break-word; color: #95979c;">
-                                                                            Stamboon © 2024</span></p>
+                                                                            The Stamboom © 2024</span></p>
                                                                     <p style="margin: 0; word-break: break-word;"><span
                                                                             style="word-break: break-word; color: #95979c;">&nbsp;</span>
                                                                     </p>

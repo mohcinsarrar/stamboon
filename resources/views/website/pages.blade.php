@@ -227,7 +227,7 @@
                             <script>
                                 document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
                             </script>
-                        </span> Stamboon,</span>
+                        </span> The Stamboom,</span>
                 </div>
                 <ul class="nav justify-content-center pages">
                     @foreach ($pages as $page)

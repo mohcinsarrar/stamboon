@@ -104,7 +104,7 @@ class FortifyServiceProvider extends ServiceProvider
                 'verification_code' => $notifiable->verification_code,
                 'data' => $data,
                 'title' => 'Verify your email address',
-                'description' => 'Hey '.$notifiable->firstname.' '.$notifiable->lastname.', Thanks so much for signing up and joining Stamboon. We are very happy to have you on board!, To verify your account, please use the verification code below:'
+                'description' => 'Hey '.$notifiable->firstname.' '.$notifiable->lastname.', Thanks so much for signing up and joining The Stamboom. We are very happy to have you on board!, To verify your account, please use the verification code below:'
             ]);
             /*
             return (new MailMessage)

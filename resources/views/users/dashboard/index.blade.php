@@ -378,7 +378,7 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center flex-wrap mb-6 gap-2 mb-4">
                     <div class="me-1">
-                      <h5 class="mb-0">Stamboon Tools Tutorial</h5>
+                      <h5 class="mb-0">The Stamboom Tools Tutorial</h5>
                     </div>
                   </div>
                   <div class="card academy-content shadow-none border">
