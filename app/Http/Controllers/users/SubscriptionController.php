@@ -95,6 +95,7 @@ class SubscriptionController extends Controller
             $paymentObj->user_id = $user->id;
             $paymentObj->product_id = $productId;
             $paymentObj->currency = $payment->amount->currency;
+            $paymentObj->price = $product->price;
             $paymentObj->payment_status = "Completed";
             $paymentObj->payment_method = $payment->method;
             $paymentObj->created_at = Carbon::now();
