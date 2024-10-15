@@ -2,6 +2,8 @@
 /public/storage
 /storage/*.key
 /vendor
+/resources/views/website/website.json
+/resources/views/website/footer_page.json
 .env.backup
 .phpunit.result.cache
 docker-compose.override.yml

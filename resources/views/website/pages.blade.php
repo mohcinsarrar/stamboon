@@ -189,7 +189,7 @@
 
     <!--====== SIDEBAR PART ENDS ======-->
 
-    <section class="h-100" style="padding: 50px 0 15px 0;">
+    <section class="" style="padding: 50px 0 15px 0;">
         <div class="page-title" style="background-color:var(--primary-dark)">
             <div class="container py-5">
                 <div class="row">
