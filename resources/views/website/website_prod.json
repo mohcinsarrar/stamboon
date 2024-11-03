@@ -1,0 +1,87 @@
+{
+    "hero": {
+        "enable": true,
+        "title": "Create your family history",
+        "subTitle": "Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered.Every person deserves to be remembered.",
+        "image": "images\/QNpaYZupEpXYXYnjOCVtT25nJdj5l89RBO0xfRQZ.webp",
+        "buttonTitle": "Get started",
+        "videoTitle": "Watch Video",
+        "videoUrl": "https:\/\/www.youtube.com\/watch?v=dK6p3H3zHbc"
+    },
+    "aboutus": {
+        "enable": true,
+        "image": "images\/BTpnNgvs0x5KaHWyf6IuuTvbSZMxrWW0PoSJ61GZ.webp",
+        "title": "Unique approach of your family tree",
+        "subTitle": "The Stamboom lets you create your familytree with great ease, in an attractive overview.",
+        "paragraphs": [
+            {
+                "title": "How The Stamboom was created",
+                "content": "When working on the family history, you will gather a lot of data. At some point you want to put all that in an attractive overiew."
+            },
+            {
+                "title": "The added value of The Stamboom",
+                "content": "By enabling this tool for everybody, carpe diem"
+            },
+            {
+                "title": "We would appreciate you contacting us!",
+                "content": "Carpe diem"
+            }
+        ]
+    },
+    "features": {
+        "enable": true,
+        "title": "The features of The Stamboom tools",
+        "subTitle": "The Stamboom tools help you generate an attractive overview of your familytree as a Fanchart or Pedigree. Print as a poster, or on canvas, and make it a great gift to family members or friends.",
+        "features": [
+            {
+                "title": "Fanchart",
+                "description": "The Fanchart tool enables you in an easy way to show all your known ancestors in one clear overview. Add names, years and photos yourself via the advanced editor, or use a silhouet from The Stamboom library. If you already have the data present from a geneaolgy app or site, use the  GEDCOM format to upload your familytree!"
+            },
+            {
+                "title": "Fanchart & Pedigree",
+                "description": "The Pedigree shows your familytree from the oldest known ancestors. This tool will handle hundreds of familymembers and still show them in a clear overview. Print in a large size to hang it on the wall, or us it online to navigate through your complete family.\r\n\r\nThis package contains both the Fanchart and the Pedigree tool!"
+            },
+            {
+                "title": "Fanchart & Pedigree Unlimited",
+                "description": "This package features not only both the Fanchart and the Pedigree tool; it also allows you to make unlimited outputs for a year (of course this is based on fair use). Use the online tools as an overview for the archive of your familytree."
+            }
+        ]
+    },
+    "pricing": {
+        "enable": true,
+        "title": "Pricing",
+        "subTitle": "We made a Basic, Standard and Pro plan to suit your preferences.  All plans offer a variety of features to create a great familytree."
+    },
+    "cta": {
+        "enable": true,
+        "title": "We love to make perfect solutions for you",
+        "subTitle": "Why I say old chap that is, spiffing off his nut cor blimey guvnords geeza bloke knees up bobby, sloshed arse William cack Richard. Bloke fanny around chesed of bum bag old lost the pilot say there spiffing off his nut.",
+        "buttonTitle": "Get started"
+    },
+    "faq": {
+        "enable": false,
+        "title": "Frequently Asked Questions",
+        "questions": [
+            {
+                "question": "How Do I Change My Billing Information?",
+                "response": "Click on your profile picture in the top right corner of the page and select Account Settings"
+            },
+            {
+                "question": "How Does Payment System Work?",
+                "response": "A payment system is a way to transfer money from one person or organization to another."
+            }
+        ],
+        "subTitle": null
+    },
+    "contact": {
+        "enable": true,
+        "title": "Let's Get In Touch!",
+        "subTitle": "Ask us anything about this site and its products. We look forward to hearing from you!"
+    },
+    "colors": {
+        "primary_color": "#a26833",
+        "secondary_color": "#d3bb99",
+        "font": "Montserrat",
+        "logo": "logo\/6qDuFY6F8x1hz60Mk6iIASckvqUFYzuDCRNyWp9Z.png"
+    }
+}

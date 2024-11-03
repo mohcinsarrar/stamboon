@@ -31,10 +31,10 @@
       "slug": "users.subscription.index"
     },
     {
-      "url": "/documentation",
+      "url": "/documentations",
       "icon": "menu-icon tf-icons ti ti-file-description",
-      "name": "Documentation",
-      "slug": ""
+      "name": "Documentations",
+      "slug": "users.documentations"
     }
   ]
 }

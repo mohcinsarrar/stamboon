@@ -18,6 +18,8 @@ Route::middleware(['auth:sanctum','verified','active','role:user'])
     Route::get('subscription/payment/order/{id}', [SubscriptionController::class, 'payment'])->name('subscription.payment')->withoutMiddleware('active');
     Route::get('subscription/payment/success', [SubscriptionController::class, 'success'])->name('subscription.success')->withoutMiddleware('active');
 
+    Route::get('/documentations', [ProfileController::class, 'documentations'])->name('documentations');
+
     // profile
     Route::get('/profile', [ProfileController::class,'index'])->name('profile.index');
     Route::get('/profile/security', [ProfileController::class,'security'])->name('profile.security');

@@ -251,7 +251,7 @@
                                 <div class="table-content">
                                     <ul class="table-list ps-0">
                                         <li> <i class="ti ti-circle-check"></i> Chart type :
-                                            {{ $product->fanchart == true ? 'Fanchart ,' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
+                                            {{ $product->fanchart == true ? 'Fanchart, ' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
                                         </li>
                                         <li> <i class="ti ti-circle-check"></i> Max Print charts :
                                             {{ $product->print_number > 0 ? $product->print_number . '' : 'Unlimited' }}
@@ -283,11 +283,11 @@
                                             <li> <i class="ti ti-circle-check"></i> Max generations :
                                                 {{ $product->fanchart_max_generation }}</li>
                                             <li> <i class="ti ti-circle-check"></i> Output products :
-                                                {{ $product->fanchart_output_png == true ? 'PNG ,' : '' }}{{ $product->fanchart_output_pdf == true ? 'PDF' : '' }}
+                                                {{ $product->fanchart_output_png == true ? 'PNG, ' : '' }}{{ $product->fanchart_output_pdf == true ? 'PDF' : '' }}
                                             </li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PNG measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PNG sizes :
                                                 {{ $max_output_png[$product->fanchart_max_output_png] }}</li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PDF measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PDF sizes :
                                                 {{ $max_output_pdf[$product->fanchart_max_output_pdf] }}</li>
                                         </ul>
                                     </div>
@@ -302,11 +302,11 @@
                                             <li> <i class="ti ti-circle-check"></i> Max nodes : {{ $product->max_nodes }}
                                             </li>
                                             <li> <i class="ti ti-circle-check"></i> Output products :
-                                                {{ $product->pedigree_output_png == true ? 'PNG ,' : '' }}{{ $product->pedigree_output_pdf == true ? 'PDF' : '' }}
+                                                {{ $product->pedigree_output_png == true ? 'PNG, ' : '' }}{{ $product->pedigree_output_pdf == true ? 'PDF' : '' }}
                                             </li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PNG measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PNG sizes :
                                                 {{ $max_output_png[$product->pedigree_max_output_png] }}</li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PDF measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PDF sizes :
                                                 {{ $max_output_pdf[$product->pedigree_max_output_pdf] }}</li>
                                         </ul>
                                     </div>

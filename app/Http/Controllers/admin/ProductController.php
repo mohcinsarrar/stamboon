@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\DataTables\ProductsDataTable;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
 
 class ProductController extends Controller
 {
@@ -23,6 +25,7 @@ class ProductController extends Controller
     Validator::make($inputs, [
       'name' => 'required|string|unique:products,name',
       'price' => 'required|numeric|min:0',
+      'image' => ['required',File::image()],
       'description' => 'required|string',
       'duration' => 'required|numeric|min:0',
       'print_number' => 'required|numeric|min:0',
@@ -105,10 +108,17 @@ class ProductController extends Controller
       $pedigree_pdf = false;
     }
     
-    
+    $image = null;
+    if($request->hasFile('image') && $request->file('image')->isValid()) {
+      
+      // store the new image
+      $image = $request->file('image')->store('products');
+    }
+
     Product::create([
       'name' => $inputs['name'],
       'description' => $inputs['description'],
+      'image' => $image,
       'fanchart' => $fanchart,
       'pedigree' => $pedigree,
       'duration' => $inputs['duration'],
@@ -148,6 +158,7 @@ class ProductController extends Controller
     Validator::make($inputs, [
       'name' => 'required|string|unique:products,name,'.$id,
       'price' => 'required|numeric|min:0',
+      'image' => ['nullable',File::image()],
       'description' => 'required|string',
       'duration' => 'required|numeric|min:0',
       'print_number' => 'required|numeric|min:0',
@@ -228,11 +239,27 @@ class ProductController extends Controller
       $pedigree_png = false;
       $pedigree_pdf = false;
     }
+
+    $image = null;
+
+    if($request->hasFile('image') && $request->file('image')->isValid()) {
+      
+      // delete image if exist
+      if($product->image != null){
+        if (Storage::exists($product->image)) {
+          Storage::delete($product->image);
+        }
+      }
+      
+      // store the new image
+      $image = $request->file('image')->store('products');
+    }
     
     
     Product::where('id',$id)->update([
       'name' => $inputs['name'],
       'description' => $inputs['description'],
+      'image' => $image,
       'fanchart' => $fanchart,
       'pedigree' => $pedigree,
       'duration' => $inputs['duration'],

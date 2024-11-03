@@ -45,7 +45,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
-            <form class="add-new-product pt-0" id="addNewProductForm" method="POST"
+            <form class="add-new-product pt-0" id="addNewProductForm" method="POST"  enctype="multipart/form-data" 
                 action="{{ route('admin.webshop.products.store') }}">
                 @csrf
                 <div class="mb-3">
@@ -57,6 +57,11 @@
                             class="text-danger ps-1">*</span></label>
                     <input type="number" step='0.01' min="0" value='0' class="form-control"
                         id="add-product-price" name="price" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="add-product-image">Image<span
+                            class="text-danger ps-1">*</span></label>
+                    <input type="file" class="form-control" id="add-product-image" name="image" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="add-product-description">Description<span
@@ -115,7 +120,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="add-product-fanchart_max_output_png" class="form-label">Max png measurements</label>
+                    <label for="add-product-fanchart_max_output_png" class="form-label">Max png sizes</label>
                     <select id="add-product-fanchart_max_output_png" class="form-select" name="fanchart_max_output_png"
                         required>
                         <option value="1">1344 x 839 px</option>
@@ -127,7 +132,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="add-product-fanchart_max_output_pdf" class="form-label">Max pdf measurements</label>
+                    <label for="add-product-fanchart_max_output_pdf" class="form-label">Max pdf sizes</label>
                     <select id="add-product-fanchart_max_output_pdf" class="form-select" name="fanchart_max_output_pdf"
                         required>
                         <option value="a4">A4</option>
@@ -172,7 +177,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="add-product-pedigree_max_output_png" class="form-label">Max png measurements</label>
+                    <label for="add-product-pedigree_max_output_png" class="form-label">Max png sizes</label>
                     <select id="add-product-pedigree_max_output_png" class="form-select" name="pedigree_max_output_png"
                         required>
                         <option value="1">1344 x 839 px</option>
@@ -185,7 +190,7 @@
 
 
                 <div class="mb-3">
-                    <label for="add-product-pedigree_max_output_pdf" class="form-label">Max pdf measurements</label>
+                    <label for="add-product-pedigree_max_output_pdf" class="form-label">Max pdf sizes</label>
                     <select id="add-product-pedigree_max_output_pdf" class="form-select" name="pedigree_max_output_pdf"
                         required>
                         <option value="a4">A4</option>
@@ -213,7 +218,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
-            <form class="add-new-product pt-0" id="updateProductForm" method="POST" action="">
+            <form class="add-new-product pt-0" id="updateProductForm" method="POST" action="" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
@@ -226,6 +231,13 @@
                             class="text-danger ps-1">*</span></label>
                     <input type="number" step='0.01' min="0" value='0' class="form-control"
                         id="update-product-price" name="price" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="update-product-image">Image<span class="text-danger ps-1">*</span></label>
+                    <div>
+                        <img id="update-product-image-preview" src="" class="img-fluid">
+                    </div>
+                    <input type="file" class="form-control" id="update-product-image" name="image" />
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="update-product-description">Description<span
@@ -285,7 +297,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="update-product-fanchart_max_output_png" class="form-label">Max png measurements</label>
+                    <label for="update-product-fanchart_max_output_png" class="form-label">Max png sizes</label>
                     <select id="update-product-fanchart_max_output_png" class="form-select" name="fanchart_max_output_png"
                         required>
                         <option value="1">1344 x 839 px</option>
@@ -297,7 +309,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="update-product-fanchart_max_output_pdf" class="form-label">Max pdf measurements</label>
+                    <label for="update-product-fanchart_max_output_pdf" class="form-label">Max pdf sizes</label>
                     <select id="update-product-fanchart_max_output_pdf" class="form-select" name="fanchart_max_output_pdf"
                         required>
                         <option value="a4">A4</option>
@@ -342,7 +354,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="update-product-pedigree_max_output_png" class="form-label">Max png measurements</label>
+                    <label for="update-product-pedigree_max_output_png" class="form-label">Max png sizes</label>
                     <select id="update-product-pedigree_max_output_png" class="form-select" name="pedigree_max_output_png"
                         required>
                         <option value="1">1344 x 839 px</option>
@@ -355,7 +367,7 @@
 
 
                 <div class="mb-3">
-                    <label for="update-product-pedigree_max_output_pdf" class="form-label">Max pdf measurements</label>
+                    <label for="update-product-pedigree_max_output_pdf" class="form-label">Max pdf sizes</label>
                     <select id="update-product-pedigree_max_output_pdf" class="form-select" name="pedigree_max_output_pdf"
                         required>
                         <option value="a4">A4</option>

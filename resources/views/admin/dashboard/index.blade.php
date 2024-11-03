@@ -2,6 +2,7 @@
     $configData = Helper::appClasses();
 @endphp
 
+@section('title', 'Dashboard')
 
 @extends('layouts/layoutMaster')
 

@@ -4,6 +4,8 @@
 
 @extends('layouts/layoutMaster')
 
+@section('title', 'Pedigree')
+
 @section('vendor-style')
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />

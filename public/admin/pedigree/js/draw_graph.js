@@ -303,7 +303,6 @@ function renderChart() {
     // render the chart
     chart.render().fit();
     applyChartStatus()
-    console.log(chart.getChartState())
     // get first hidden_root children and center chart on it
     /*
     var hidden_root_children 

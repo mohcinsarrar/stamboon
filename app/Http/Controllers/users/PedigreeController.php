@@ -449,6 +449,7 @@ class PedigreeController extends Controller
 
     // update person
     public function update(Request $request){
+
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
 
@@ -479,7 +480,7 @@ class PedigreeController extends Controller
         // edit death event
         $death_date = $request->death_date;
         $gedcomService->edit_death($person, $request->status,$death_date);
-
+        
         // edit birt event
         $birth_date = $request->birth_date;
         $gedcomService->edit_birth($person,$birth_date);
@@ -487,6 +488,7 @@ class PedigreeController extends Controller
         // edit names
         $name = $request->firstname."/".$request->lastname."/";
         $gedcomService->edit_name($person,$name);
+
 
         // write modification to gedcom file
         $gedcomService->writer($gedcom,$gedcom_file);

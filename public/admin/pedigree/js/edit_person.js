@@ -128,6 +128,7 @@ function edit_person() {
 
 // validate and send update form
 document.getElementById('formUpdatePerson').addEventListener('submit', function (event) {
+    event.preventDefault();
     const form = event.target;
     let isValid = true;
     let msg = "<ul>"
@@ -158,9 +159,11 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
     var birth_date = form.querySelector('.birth_date').value
     
     if (birth_date != '') {
+        
         if (regexFullDate.test(birth_date) || regexYearOnly.test(birth_date)) {
             
             if (!isValidDate(birth_date)) {
+                
                 isValid = false
                 msg += "<li>Please enter a valid birth date</li>"
             }
@@ -205,7 +208,7 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
         if (regexYearOnly.test(birth_date)) {
             birth_full_date = birth_date + '-01-01'
         }
-        console.log(compareDates(birth_full_date, death_full_date));
+
         if (compareDates(birth_full_date, death_full_date) <= 0) {
             isValid = false
             msg += "<li>Death date must be later than Birth date</li>"
@@ -215,9 +218,10 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
 
     msg += "</ul>"
 
-    if (!isValid) {
+    if (isValid === false) {
         event.preventDefault(); // Prevent form submission
         show_toast('danger', 'error', msg)
+        return;
     }
     
     const formData = $(this).serialize();

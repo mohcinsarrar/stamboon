@@ -14,11 +14,19 @@ function updateProduct($product){
         var bsOffcanvas = new bootstrap.Offcanvas(canvas)
         // reset forms
         document.getElementById('updateProductForm').reset()
+        document.querySelector('#updateProductForm #update-product-image-preview').src = ''
 
         // fill out the form
         document.getElementById('updateProductForm').action = "/admin/webshop/products/" + $product.id
         document.querySelector('#updateProductForm #update-product-name').value = $product.name;
         document.querySelector('#updateProductForm #update-product-price').value = $product.price;
+        if($product.image != null){
+            document.querySelector('#updateProductForm #update-product-image-preview').src = '/storage/'+$product.image;
+        }
+        else{
+
+        }
+        
         document.querySelector('#updateProductForm #update-product-description').innerHTML = $product.description;
         document.querySelector('#updateProductForm #update-product-duration').value = $product.duration;
         document.querySelector('#updateProductForm #update-product-print_number').value = $product.print_number;

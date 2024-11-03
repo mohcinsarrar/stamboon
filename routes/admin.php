@@ -12,6 +12,17 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
     ->group( function(){
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    Route::get('/settings', [DashboardController::class,'settings'])->name('settings');
+    Route::post('/settings/update', [DashboardController::class,'settings_update'])->name('settings.update');
+
+
+    Route::get('/documentations', [DashboardController::class,'documentations'])->name('documentations');
+    Route::post('/documentations/update', [DashboardController::class,'documentations_update'])->name('documentations.update');
+    Route::post('/documentations/store', [DashboardController::class,'documentations_store'])->name('documentations.store');
+    Route::delete('/documentations/destory/{id}', [DashboardController::class,'documentations_destory'])->name('documentations.destory');
+
+
     Route::get('/notifications', [DashboardController::class,'notifications'])->name('notifications');
     Route::post('/notifications/markasread', [DashboardController::class,'notifications_markasread'])->name('notifications.markasread');
     Route::post('/notifications/delete', [DashboardController::class,'notifications_delete'])->name('notifications.delete');

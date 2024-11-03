@@ -19,6 +19,18 @@
       "slug": "admin.notifications"
     },
     {
+      "url": "/admin/documentations",
+      "icon": "menu-icon tf-icons ti ti-file-description",
+      "name": "Documentations",
+      "slug": "admin.documentations"
+    },
+    {
+      "url": "/admin/settings",
+      "icon": "menu-icon tf-icons ti ti-settings",
+      "name": "Settings",
+      "slug": "admin.settings"
+    },
+    {
       "name": "Webshop Admin",
       "icon": "menu-icon tf-icons ti ti-building-store",
       "slug": "webshop",

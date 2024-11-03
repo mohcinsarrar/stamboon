@@ -4,6 +4,8 @@
 
 @extends('layouts/layoutMaster')
 
+@section('title', 'Fanchart')
+
 @section('vendor-style')
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />

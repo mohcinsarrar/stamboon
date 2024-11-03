@@ -55,5 +55,4 @@
 ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
 </x-slot:subcopy>
 @endisset
-test mail
 </x-mail::message>

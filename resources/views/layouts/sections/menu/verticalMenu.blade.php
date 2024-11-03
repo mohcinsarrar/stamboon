@@ -2,16 +2,29 @@
 $configData = Helper::appClasses();
 @endphp
 
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+@php
+    $path = resource_path('views/website/website.json');
+
+    // Get the file contents
+    $json = File::get($path);
+
+    // Decode the JSON data
+    $data = json_decode($json, true);
+
+    $primary_color = $data['colors']['primary_color'];
+    $secondary_color = $data['colors']['secondary_color'];
+
+@endphp
+
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="background-color:{{ $primary_color}} !important;">
 
   <!-- ! Hide app brand if navbar-full -->
   @if(!isset($navbarFull))
-  <div class="app-brand demo">
-    <a href="{{url('/')}}" class="app-brand-link">
+  <div class="app-brand demo my-3">
+    <a href="{{url('/')}}" class="app-brand-link align-items-start">
       <span class="app-brand-logo demo">
-        @include('_partials.macros',["height"=>20])
+        @include('_partials.macros')
       </span>
-      <span class="app-brand-text demo menu-text fw-bold">{{config('variables.templateName')}}</span>
     </a>
 
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -76,8 +89,8 @@ $configData = Helper::appClasses();
     @endphp
 
     {{-- main menu --}}
-    <li class="menu-item {{$activeClass}}">
-      <a href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}" class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
+    <li class="menu-item " >
+      <a style=" {{($activeClass != null) ? 'color: white !important;background-color:'.$secondary_color.' !important;'  : ''}}"  href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}" class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
         @isset($menu->icon)
         <i class="{{ $menu->icon }}"></i>
         @endisset

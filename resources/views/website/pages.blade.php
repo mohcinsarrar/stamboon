@@ -9,10 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!--====== Title ======-->
-    <title>Business | Bootstrap 5 Business Template</title>
+    <title>The Stamboom</title>
 
     <!--====== Favicon Icon ======-->
-    <link rel="shortcut icon" href="{{ asset('webshop/assets/images/favicon.svg') }}" type="image/svg" />
+    <link rel="shortcut icon" href="{{ asset('webshop/assets/images/favicon.ico') }}" type="image/svg" />
 
     <!--====== Bootstrap css ======-->
     <link rel="stylesheet" href="{{ asset('webshop/assets/css/bootstrap.min.css') }}" />

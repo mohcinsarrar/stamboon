@@ -20,7 +20,6 @@
             <span class="app-brand-logo demo">
                 @include('_partials.macros', ['height' => 20])
             </span>
-            <span class="app-brand-text demo menu-text fw-bold">{{ config('variables.templateName') }}</span>
         </a>
     </div>
 @endif
@@ -63,13 +62,29 @@
             <ul class="list-group list-group-flush">
               @foreach(auth()->user()->getNotificationUnread() as $notification)
               <li class="list-group-item list-group-item-action dropdown-notifications-item">
-                <div class="d-flex">
-                  <div class="flex-grow-1">
-                    <h6 class="mb-1">{{$notification->title}}</h6>
-                    <p class="mb-0">{{$notification->subtitle}}</p>
-                    <small class="text-muted">{{$notification->created_at}}</small>
-                  </div>
-                </div>
+                @role('user')
+                    <form id="markasread-{{ $notification->id }}" action="{{route('users.profile.notifications.markasread')}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="notification" value="{{$notification->id}}">
+                    </form>
+                    <a href="javascript:;" onclick="document.getElementById('markasread-{{ $notification->id }}').submit()">
+                @endrole
+                @role('admin')
+                    <form id="markasread-admin-{{ $notification->id }}" action="{{route('admin.notifications.markasread')}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="notification" value="{{$notification->id}}">
+                    </form>
+                    <a href="javascript:;" onclick="document.getElementById('markasread-admin-{{ $notification->id }}').submit()">
+                @endrole
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{$notification->title}}</h6>
+                                <p class="mb-0">{{$notification->subtitle}}</p>
+                                <small class="text-muted">{{$notification->created_at}}</small>
+                            </div>
+                        </div>
+                    </a>
+                    
               </li>
               @endforeach
             </ul>

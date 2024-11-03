@@ -15,6 +15,7 @@ use App\Models\Notification;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File as FileStorage;
 
 
 class ProfileController extends Controller
@@ -129,13 +130,26 @@ class ProfileController extends Controller
   }
 
   public function notifications_markasread(Request $request){
-    if($request->notifications != null){
-      Notification::whereIn('id',$request->notifications)->update(['read_at'=> Carbon::now()]);
-      return response()->json(['error'=>false,'msg' => 'notifications mark as read with success']);
+    if($request->ajax()){
+      if($request->notifications != null){
+        Notification::whereIn('id',$request->notifications)->update(['read_at'=> Carbon::now()]);
+        return response()->json(['error'=>false,'msg' => 'notifications mark as read with success']);
+      }
+      else{
+        return response()->json(['error'=>true,'msg' => 'no notification selected']);
+      }
     }
     else{
-      return response()->json(['error'=>true,'msg' => 'no notification selected']);
+      if($request->notification != null){
+        Notification::where('id',$request->notification)->update(['read_at'=> Carbon::now()]);
+        return redirect()->route('users.profile.notifications')->with('success','notification mark as read with success');
+      }
+      else{
+        return redirect()->route('users.profile.notifications')->with('error','no notification selected');
+      }
+      
     }
+    
   }
 
   public function notifications_delete(Request $request){
@@ -167,6 +181,21 @@ class ProfileController extends Controller
             return redirect()->route('users.profile.security')->with('error', "Error deleting device, try again later
             "); 
         }
+    }
+
+
+    public function documentations(Request $request){
+
+      $path = resource_path('views/admin/documentations/documentations.json');
+
+      // Get the file contents
+      $json = FileStorage::get($path);
+
+      // Decode the JSON data
+      $data = json_decode($json, true);
+      $documents = $data['documents'];
+
+      return view('users.documentations.index',compact('documents'));
     }
   
 

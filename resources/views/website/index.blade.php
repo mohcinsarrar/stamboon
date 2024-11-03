@@ -9,10 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!--====== Title ======-->
-    <title>Business | Bootstrap 5 Business Template</title>
+    <title>The Stamboom</title>
 
     <!--====== Favicon Icon ======-->
-    <link rel="shortcut icon" href="{{ asset('webshop/assets/images/favicon.svg') }}" type="image/svg" />
+    <link rel="shortcut icon" href="{{ asset('webshop/assets/images/favicon.ico') }}" type="image/svg" />
 
     <!--====== Bootstrap css ======-->
     <link rel="stylesheet" href="{{ asset('webshop/assets/css/bootstrap.min.css') }}" />
@@ -46,8 +46,8 @@
                 <div class="col">
                     <nav class="navbar navbar-expand-lg">
                         <a class="navbar-brand" href="{{route('webshop.index')}}">
-                            <img src="{{ asset('storage/' . $data['colors']['logo']) }}" alt="Logo" width="184"
-                                height="40" style="object-fit: contain" />
+                            <img src="{{ asset('storage/' . $data['colors']['logo']) }}" alt="Logo" width="200"
+                                height="75" style="object-fit: contain" />
                         </a>
                         <button class="navbar-toggler" type="button" id="side-menu-left">
                             <span class="toggler-icon"></span>
@@ -424,6 +424,11 @@
                                 class="bg-white h-100 pricing-style-fourteen {{ $loop->index == 1 ? 'middle' : '' }}">
                                 <div class="table-head">
                                     <h6 class="title">{{ $product->name }}</h4>
+                                        <div class="mb-4 d-flex align-items-center justify-content-center" style="min-height: 250px">
+                                            @if($product->image != null)
+                                            <img src="{{asset('/storage/'.$product->image)}}" class="img-fluid" style="width:200px; height:250x; object-fit:contain">
+                                            @endif
+                                        </div>
                                         <p>{{ $product->description }}</p>
                                         <div class="price">
                                             <h3 class="amount">
@@ -453,7 +458,7 @@
                                 <div class="table-content">
                                     <ul class="table-list ps-0">
                                         <li> <i class="ti ti-circle-check"></i> Chart type :
-                                            {{ $product->fanchart == true ? 'Fanchart ,' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
+                                            {{ $product->fanchart == true ? 'Fanchart, ' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
                                         </li>
                                         <li> <i class="ti ti-circle-check"></i> Max Print charts :
                                             {{ $product->print_number > 0 ? $product->print_number . '' : 'Unlimited' }}
@@ -485,11 +490,11 @@
                                             <li> <i class="ti ti-circle-check"></i> Max generations :
                                                 {{ $product->fanchart_max_generation }}</li>
                                             <li> <i class="ti ti-circle-check"></i> Output products :
-                                                {{ $product->fanchart_output_png == true ? 'PNG ,' : '' }}{{ $product->fanchart_output_pdf == true ? 'PDF' : '' }}
+                                                {{ $product->fanchart_output_png == true ? 'PNG, ' : '' }}{{ $product->fanchart_output_pdf == true ? 'PDF' : '' }}
                                             </li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PNG measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PNG sizes :
                                                 {{ $max_output_png[$product->fanchart_max_output_png] }}</li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PDF measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PDF sizes :
                                                 {{ $max_output_pdf[$product->fanchart_max_output_pdf] }}</li>
                                         </ul>
                                     </div>
@@ -505,11 +510,11 @@
                                                 {{ $product->max_nodes }}
                                             </li>
                                             <li> <i class="ti ti-circle-check"></i> Output products :
-                                                {{ $product->pedigree_output_png == true ? 'PNG ,' : '' }}{{ $product->pedigree_output_pdf == true ? 'PDF' : '' }}
+                                                {{ $product->pedigree_output_png == true ? 'PNG, ' : '' }}{{ $product->pedigree_output_pdf == true ? 'PDF' : '' }}
                                             </li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PNG measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PNG sizes :
                                                 {{ $max_output_png[$product->pedigree_max_output_png] }}</li>
-                                            <li> <i class="ti ti-circle-check"></i> Max PDF measurements :
+                                            <li> <i class="ti ti-circle-check"></i> Max PDF sizes :
                                                 {{ $max_output_pdf[$product->pedigree_max_output_pdf] }}</li>
                                         </ul>
                                     </div>
@@ -748,10 +753,10 @@
             sidebarLeft.classList.add("open");
             overlayLeft.classList.add("open");
         });
-
+        let video = @json($data['hero']['videoUrl']);
         //========= glightbox
         GLightbox({
-            'href': 'https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM',
+            'href': 'https://www.youtube.com/watch?v='+video,
             'type': 'video',
             'source': 'youtube', //vimeo, youtube or local
             'width': 900,

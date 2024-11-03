@@ -23,6 +23,17 @@ class ProductsDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('actions', 'admin.products.actions')
+            ->editColumn('image', function(Product $model) {
+
+                if($model->image != null){
+                    return '<img id="update-product-image-preview" src="/storage/'.$model->image.'" class="img-fluid">';
+                }
+                else{
+                    return "no image";
+                }
+                
+
+            })
             ->editColumn('chart_type', function(Product $model) {
 
                 $chart_type = "";
@@ -162,7 +173,7 @@ class ProductsDataTable extends DataTable
 
             })
             */
-            ->rawColumns(['actions','chart_type','fanchart_features','pedigree_features'])
+            ->rawColumns(['actions','image', 'chart_type','fanchart_features','pedigree_features'])
             ->setRowId('id');
     }
 
@@ -216,6 +227,7 @@ class ProductsDataTable extends DataTable
     {
         return [
             Column::make('name'),
+            Column::computed('image')->title('Image'),
             Column::make('price'),
             Column::make('description'),
             Column::computed('chart_type')->title('Chart types'),

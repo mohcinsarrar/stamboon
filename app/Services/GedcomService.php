@@ -15,12 +15,13 @@ class GedcomService
 
     private function dateStr($date)
     {
+
         $records = explode('-', $date);
         if(sizeof($records) == 1){
             $year = $records[0];
             return "$year";
         }
-        $day = $records[1];
+        $day = $records[2];
         $month = $records[1];
         $year = $records[0];
         $monthName = $this->months[$month-1];
@@ -73,7 +74,7 @@ class GedcomService
 
     }
 
-    private function convert_head($object, $level = 0, &$fileHandle, $parentName = '') {
+    private function convert_head($object, $level , &$fileHandle, $parentName = '') {
 
         // Get all properties of the object (including private and protected)
         $properties = $this->get_properties($object);
@@ -178,8 +179,11 @@ class GedcomService
             
             // write DEAT
             $death = $indi->getEven('DEAT');
+            
+            
             if($death != null && $death != []){
                 $death = $death[0];
+                
                 // get death date
                 $deathDate = $death->getDate();
                 if($deathDate != null){
@@ -188,6 +192,7 @@ class GedcomService
                 else{
                     $dateStr = null;
                 }
+
                 // get death place
                 $deathPlac = $death->getPlac();
                 if($deathPlac != null){
@@ -360,6 +365,7 @@ class GedcomService
                 // no death event so create it
                 $death_event = new GedcomEven;
                 $death_event->setType('DEAT');
+                
                 $death_event->setDate($death_date);
                 $person->addEven($death_event);
             }
@@ -375,6 +381,7 @@ class GedcomService
                 $this->person_delete_event($person,'DEAT');
             }
         }
+
     }
 
     public function edit_birth(&$person, $birth_date){
