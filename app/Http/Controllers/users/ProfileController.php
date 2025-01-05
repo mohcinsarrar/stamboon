@@ -16,16 +16,18 @@ use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File as FileStorage;
-
-
+use LaravelCountries;
+use App\Models\Pedigree;
+use Gedcom\Parser as GedcomParser;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SubscriptionEmail;
 class ProfileController extends Controller
 {
   public function index(Request $request)
   {
     $user = Auth::user();
-    
-
-    return view('users.profile.index', compact('user'));
+    $countries = LaravelCountries::getCountries()->getData();
+    return view('users.profile.index', compact('user','countries'));
   }
 
   public function security(Request $request){
@@ -77,11 +79,17 @@ class ProfileController extends Controller
         'password' => ['nullable','confirmed',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         'firstname' => 'required|string',
         'lastname' => 'required|string',
+        'address' => 'required|string',
+        'city' => 'required|string',
+        'country' => 'required|string',
     ])->validate();
 
     // change firstname lastname and email
     $user->firstname = $request->firstname;
     $user->lastname = $request->lastname;
+    $user->address = $request->address;
+    $user->city = $request->city;
+    $user->country = $request->country;
     $user->name = $request->firstname .' '.$request->lastname;
     $user->save();
     
@@ -123,9 +131,88 @@ class ProfileController extends Controller
 
   }
 
+  private function parse_gedcom($file){
+
+
+    $parser = new GedcomParser();
+    $gedcom = $parser->parse($file);
+
+    return $gedcom;
+
+}
+
+  private function get_gedcom_file(){
+
+    $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+    if($pedigree == null){
+        return null;
+    }
+    if($pedigree->gedcom_file == null){
+      return null;
+  }
+
+    if (!Storage::disk('local')->exists($pedigree->gedcom_file)) {
+        return null;
+    } 
+    
+    $file = Storage::disk('local')->get($pedigree->gedcom_file);
+
+    return $pedigree->gedcom_file;
+
+}
+
+private function get_gedcom($gedcom_file){
+
+  $gedcom = $this->parse_gedcom('storage/'.$gedcom_file);
+
+  return $gedcom;
+
+}
+
   public function delete(Request $request){
+
     $user = Auth::user();
+
+    // delete all user data
+    /// get gedcom file
+    $gedcom_file = $this->get_gedcom_file();
+    if($gedcom_file != null){
+      /// get gedcom object
+      $gedcom = $this->get_gedcom($gedcom_file);
+      /// get all indis
+      $indis = $gedcom->getIndi();
+      /// iterate over all indis and delete photo if exist
+      foreach($indis as $indi){
+            $note = $indi->getNote();
+
+            $photo = null;
+            if($note != null and $note != []){
+                $photo = $note[0]->getNote();
+            }
+
+            if($photo != null){
+              if (Storage::exists('portraits/'.$photo)) {
+                  Storage::delete('portraits/'.$photo);
+              }
+            }
+      }
+
+      /// delete gedcom file
+      if (Storage::exists('gedcoms/'.$gedcom_file)) {
+        Storage::delete('gedcoms/'.$gedcom_file);
+      }
+    }
+    
+
+    $title = "Your Account deleted forever";
+    $user_fullname = $user->firstname. " " . $user->lastname;
+    $content = "<b>Thank you for your journey in thestamboom.</b><br> all your data has been removed forever, you can create new account any time at thestamboom.com  ";
+    Mail::to($user->email)->send(new SubscriptionEmail($title, $user_fullname, $content));
+
     $user->delete();
+
+    
+
     return redirect()->route('login');
   }
 

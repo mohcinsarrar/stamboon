@@ -13,6 +13,7 @@ function draw_tree() {
         })
         .then(Gedcom.readGedcom)
         .catch(error => {
+            //console.log(error)
             if(document.getElementById("add-first-person-container") != null){
                 document.getElementById("add-first-person-container").classList.remove('d-none');
             }
@@ -663,9 +664,42 @@ function transformGedcom(gedcom) {
     // sort data by birth date to sort children from old to young
     data.sort((a, b) => parseDateToSort(a.birth) - parseDateToSort(b.birth));
 
+    /*
+    data.forEach(person => {
+        if(person.personId == '@I7@'){
+            person.spouseIds = [ "@I12@", "@I10@" ]
+            person.primarySpouseId = '@I7@-@I12@'
+            if(person.id == '@I7@-@I12@'){
+                person.primarySpouseId = undefined
+            }
+        }
+    });
+
+    let index1 = 5; // Object with id: 2
+    let index2 = 6; // Object with id: 4
+
+    // Swap the two objects
+    [data[index1], data[index2]] = [data[index2], data[index1]];
+    */
+    console.log(data)
     return (data)
 
 }
+
+function reorderItems(array, orderIds) {
+    // Create a map for quick lookup of items by ID
+    const itemMap = array.reduce((map, item) => {
+      map[item.id] = item;
+      return map;
+    }, {});
+  
+    // Reorder based on orderIds
+    const reorderedItems = orderIds.map(id => itemMap[id]);
+  
+    return array.map(item =>
+      orderIds.includes(item.id) ? reorderedItems.shift() : item
+    );
+  }
 
 function parseDateToSort(dateStr) {
     if (!dateStr) return new Date(0); // For undefined dates, return a very early date

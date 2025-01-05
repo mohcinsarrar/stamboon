@@ -351,7 +351,7 @@ class FanchartController extends Controller
             // get product features
             $current_payment = $user->has_payment();
             if($current_payment == false){
-                return redirect()->route('users.dashboard');
+                return redirect()->route('users.dashboard.index');
             }
             $product = Product::where('id',$current_payment->product_id)->first();
 
@@ -450,6 +450,7 @@ class FanchartController extends Controller
     private function getChartParameters($individual): array
     {
         return [
+            'circlePadding' => '70',
             'rtl'             => true,
             'showImages'      => true,
             'showSilhouettes' => true,

@@ -10,7 +10,7 @@ use App\Http\Controllers\users\NoteController;
 
 
 
-Route::middleware(['auth:sanctum','verified','active','role:user','product_type:pedigree'])
+Route::middleware(['auth:sanctum','verified','active','role:user','product_type:pedigree','payment_reminder'])
     ->name('users.')
     ->group( function(){
 
@@ -18,6 +18,7 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::get('/pedigree', [PedigreeController::class,'index'])->name('pedigree.index');
         Route::get('/pedigree/settings', [PedigreeController::class,'settings'])->name('pedigree.settings');
         Route::post('/pedigree/settings', [PedigreeController::class,'settings'])->name('pedigree.settings');
+        Route::post('/pedigree/download', [PedigreeController::class,'download'])->name('pedigree.download');
         Route::get('/pedigree/getTree', [PedigreeController::class,'getTree'])->name('pedigree.getTree');
         Route::post('/pedigree/importgedcom', [PedigreeController::class,'importgedcom'])->name('pedigree.importgedcom');
         Route::post('/pedigree/editchartstatus', [PedigreeController::class,'editChartStatus'])->name('pedigree.editchartstatus');
@@ -30,7 +31,10 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/pedigree/addspouse', [PedigreeController::class,'addspouse'])->name('pedigree.addspouse');
         Route::post('/pedigree/addchild', [PedigreeController::class,'addchild'])->name('pedigree.addchild');
         Route::post('/pedigree/addperson', [PedigreeController::class,'addperson'])->name('pedigree.addperson');
+        Route::post('/pedigree/getpersons', [PedigreeController::class,'getpersons'])->name('pedigree.getpersons');
+        Route::post('/pedigree/orderspouses', [PedigreeController::class,'orderspouses'])->name('pedigree.orderspouses');
         Route::post('/pedigree/print', [PedigreeController::class,'print'])->name('pedigree.print');
+        
 
         // notes
         Route::post('/pedigree/savenote', [NoteController::class,'save'])->name('pedigree.savenote');

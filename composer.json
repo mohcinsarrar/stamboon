@@ -18,6 +18,7 @@
     "liberu-genealogy/php-gedcom": "^2.0",
     "maatwebsite/excel": "^3.1",
     "mollie/laravel-mollie": "^3.0",
+    "nerdsnipe/laravel-countries": "^1.2",
     "spatie/laravel-permission": "^6.7",
     "yajra/laravel-datatables": "^10.1"
   },

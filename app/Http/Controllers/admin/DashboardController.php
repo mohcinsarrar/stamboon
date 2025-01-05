@@ -78,6 +78,10 @@ class DashboardController extends Controller
     ));
   }
 
+  public function add_country(Request $request){
+    dd($request);
+  }
+
   public function settings(Request $request){
 
     $path = resource_path('views/admin/settings/settings.json');

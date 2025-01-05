@@ -1,12 +1,12 @@
 {
     "hero": {
         "enable": true,
-        "title": "Create your family history",
-        "subTitle": "Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered. Every person deserves to be remembered.Every person deserves to be remembered.",
-        "image": "images\/QNpaYZupEpXYXYnjOCVtT25nJdj5l89RBO0xfRQZ.webp",
-        "buttonTitle": "Get started",
-        "videoTitle": "Watch Video",
-        "videoUrl": "https:\/\/www.youtube.com\/watch?v=dK6p3H3zHbc"
+        "title": "Ancestry made visible",
+        "subTitle": "Visualizing your ancestry made easy! The Stamboom enables you to create your own Pedigree Chart and Fanchart. Make it to your personal size and colours, using our templates, backgrounds and other options.",
+        "image": "images\/pCLbAOmxpyqN1z04cCTmiQXOyH4ej5uXLobRRta5.png",
+        "buttonTitle": "Get Started!",
+        "videoTitle": "Watch The Stamboom Video",
+        "videoUrl": "dK6p3H3zHbc"
     },
     "aboutus": {
         "enable": true,
@@ -30,20 +30,20 @@
     },
     "features": {
         "enable": true,
-        "title": "The features of The Stamboom tools",
-        "subTitle": "The Stamboom tools help you generate an attractive overview of your familytree as a Fanchart or Pedigree. Print as a poster, or on canvas, and make it a great gift to family members or friends.",
+        "title": "Your Fanchart & Pedigree",
+        "subTitle": "The Stamboom tools visualize your ancestry with great ease!",
         "features": [
             {
                 "title": "Fanchart",
-                "description": "The Fanchart tool enables you in an easy way to show all your known ancestors in one clear overview. Add names, years and photos yourself via the advanced editor, or use a silhouet from The Stamboom library. If you already have the data present from a geneaolgy app or site, use the  GEDCOM format to upload your familytree!"
+                "description": "The Fanchart tool is the ultimate and easiest way to picturize your ancestors. Print as a poster, on canvas or any other material and make it a great gift to family members or friends."
             },
             {
                 "title": "Fanchart & Pedigree",
-                "description": "The Pedigree shows your familytree from the oldest known ancestors. This tool will handle hundreds of familymembers and still show them in a clear overview. Print in a large size to hang it on the wall, or us it online to navigate through your complete family.\r\n\r\nThis package contains both the Fanchart and the Pedigree tool!"
+                "description": "The Pedigree will handle hundreds of familymembers and still make a clear overview. Print in very large size or use  online to navigate through your ancestry. Includes the Fanchart."
             },
             {
                 "title": "Fanchart & Pedigree Unlimited",
-                "description": "This package features not only both the Fanchart and the Pedigree tool; it also allows you to make unlimited outputs for a year (of course this is based on fair use). Use the online tools as an overview for the archive of your familytree."
+                "description": "This package if for genealogy-lovers and allows you to make unlimited outputs for a year (fair use please, thanks!). Use as a great overview of your whole familytree."
             }
         ]
     },
@@ -54,12 +54,12 @@
     },
     "cta": {
         "enable": true,
-        "title": "We love to make perfect solutions for you",
-        "subTitle": "Why I say old chap that is, spiffing off his nut cor blimey guvnords geeza bloke knees up bobby, sloshed arse William cack Richard. Bloke fanny around chesed of bum bag old lost the pilot say there spiffing off his nut.",
+        "title": "Distinguish between Fanchart and Pedigree",
+        "subTitle": "A Fanchart is a semi-circular diagram that radiates outward from a central person, visually expanding in a fan shape as it traces multiple generations of ancestors. It offers a broader, more comprehensive view, displaying numerous family lines at once. \r\n\r\n\r\nA Pedigree is a traditional, branching family tree that represents the relationships between multiple family members over generations, often including siblings.  It typically displays how various individuals within a family are related, with each branch representing a different line of descent.",
         "buttonTitle": "Get started"
     },
     "faq": {
-        "enable": false,
+        "enable": true,
         "title": "Frequently Asked Questions",
         "questions": [
             {
@@ -69,6 +69,10 @@
             {
                 "question": "How Does Payment System Work?",
                 "response": "A payment system is a way to transfer money from one person or organization to another."
+            },
+            {
+                "question": "What do I need to get started?",
+                "response": "Create 'persons' by entering their First Name(s), Familyname, DateOfBirth, DateOfDeath and a Photo. Missing some data? No problem; leave it open and\/or add it later on."
             }
         ],
         "subTitle": null
@@ -76,12 +80,12 @@
     "contact": {
         "enable": true,
         "title": "Let's Get In Touch!",
-        "subTitle": "Ask us anything about this site and its products. We look forward to hearing from you!"
+        "subTitle": "Ask us anything about this site and its products. We love hearing from you!"
     },
     "colors": {
         "primary_color": "#a26833",
         "secondary_color": "#d3bb99",
         "font": "Montserrat",
-        "logo": "logo\/6qDuFY6F8x1hz60Mk6iIASckvqUFYzuDCRNyWp9Z.png"
+        "logo": "logo\/42GyPlbmGHJH0YSkoMpxv8GymPQP3U1aWdyEviPt.png"
     }
 }

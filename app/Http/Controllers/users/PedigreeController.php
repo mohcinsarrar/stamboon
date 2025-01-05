@@ -48,7 +48,7 @@ use Gedcom\Record\Fam as Fam;
 
 
 use App\Services\GedcomService;
-
+use ZipArchive;
 
 
 class PedigreeController extends Controller
@@ -283,6 +283,209 @@ class PedigreeController extends Controller
         
     }
 
+    // Helper function to recursively add files to the zip
+    private function addFilesToZip($folder, $zip, $folderInZip = '')
+    {
+        $files = glob($folder . '/*');
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                // Add sub-directory in zip
+                $this->addFilesToZip($file, $zip, $folderInZip . basename($file) . '/');
+            } else {
+                $zip->addFile($file, $folderInZip . basename($file));
+            }
+        }
+    }
+
+    // Helper function to delete a directory
+    private function deleteDirectory($dir)
+    {
+        $files = glob($dir . '/*');
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->deleteDirectory($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dir);
+    }
+
+
+    public function download(Request $request){
+        
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if($gedcom_file == null){
+            return back()-with('error',"can't download your familytree, please try again");
+        }
+
+        // create tmp folder
+        $tempDir = 'tmp_folder';
+        if (!Storage::exists($tempDir)) {
+            Storage::makeDirectory($tempDir, 0755, true);
+        }
+
+        
+        // add gedcom file to tmp folder
+        Storage::copy($gedcom_file, $tempDir . '/familytree.ged');
+
+        // add photos to tmp folder
+        $gedcom = $this->get_gedcom($gedcom_file);
+        $indis = $gedcom->getIndi();
+        foreach($indis as $indi){
+            $note = $indi->getNote();
+            $names = $indi->getName();
+            $name = null;
+            if($names != null and $names != []){
+                $name = trim(str_replace("/"," ",$names[0]->getName()));
+                $name = Str::slug($name, $separator = '_');
+            }
+            $photo = null;
+            if($note != null and $note != []){
+                $photo = $note[0]->getNote();
+            }
+
+            if($name != null and $photo != null){
+                Storage::copy('portraits/'.$photo, $tempDir . '/' . $name . '.png');
+            }
+        }
+        
+
+        $zip = new ZipArchive();
+        $zipFileName = 'pedigree.zip';
+        $zipFilePath = Storage::path($zipFileName); // Save in default storage disk
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            $files = Storage::allFiles($tempDir);
+
+            foreach ($files as $file) {
+                $localPath = storage_path('app/' . $file); // Get the full path of the file
+                $relativePath = substr($file, strlen($tempDir) + 1); // Relative path inside the zip
+                $zip->addFile($localPath, $relativePath);
+            }
+
+            $zip->close();
+        } else {
+            return redirect()->back()->with('error', 'Could not download your familytree, please try again');
+        }
+
+        // Clean up the temp folder
+        Storage::deleteDirectory($tempDir);
+        
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+        
+
+    }
+
+    public function orderspouses(Request $request){
+        
+        $gedcomService = new GedcomService();
+
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return response()->json(['error'=>true,'msg' => "cant order spouses, please try again !"]);
+        }
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        $families = array();
+        foreach ($request->spouses as $spouse) {
+            $person_id = str_replace('@','',$spouse);
+            $person = $this->get_person($gedcom,$person_id);
+            $fams = $person->getFams()[0]->getFams();
+            $families[] = $fams;
+        }
+
+        $current_families = $gedcom->getFam();
+        $new_fam = $this->reorderArrayByKeys($current_families, $families);
+
+        $reflectionClass = new ReflectionClass($gedcom);
+        $property = $reflectionClass->getProperty('fam');
+        $property->setAccessible(true); // Make the protected property accessible
+        $property->setValue($gedcom, $new_fam);
+        
+        
+        $gedcomService->writer($gedcom,$gedcom_file);
+
+        return response()->json(['error'=>false,'msg' => 'spouses order with succes']);
+    }
+
+
+    private function reorderArrayByKeys(array $inputArray, array $order): array {
+        // Create a new array to store the reordered items
+        $reorderedArray = [];
+        
+        // Add items from the input array to the reordered array based on the order array
+        foreach ($order as $key) {
+            if (array_key_exists($key, $inputArray)) {
+                $reorderedArray[$key] = $inputArray[$key];
+            }
+        }
+    
+        // Append remaining items from the input array that were not in the order array
+        foreach ($inputArray as $key => $value) {
+            if (!array_key_exists($key, $reorderedArray)) {
+                $reorderedArray[$key] = $value;
+            }
+        }
+    
+        return $reorderedArray;
+    }
+
+    public function getpersons(Request $request){
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return response()->json(['error'=>true,'persons' => null]);
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        $persons = array();
+        foreach ($request->ids as $id) {
+            $person_id = str_replace('@','',$id);
+            $person = $this->get_person($gedcom,$person_id);
+            $name = str_replace('/',' ',$person->getName()[0]->getName());
+            $photo = null;
+            if($person->getNote() != null && $person->getNote() != []){
+                $photo = $person->getNote()[0]->getNote();
+            }
+
+            $sex = $person->getSex();
+            $birth = null;
+            if($person->getEven('BIRT') != null && $person->getEven('BIRT') != []){
+                $birth = $person->getEven('BIRT')[0]->getDate();
+            }
+
+            $death = null;
+            if($person->getEven('DEAT') != null && $person->getEven('DEAT') != []){
+                $death = $person->getEven('DEAT')[0]->getDate();
+            }
+            
+            $persons[] = [
+                'personId' => "@".$person_id."@",
+                'name' => $name,
+                'photo' => $photo,
+                'sex' => $sex,
+                'birth' => $birth,
+                'death' => $death,
+            ];
+            
+
+        }
+        
+        return response()->json(['error'=>false,'persons' => $persons]);
+
+
+    }
+
     public function settings(Request $request){
         
         
@@ -295,9 +498,9 @@ class PedigreeController extends Controller
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
             // get product features
-            $current_payment = $user->has_payment();
+            $current_payment = $user->last_payment();
             if($current_payment == false){
-                return redirect()->route('users.dashboard');
+                return redirect()->route('users.dashboard.index');
             }
             $product = Product::where('id',$current_payment->product_id)->first();
             $settings['max_nodes'] = $product->max_nodes;
@@ -327,7 +530,9 @@ class PedigreeController extends Controller
                 'adop_child_link_color' => ['required',new HexColor],
                 
                 'node_template' => ['required',Rule::in(['1', '2', '3', '4'])],
-                'bg_template' => ['required',Rule::in(['1', '2', '3', '4'])]
+                'bg_template' => ['required',Rule::in(['1', '2', '3', '4'])],
+
+                'default_date' => ['required',Rule::in(['MM-DD-YYYY', 'YYYY-MM-DD', 'DD-MM-YYYY'])]
             ])->validate();
 
             
@@ -345,9 +550,10 @@ class PedigreeController extends Controller
         $gedcom_file = $pedigree->gedcom_file;
 
         // get product features
-        $current_payment = $user->has_payment();
+        $has_payment = $user->has_payment();
+        $current_payment = $user->last_payment();
         if($current_payment == false){
-            return redirect()->route('users.dashboard');
+            return redirect()->route('users.dashboard.index');
         }
         $product = Product::where('id',$current_payment->product_id)->first();
 
@@ -386,7 +592,7 @@ class PedigreeController extends Controller
         $selected_output_pdf = array_slice($max_output_pdf, str_replace('a', '', $pedigree_max_output_pdf), 5,true);
 
 
-        return view('users.pedigree.index',compact('gedcom_file','print_types','selected_output_png','selected_output_pdf'));
+        return view('users.pedigree.index',compact('gedcom_file','print_types','selected_output_png','selected_output_pdf','has_payment'));
     }
 
 
@@ -438,8 +644,6 @@ class PedigreeController extends Controller
         }
 
         $file = Storage::disk('local')->get($pedigree->gedcom_file);
-
-        
         
         // Return the file as a response
         return response($file, 200)
@@ -447,6 +651,36 @@ class PedigreeController extends Controller
                   ->header('Content-Disposition', 'attachment; filename="' . basename($pedigree->gedcom_file) . '"');
     }
 
+    private function convertToDateFormat($dateString) {
+
+        if($dateString == null){
+            return null;
+        }
+        // Define the accepted formats
+        $formats = [
+            'Y-m-d', // YYYY-MM-DD
+            'm-d-Y', // MM-DD-YYYY
+            'd-m-Y'  // DD-MM-YYYY
+        ];
+    
+        // Special case: Handle year-only input
+        if (preg_match('/^\d{4}$/', $dateString)) {
+            return $dateString; // Return the year as-is
+        }
+    
+        foreach ($formats as $format) {
+            $date = Carbon::createFromFormat($format, $dateString, null);
+    
+            // Check if the date is valid for the current format
+            if ($date && $date->format($format) === $dateString) {
+                // Convert to the desired format (DD-MM-YYYY)
+                return $date->format('Y-m-d');
+            }
+        }
+    
+        // If no valid date format is matched, return null or throw an exception
+        return null;
+    }
     // update person
     public function update(Request $request){
 
@@ -477,13 +711,15 @@ class PedigreeController extends Controller
             return redirect()->back()->with('error','cant find person');
         }
 
+        // edit birt event
+        $birth_date = $this->convertToDateFormat($request->birth_date);
+        $gedcomService->edit_birth($person,$birth_date);
+
         // edit death event
-        $death_date = $request->death_date;
+        $death_date = $this->convertToDateFormat($request->death_date);
         $gedcomService->edit_death($person, $request->status,$death_date);
         
-        // edit birt event
-        $birth_date = $request->birth_date;
-        $gedcomService->edit_birth($person,$birth_date);
+        
 
         // edit names
         $name = $request->firstname."/".$request->lastname."/";

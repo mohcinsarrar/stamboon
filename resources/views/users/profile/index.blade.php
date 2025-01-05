@@ -29,7 +29,7 @@
 @endsection
 
 @section('page-script')
-    <script src="{{ asset('auth/edit_profile.js') }}"></script>
+    <script src="{{ asset('auth/edit_profile.js') }}?{{ time() }}"></script>
 @endsection
 
 @section('content')
@@ -95,6 +95,32 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="lastname" name="lastname"
                                             value="{{ $user->lastname }}">
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
+                                    <label class="col-sm-2  col-form-label" for="country">Country</label>
+                                    <div class="col-sm-10">
+                                      <select type="text" class="form-control" id="country" name="country" required>
+                                        <option></option>
+                                        @foreach ($countries as $country)
+                                          <option value="{{$country->id}}" {{$country->id == $user->country ? "selected" : ""}}>{{$country->name}}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
+                                <div class="row mb-5">
+                                    <label class="col-sm-2 col-form-label" for="city">City</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="city" name="city"
+                                            value="{{ $user->city }}">
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-5">
+                                    <label class="col-sm-2 col-form-label" for="address">Address</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="address" name="address"
+                                            value="{{ $user->address }}">
                                     </div>
                                 </div>
                                 <div class="row mb-5">

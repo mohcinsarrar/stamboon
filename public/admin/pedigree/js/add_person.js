@@ -1,26 +1,3 @@
-new Cleave('.birth_date_add_person', {
-    delimiters: ['-', '-'],
-    blocks: [4, 2, 2],
-    numericOnly: true,
-    onValueChanged: function(e) {
-        let value = e.target.value;
-        if (value.length === 5) {
-            $('.birth_date_add_person').val(value.replace('-',''))
-        }
-    }
-});
-new Cleave('.death_date_add_person', {
-    delimiters: ['-', '-'],
-    blocks: [4, 2, 2],
-    numericOnly: true,
-    onValueChanged: function(e) {
-        let value = e.target.value;
-        if (value.length === 5) {
-            $('.death_date_add_person').val(value.replace('-',''))
-        }
-    }
-});
-
 
 var formAddPerson = document.querySelector('#formAddPerson');
 formAddPerson.querySelector('.living').checked = true;
@@ -31,14 +8,14 @@ formAddPerson.querySelector('.deceased').addEventListener('change', (event) => {
         formAddPerson.querySelector('.death-container').classList.remove("d-none");
     }
     else {
-        formAddPerson.querySelector('.death_date').value = "";
+        formAddPerson.querySelector('.death_date_add_person').value = "";
         formAddPerson.querySelector('.death-container').classList.add("d-none");
     }
 });
 
 formAddPerson.querySelector('.living').addEventListener('change', (event) => {
     if (event.target.checked) {
-        formAddPerson.querySelector('.death_date').value = "";
+        formAddPerson.querySelector('.death_date_add_person').value = "";
         formAddPerson.querySelector('.death-container').classList.add("d-none");
     }
     else {
@@ -50,10 +27,15 @@ formAddPerson.querySelector('.living').addEventListener('change', (event) => {
 
 // validate and send add spouse form
 document.getElementById('formAddPerson').addEventListener('submit', function (event) {
+
+    
+
     const form = event.target;
     let isValid = true;
     let msg = "<ul>"
 
+    // change date msg
+    form.querySelector('#date-msg span').innerHTML = "Date format : "+date_format+" or YYYY"
     // validate sex
 
     const sexs = document.getElementsByName('sex');
@@ -90,13 +72,23 @@ document.getElementById('formAddPerson').addEventListener('submit', function (ev
     }
 
     // validate birth date
-    const regexFullDate = /^\d{4}-\d{2}-\d{2}$/;
+    var regexFullDate = /^\d{4}-\d{2}-\d{2}$/;
     const regexYearOnly = /^\d{4}$/;
+
+    if(date_format == 'YYYY-MM-DD'){
+        var regexFullDate = /^\d{4}-\d{2}-\d{2}$/;
+    }
+    else if(date_format == 'MM-DD-YYYY'){
+        var regexFullDate = /^\d{2}-\d{2}-\d{4}$/;
+    }
+    else if(date_format == 'DD-MM-YYYY'){
+        var regexFullDate = /^\d{2}-\d{2}-\d{4}$/;
+    }
 
     var birth_date = form.querySelector('.birth_date_add_person').value
     if (birth_date != '') {
         if (regexFullDate.test(birth_date) || regexYearOnly.test(birth_date)) {
-            if (!isValidDate(birth_date)) {
+            if (!isValidDateGPT(birth_date)) {
                 isValid = false
                 msg += "<li>Please enter a valid birth date</li>"
             }
@@ -108,11 +100,13 @@ document.getElementById('formAddPerson').addEventListener('submit', function (ev
     }
 
 
+
+
     // validate death date
     var death_date = form.querySelector('.death_date_add_person').value
     if (death_date != '') {
         if (regexFullDate.test(death_date) || regexYearOnly.test(death_date)) {
-            if (!isValidDate(death_date)) {
+            if (!isValidDateGPT(death_date)) {
                 isValid = false
                 msg += "<li>Please enter a valid death date</li>"
             }

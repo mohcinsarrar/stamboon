@@ -20,7 +20,7 @@ class ProductType
         if (Auth::check()) {
             // get all payments of the auth user and check if a not expired exist
             $user = Auth::user();
-            if($user->product_type($type) == false){
+            if($user->has_one_payment($type) == false){
                 if(auth()->user()->hasRole('admin')){
                     return redirect()->route('admin.dashboard.index');
                 }

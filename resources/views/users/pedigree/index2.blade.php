@@ -66,22 +66,22 @@
 
 @section('vendor-script')
     <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
-    <script src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js">
+    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}">
     </script>
 
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/read-gedcom/dist/read-gedcom.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/libs/read-gedcom/read-gedcom.min.js') }}"></script>
     <!-- apex dTree -->
     <!-- required for dTree -->
     <!-- load dTree -->
     <!-- load treant -->
     <!-- d3-org-chart -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-org-chart@3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-flextree@2.1.2/build/d3-flextree.js"></script>
+    <script src="{{ asset('assets/vendor/libs/d3js/d3.v7.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/d3js/d3-org-chart.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/d3js/d3-flextree.js') }}"></script>
     <!-- elgrapho -->
 
 

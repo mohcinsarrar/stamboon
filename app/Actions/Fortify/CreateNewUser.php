@@ -7,6 +7,8 @@ use App\Models\Tree;
 use App\Models\Setting;
 use App\Models\Node;
 use App\Models\Pedigree;
+use App\Models\Fantree;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -26,6 +28,9 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             'firstname' => 'required|string',
             'lastname' => 'required|string',
+            'address' => 'required|string',
+            'country' => 'required|integer',
+            'city' => 'required|string',
             'email' => [
                 'required',
                 'string',
@@ -43,6 +48,9 @@ class CreateNewUser implements CreatesNewUsers
             'active' => 1,
             'firstname' => $input['firstname'],
             'lastname' => $input['lastname'],
+            'address' => $input['address'],
+            'country' => $input['country'],
+            'city' => $input['city'],
             'name' => $name,
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
@@ -62,6 +70,11 @@ class CreateNewUser implements CreatesNewUsers
 
         // create pedigree
         Pedigree::create([
+            'user_id' => $user->id
+        ]);
+
+        // create pedigree
+        Fantree::create([
             'user_id' => $user->id
         ]);
 

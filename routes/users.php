@@ -9,7 +9,7 @@ use App\Http\Controllers\users\ProfileController;
 
 
 
-Route::middleware(['auth:sanctum','verified','active','role:user'])
+Route::middleware(['auth:sanctum','verified','active','role:user','payment_reminder'])
     ->name('users.')
     ->group( function(){
 

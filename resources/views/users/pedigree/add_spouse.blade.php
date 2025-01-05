@@ -42,7 +42,7 @@ aria-labelledby="offcanvasAddSpouseLabel" data-bs-backdrop="false">
         <div class="mb-3">
             <label class="form-label">Date of Birth</label>
             <input type="text" name="birth_date"
-                class="form-control date-input birth_date_add_spouse" placeholder="YYYY-MM-DD or YYYY">
+                class="form-control date-input birth_date_add_spouse" >
         </div>
 
         <div class="death-container">
@@ -50,9 +50,11 @@ aria-labelledby="offcanvasAddSpouseLabel" data-bs-backdrop="false">
                 <label class="form-label">Date of Death</label>
                 <input type="text" name="death_date"
                     class="form-control date-input death_date_add_spouse"
-                    placeholder="YYYY-MM-DD or YYYY">
+                    >
             </div>
         </div>
+
+        <div class="mt-4" id="date-msg"><span></span></div>
 
 
         <div class="row mx-0 my-5 justify-content-center">

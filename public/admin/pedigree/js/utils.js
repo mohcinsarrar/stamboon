@@ -42,6 +42,10 @@ function close_custom_modal() {
     if (offcanvasElement.classList.contains('show')) {
         return;
     }
+    var offcanvasElement = document.getElementById('offcanvasOrderSpouse');
+    if (offcanvasElement.classList.contains('show')) {
+        return;
+    }
     const modal = document.getElementById('nodeModal');
     modal.style.display = 'none';
 }
@@ -55,33 +59,7 @@ function compareDates(birth, death) {
     return death - birth;
 }
 
-//check if is a string date is valid
 
-function checkDateValidation(dateString) {
-    const date = new Date(dateString);
-    // Check if date is valid by ensuring it is not an "Invalid Date" and it matches the input
-    return !isNaN(date.getTime()) && date.toISOString().startsWith(dateString);
-}
-
-function isValidDate(dateString) {
-
-    // Handle case for year only (YYYY)
-    if (/^\d{4}$/.test(dateString)) {
-        return true; // Valid year
-    }
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-        // First check if the string can be parsed as a date
-        var isValid = checkDateValidation(dateString)
-        return isValid
-
-    }
-
-    
-
-    return false
-
-}
 
 
 // set graph background from settings

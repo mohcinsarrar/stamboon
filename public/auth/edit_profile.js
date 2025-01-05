@@ -10,6 +10,7 @@ const formDeleteAccount = document.querySelector('#formDeleteAccount');
 document.addEventListener('DOMContentLoaded', function (e) {
   (function () {
     // Form validation for Add new record
+    var formValidationCountry = $('#formAccountSettings #country')
     if (formAuthentication) {
       const fv = FormValidation.formValidation(formAuthentication, {
         fields: {
@@ -131,6 +132,19 @@ document.addEventListener('DOMContentLoaded', function (e) {
           return false;
         }
       })
+
+      if (formValidationCountry.length) {
+        formValidationCountry.wrap('<div class="position-relative"></div>');
+        formValidationCountry
+          .select2({
+            placeholder: 'Select your country',
+            dropdownParent: formValidationCountry.parent()
+          })
+          .on('change.select2', function () {
+            // Revalidate the color field when an option is chosen
+            fv.revalidateField('country');
+          });
+      }
     }
 
     // form delete account
@@ -179,6 +193,8 @@ document.addEventListener('DOMContentLoaded', function (e) {
         }
       })
     }
+
+    
 
   })();
 });

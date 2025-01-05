@@ -1,26 +1,3 @@
-new Cleave('.death_date', {
-    delimiters: ['-', '-'],
-    blocks: [4, 2, 2],
-    numericOnly: true,
-    onValueChanged: function(e) {
-        let value = e.target.value;
-        if (value.length === 5) {
-            $('.death_date').val(value.replace('-',''))
-        }
-    }
-});
-new Cleave('.birth_date', {
-    delimiters: ['-', '-'],
-    blocks: [4, 2, 2],
-    numericOnly: true,
-    onValueChanged: function(e) {
-        let value = e.target.value;
-        if (value.length === 5) {
-            $('.birth_date').val(value.replace('-',''))
-        }
-    }
-});
-
 document.getElementById('formUpdatePerson').querySelector('.firstname').addEventListener('input', function (event) { 
     
     var maxLength = 20;
@@ -75,11 +52,13 @@ function edit_person() {
 
     // fill birth if exist
     if (personInfo.birth != null) {
-
-        var birthDate = parseDateEdit(personInfo.birth);
+        //
+        var birthDate = parseDateGlobal(personInfo.birth,target_format=date_format, target_date_style = 'number', target_separator = "-",  date_style = 'string', separator = ' ')
         formUpdatePerson.querySelector('.birth_date').value = birthDate
     }
 
+    // change date msg
+    formUpdatePerson.querySelector('#date-msg span').innerHTML = "Date format : "+date_format+" or YYYY"
     // toggle death container view
     formUpdatePerson.querySelector('.deceased').addEventListener('change', (event) => {
         if (event.target.checked) {
@@ -106,7 +85,7 @@ function edit_person() {
         // fill death if exist
         if (personInfo.death != null) {
 
-            var deathDate = parseDateEdit(personInfo.death);
+            var deathDate = parseDateGlobal(personInfo.death,target_format=date_format, target_date_style = 'number', target_separator = "-",  date_style = 'string', separator = ' ');
             formUpdatePerson.querySelector('.death_date').value = deathDate
         }
     }
@@ -153,8 +132,20 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
     }
 
     // validate birth date
-    const regexFullDate = /^\d{4}-\d{2}-\d{2}$/;
+    var regexFullDate = /^\d{4}-\d{2}-\d{2}$/;
     const regexYearOnly = /^\d{4}$/;
+
+    if(date_format == 'YYYY-MM-DD'){
+        var regexFullDate = /^\d{4}-\d{2}-\d{2}$/;
+    }
+    else if(date_format == 'MM-DD-YYYY'){
+        var regexFullDate = /^\d{2}-\d{2}-\d{4}$/;
+    }
+    else if(date_format == 'DD-MM-YYYY'){
+        var regexFullDate = /^\d{2}-\d{2}-\d{4}$/;
+    }
+    
+    
 
     var birth_date = form.querySelector('.birth_date').value
     
@@ -162,7 +153,7 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
         
         if (regexFullDate.test(birth_date) || regexYearOnly.test(birth_date)) {
             
-            if (!isValidDate(birth_date)) {
+            if (!isValidDateGPT(birth_date)) {
                 
                 isValid = false
                 msg += "<li>Please enter a valid birth date</li>"
@@ -179,7 +170,7 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
     var death_date = form.querySelector('.death_date').value
     if (death_date != '') {
         if (regexFullDate.test(death_date) || regexYearOnly.test(death_date)) {
-            if (!isValidDate(death_date)) {
+            if (!isValidDateGPT(death_date)) {
                 isValid = false
                 msg += "<li>Please enter a valid death date</li>"
             }

@@ -15,7 +15,7 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
 
     Route::get('/settings', [DashboardController::class,'settings'])->name('settings');
     Route::post('/settings/update', [DashboardController::class,'settings_update'])->name('settings.update');
-
+    Route::post('/settings/add_country', [DashboardController::class,'add_country'])->name('settings.add_country');
 
     Route::get('/documentations', [DashboardController::class,'documentations'])->name('documentations');
     Route::post('/documentations/update', [DashboardController::class,'documentations_update'])->name('documentations.update');

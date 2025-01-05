@@ -82,6 +82,17 @@
       'Mollie' => 'Mollie\\Laravel\\Facades\\Mollie',
     ),
   ),
+  'nerdsnipe/laravel-countries' => 
+  array (
+    'aliases' => 
+    array (
+      'LaravelCountries' => 'NerdSnipe\\LaravelCountries\\Facades\\LaravelCountries',
+    ),
+    'providers' => 
+    array (
+      0 => 'NerdSnipe\\LaravelCountries\\LaravelCountriesServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 

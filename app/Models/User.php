@@ -31,6 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'firstname',
         'lastname',
+        'address',
+        'country',
+        'city',
         'email',
         'password',
         'verification_code',
@@ -62,6 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /** Relations **/
 
+
     public function payments(): HasMany
     {
         return $this->HasMany(Payment::class);
@@ -73,6 +77,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Setting::class);
     }
 
+    public function setting_fantree(): HasOne
+    {
+        return $this->hasOne(SettingFantree::class);
+    }
+
     public function tree(): HasOne
     {
         return $this->hasOne(Tree::class);
@@ -81,6 +90,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function pedigree(): HasOne
     {
         return $this->hasOne(Pedigree::class);
+    }
+    
+    public function fantree(): HasOne
+    {
+        return $this->hasOne(Fantree::class);
     }
 
     public function activities(): HasMany
@@ -151,6 +165,38 @@ class User extends Authenticatable implements MustVerifyEmail
         $notifications = Notification::where('user_id', Auth::user()->id)->where('read_at',null)->get();
 
         return $notifications;
+    }
+
+
+    public function has_one_payment($type){
+        $payment = $this->last_payment();
+        if($payment == false){
+            return false;
+        }
+
+        $product = $payment->product;
+
+        if($type == 'fanchart'){
+            if($product->fanchart == true){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        if($type == 'pedigree'){
+            if($product->pedigree == true){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+
+        return true;
+
     }
 
     public function has_payment(){

@@ -138,13 +138,23 @@
         Subscription
     </h4>
     @if (Auth::user()->has_payment() == false)
-        <div class="alert alert-warning d-flex align-items-center" role="alert">
-            <span class="alert-icon text-secondary me-2">
-                <i class="ti ti-alert-triangle ti-xs"></i>
-            </span>
-            You don't have any subscription plan, Order one now !!
-        </div>
+        @if (Auth::user()->last_payment() != false)
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <span class="alert-icon text-secondary me-2">
+                    <i class="ti ti-alert-triangle ti-xs"></i>
+                </span>
+                You subscription expired, Order new to extend your account !!
+            </div>
+        @else
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <span class="alert-icon text-secondary me-2">
+                    <i class="ti ti-alert-triangle ti-xs"></i>
+                </span>
+                You don't have any subscription plan, Order one now !!
+            </div>
+        @endif
     @endif
+    
     <!-- Start Pricing  Area -->
 
     @if (Auth::user()->has_payment() != false)

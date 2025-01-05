@@ -23,7 +23,7 @@ class Active
             if($user->hasRole('admin')){
                 return redirect()->route('admin.dashboard.index');
             }
-            if($user->has_payment() == false){
+            if($user->last_payment() == false){
                 return redirect()->route('users.subscription.index');
             }
 

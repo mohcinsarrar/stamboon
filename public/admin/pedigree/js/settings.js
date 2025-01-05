@@ -82,7 +82,13 @@
       dataType: 'json',
       success: function (data) {
         if (data.error == false) {
+          
           init_settings(data.settings)
+
+          var myModal = new bootstrap.Modal(document.getElementById('settings'))
+          myModal.show()
+
+          
         } else {
           show_toast('error', 'error', data.error)
         }
@@ -99,14 +105,55 @@
       }
     });
 
-    var myModal = new bootstrap.Modal(document.getElementById('settings'))
-    myModal.show()
+    
 
   });
 
 
-  function init_settings(settings) {
+
+  function initColorPicker(el, defaultColor, inputSelector) {
+
+    const defaultColorValid = defaultColor || '#000000'; // Fallback to black
+
     
+    const pickerVar = Pickr.create({
+      container: document.querySelector('div#settings'),
+      el: el,
+      theme: 'classic',
+      default: defaultColor,
+      swatches: [],
+      lockOpacity: true,
+      appClass: 'custom-pickr',
+      components: {
+        preview: true,
+        hue: true,
+        interaction: {
+          rgba: true,
+          hex: true,
+          input: true,
+          save: true
+        }
+      }
+    });
+
+    pickerVar.on('init', instance => {
+      document.querySelector(inputSelector).value = defaultColor;
+    });
+
+    pickerVar.on('save', (color, instance) => {
+      const hexColor = '#' + color.toHEXA().join('');
+      document.querySelector(inputSelector).value = hexColor;
+      instance.hide();
+    })
+
+
+    return pickerVar
+  }
+
+  function init_settings(settings) {
+
+    // change default date
+    maleIconElement = document.querySelector('#settings select#default_date option[value="'+settings.default_date+'"]').selected = true;
     // select default portrait already selected
     maleIcon = settings.default_male_image.split(".")[0]
     femaleIcon = settings.default_female_image.split(".")[0]
@@ -149,256 +196,57 @@
     // classic  
 
     if (colorMale) {
-      var colorMalepickr = pickr.create({
-        el: colorMale,
-        theme: 'classic',
-        default: settings.male_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="male_color"]').value = settings.male_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="male_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorMale, settings.male_color, 'input[name="male_color"]')
+
     }
 
 
     if (colorFemale) {
-      var colorFemalepickr = pickr.create({
-        el: colorFemale,
-        theme: 'classic',
-        default: settings.female_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="female_color"]').value = settings.female_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="female_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorFemale, settings.female_color, 'input[name="female_color"]')
+
     }
 
     if (colorBlood) {
-      var colorBloodpickr = pickr.create({
-        el: colorBlood,
-        theme: 'classic',
-        default: settings.blood_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="blood_color"]').value = settings.blood_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="blood_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorBlood, settings.blood_color, 'input[name="blood_color"]')
+
     }
 
     if (colorNotBlood) {
-      var colorNotBloodpickr = pickr.create({
-        el: colorNotBlood,
-        theme: 'classic',
-        default: settings.notblood_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="notblood_color"]').value = settings.notblood_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="notblood_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorNotBlood, settings.notblood_color, 'input[name="notblood_color"]')
+
     }
 
     if (colorText) {
-      var colorTextpickr = pickr.create({
-        el: colorText,
-        theme: 'classic',
-        default: settings.text_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="text_color"]').value = settings.text_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="text_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorText, settings.text_color, 'input[name="text_color"]')
+
     }
 
     if (colorBand) {
-      var colorBandpickr = pickr.create({
-        el: colorBand,
-        theme: 'classic',
-        default: settings.band_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="band_color"]').value = settings.band_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="band_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorBand, settings.band_color, 'input[name="band_color"]')
+
     }
 
     if (colorSpouse) {
-      var colorSpousepickr = pickr.create({
-        el: colorSpouse,
-        theme: 'classic',
-        default: settings.spouse_link_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="spouse_link_color"]').value = settings.spouse_link_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="spouse_link_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorSpouse, settings.spouse_link_color, 'input[name="spouse_link_color"]')
     }
 
     if (colorBioChild) {
-      var colorBioChildpickr = pickr.create({
-        el: colorBioChild,
-        theme: 'classic',
-        default: settings.bio_child_link_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="bio_child_link_color"]').value = settings.bio_child_link_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="bio_child_link_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorBioChild, settings.bio_child_link_color, 'input[name="bio_child_link_color"]')
+
     }
 
     if (colorAdopChild) {
-      var colorAdopChildpickr = pickr.create({
-        el: colorAdopChild,
-        theme: 'classic',
-        default: settings.adop_child_link_color,
-        swatches: [],
-        components: {
-          // Main components
-          preview: true,
-          hue: true,
 
-          // Input / output Options
-          interaction: {
-            rgba: true,
-            hex: true,
-            input: true,
-            save: true
-          }
-        }
-      }).on('init', instance => {
-        document.querySelector('input[name="adop_child_link_color"]').value = settings.adop_child_link_color;
-      }).on('save', (color, instance) => {
-        var hexcolor = '#' + color.toHEXA().join('')
-        document.querySelector('input[name="adop_child_link_color"]').value = hexcolor;
-        instance.hide()
-      });
+      initColorPicker(colorAdopChild, settings.adop_child_link_color, 'input[name="adop_child_link_color"]')
+
     }
 
 

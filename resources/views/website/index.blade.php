@@ -337,7 +337,7 @@
                                         <p>{{ $data['aboutus']['subTitle'] }}</p>
                                         @foreach ($data['aboutus']['paragraphs'] as $paragraph)
                                             <p class="fw-bold">{{ $paragraph['title'] }}</p>
-                                            <p>{{ $paragraph['content'] }}</p>
+                                            <p>{!! $paragraph['content'] !!}</p>
                                         @endforeach
                                     </div>
                                 </div>
@@ -429,7 +429,7 @@
                                             <img src="{{asset('/storage/'.$product->image)}}" class="img-fluid" style="width:200px; height:250x; object-fit:contain">
                                             @endif
                                         </div>
-                                        <p>{{ $product->description }}</p>
+                                        <p style="font-size: 1.3em; font-weight:500;">{{ $product->description }}</p>
                                         <div class="price">
                                             <h3 class="amount">
                                                 <span class="currency">$</span>{{ $product->price }}
@@ -718,7 +718,7 @@
     <script src="{{ asset('webshop/assets/js/main.js') }}"></script>
     <script src="{{ asset('webshop/assets/js/tiny-slider.js') }}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"
+    <script src="{{ asset('assets/vendor/libs/font-awesome/all.min.js') }}"
         integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 

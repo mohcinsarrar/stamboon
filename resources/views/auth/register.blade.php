@@ -9,6 +9,7 @@ $customizerHidden = 'customizer-hide';
 @section('vendor-style')
 <!-- Vendor -->
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/formvalidation/dist/css/formValidation.min.css')}}" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
 @endsection
 
 @section('page-style')
@@ -20,10 +21,11 @@ $customizerHidden = 'customizer-hide';
 <script src="{{asset('assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js')}}"></script>
+<script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
 @endsection
 
 @section('page-script')
-<script src="{{asset('auth/register.js')}}"></script>
+<script src="{{asset('auth/register.js')}}?{{ time() }}"></script>
 @endsection
 
 @section('content')
@@ -53,6 +55,23 @@ $customizerHidden = 'customizer-hide';
             <div class="mb-3">
               <label for="lastname" class="form-label">Last name</label>
               <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your last name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="country">Country</label>
+                <select type="text" class="form-control" id="country" name="country" required>
+                  <option value=""></option>
+                  @foreach ($countries as $country)
+                    <option value="{{$country->id}}">{{$country->name}}</option>
+                  @endforeach
+                </select>
+            </div>
+            <div class="mb-3">
+              <label for="city" class="form-label">City</label>
+              <input type="text" class="form-control" id="city" name="city" placeholder="Enter your city">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Adresse</label>
+              <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address">
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>

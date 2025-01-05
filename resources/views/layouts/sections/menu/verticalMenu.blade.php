@@ -42,13 +42,13 @@ $configData = Helper::appClasses();
 
      {{-- test if user has acces to this route --}}
     @if($menu->slug == "users.fanchart.index")
-      @if(auth()->user()->product_type('fanchart') == false)
+      @if(auth()->user()->has_one_payment('fanchart') == false)
         @continue
       @endif
     @endif
 
     @if($menu->slug == "users.pedigree.index")
-      @if(auth()->user()->product_type('pedigree') == false)
+      @if(auth()->user()->has_one_payment('pedigree') == false)
         @continue
       @endif
     @endif
@@ -89,8 +89,9 @@ $configData = Helper::appClasses();
     @endphp
 
     {{-- main menu --}}
+    
     <li class="menu-item " >
-      <a style=" {{($activeClass != null) ? 'color: white !important;background-color:'.$secondary_color.' !important;'  : ''}}"  href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}" class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
+      <a style=" color: black ; {{($activeClass != null) ? 'color: white ; background-color:'.$secondary_color.' !important;'  : ''}}"  href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}" class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
         @isset($menu->icon)
         <i class="{{ $menu->icon }}"></i>
         @endisset

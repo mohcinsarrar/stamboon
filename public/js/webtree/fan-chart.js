@@ -3785,6 +3785,11 @@ var t, e;
         class ki {
             constructor(t) {
                 this._configuration = t;
+                this._configuration.padRadius = 3000;
+                this._configuration.circlePadding = 100;
+                this._configuration.innerArcHeight = 200;
+                this._configuration.colorArcWidth = 0;
+                console.log(this._configuration)
             }
             get startPi() {
                 return 90 === this._configuration.fanDegree ? 0 : (-this._configuration.fanDegree / 2) * Mi;

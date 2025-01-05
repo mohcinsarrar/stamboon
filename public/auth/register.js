@@ -7,6 +7,9 @@
  
  document.addEventListener('DOMContentLoaded', function (e) {
    (function () {
+
+    var formValidationCountry = $('#formAuthentication #country')
+
      // Form validation for Add new record
      if (formAuthentication) {
        const fv = FormValidation.formValidation(formAuthentication, {
@@ -22,6 +25,27 @@
             validators: {
               notEmpty: {
                 message: 'Please enter your last name'
+              }
+            }
+          },
+          country: {
+            validators: {
+              notEmpty: {
+                message: 'Please enter your country'
+              }
+            }
+          },
+          address: {
+            validators: {
+              notEmpty: {
+                message: 'Please enter your address'
+              }
+            }
+          },
+          city: {
+            validators: {
+              notEmpty: {
+                message: 'Please enter your city'
               }
             }
           },
@@ -140,6 +164,20 @@
         }
       })
      }
+
+
+     if (formValidationCountry.length) {
+      formValidationCountry.wrap('<div class="position-relative"></div>');
+      formValidationCountry
+        .select2({
+          placeholder: 'Select your country',
+          dropdownParent: formValidationCountry.parent()
+        })
+        .on('change.select2', function () {
+          // Revalidate the color field when an option is chosen
+          fv.revalidateField('country');
+        });
+    }
 
    })();
  });

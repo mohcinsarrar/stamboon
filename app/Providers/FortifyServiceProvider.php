@@ -20,7 +20,7 @@ use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\RegisterResponse;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 
-
+use LaravelCountries;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -121,7 +121,8 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::registerView(function () {
             $pageConfigs = ['myLayout' => 'blank'];
-            return view('auth.register', ['pageConfigs' => $pageConfigs]);
+            $countries = LaravelCountries::getCountries()->getData();
+            return view('auth.register', ['pageConfigs' => $pageConfigs, "countries" => $countries]);
         });
 
         Fortify::loginView(function () {

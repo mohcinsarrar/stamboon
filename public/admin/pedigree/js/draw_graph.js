@@ -974,8 +974,8 @@ function getPersonNodeContent(personData, personType) {
                                     ${textColor}; 
                                     margin-bottom: auto !important; 
                                     font-size: .7rem;
-                                    font-weight: 600;
-                                    line-height: 0.9rem;
+                                    font-weight: 500;
+                                    line-height: 1rem;
                                     margin-top: 0;
                                     box-sizing: border-box;
                                 "
@@ -1120,6 +1120,10 @@ function getFullDate(birth, death) {
 function nodeClicked(d) {
 
     // check if offcanvas is open
+    var offcanvasElement = document.getElementById('offcanvasOrderSpouse');
+    if (offcanvasElement.classList.contains('show')) {
+        return;
+    }
     var offcanvasElement = document.getElementById('offcanvasUpdatePerson');
     if (offcanvasElement.classList.contains('show')) {
         return;
@@ -1167,14 +1171,24 @@ function nodeClicked(d) {
     // store on global variable
     selectedPerson = personInfo
 
+
     // insert person info in nodeModal
     const modal = document.getElementById('nodeModal');
     const modalBody = document.getElementById('nodeModalBody');
 
-    modalBody.querySelector('.name').innerHTML = personInfo.name;
+    
 
-    modalBody.querySelector('.birth').innerHTML = personInfo.birth;
-    modalBody.querySelector('.death').innerHTML = personInfo.death;
+    if(selectedPerson.spouseIds != undefined && selectedPerson.spouseIds.length >=1){
+        console.log(selectedPerson.spouseIds.length)
+        modalBody.querySelector('#nodeOrderSpouseItem').style.display = 'block';
+    }
+    else{
+        modalBody.querySelector('#nodeOrderSpouseItem').style.display = 'none';
+    }
+
+    modalBody.querySelector('.name').innerHTML = personInfo.name;
+    modalBody.querySelector('.birth').innerHTML = parseDateGlobal(personInfo.birth,target_format=date_format, target_date_style = 'string', target_separator = " ",  date_style = 'string', separator = ' ');
+    modalBody.querySelector('.death').innerHTML = parseDateGlobal(personInfo.death,target_format=date_format, target_date_style = 'string', target_separator = " ",  date_style = 'string', separator = ' ')
     if (personInfo.photo != undefined) {
         modalBody.querySelector('.personImage').src = "/storage/portraits/" + personInfo.photo;
     }
@@ -1201,6 +1215,47 @@ function nodeClicked(d) {
     modal.style.display = 'block';
 }
 
+function parseDateEditSettings(dateStr) {
+
+    if(dateStr == null){
+        return '';
+    }
+    const parts = dateStr.split(' ');
+    var day, month, year;
+
+    if (parts.length === 1) {
+        // Only year is given
+        // Use January 1st of that year
+        day = null
+        month = null
+        year = parts[0]
+
+        return "" + year + "";
+
+    } else {
+        // Full date is given
+        const [dayName, monthName, yearName] = parts;
+        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const monthIndex = monthNames.indexOf(monthName) + 1;
+        day = dayName
+        month = monthIndex < 10 ? "0" + monthIndex.toString() : monthIndex.toString()
+        year = yearName
+        if(date_format == 'YYYY-MM-DD'){
+            return year + "-" + month + "-" + day;
+        }
+        else if(date_format == 'MM-DD-YYYY'){
+            return month + "-" + day + "-" + year;
+        }
+        else{
+            return year + "-" + month + "-" + day;
+        }
+        
+    }
+
+
+
+}
+
 
 
 // buttons click
@@ -1220,6 +1275,10 @@ document.getElementById('nodeModalBody').querySelector('#addSpouse').addEventLis
 });
 document.getElementById('nodeModalBody').querySelector('#addChild').addEventListener('click', (event) => {
     add_child()
+});
+
+document.getElementById('nodeModalBody').querySelector('#nodeOrderSpouse').addEventListener('click', (event) => {
+    order_spouse()
 });
 
 

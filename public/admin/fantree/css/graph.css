@@ -1,0 +1,55 @@
+/* custom-modal  */
+
+.custom-modal {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    min-width: 350px;
+}
+
+.custom-modal-body {
+    position: relative
+}
+
+.custom-modal-close {
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    cursor: pointer;
+    z-index: 1000;
+    background-color: white !important;
+    opacity: 1 !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+    transition: all .15s ease .1s !important;
+}
+.custom-modal-close:hover {
+    right: -18px;
+    top: -18px;
+}
+
+.custom-modal .btn-group{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.tools .btn:hover{
+    color:  #4B465C !important;
+    background-color: white;
+}
+
+
+.divider .divider-text::before {
+    right: 157% !important;
+  
+  }
+
+
+  .pcr-button{
+    border: 1px solid black !important;
+    width: 100% !important;
+  }

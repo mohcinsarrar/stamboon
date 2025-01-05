@@ -25,6 +25,12 @@
       "slug": "users.pedigree.index"
     },
     {
+      "url": "/fantree",
+      "icon": "menu-icon tf-icons ti ti-growth",
+      "name": "Fantree",
+      "slug": "users.fantree.index"
+    },
+    {
       "url": "/subscription",
       "icon": "menu-icon tf-icons ti ti-credit-card",
       "name": "Subscription",

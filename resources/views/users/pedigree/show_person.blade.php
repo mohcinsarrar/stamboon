@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="btn-group dropend">
-            <button type="button" class="btn btn-primary waves-effect p-2 border-0 rounded"
+            <button {{($has_payment == false ? 'disabled' : '')}} type="button" class="btn btn-primary waves-effect p-2 border-0 rounded"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="ti ti-pencil"></i>
             </button>
@@ -33,6 +33,7 @@
                 </form>
                 <li><a id="addSpouse" class="dropdown-item waves-effect" href="javascript:void(0);"><i class="ti ti-user-plus me-2"></i> Add spouse</a>
                 </li>
+                <li id="nodeOrderSpouseItem"><a id="nodeOrderSpouse" class="dropdown-item waves-effect" href="javascript:void(0);"><i class="ti ti-arrows-sort me-2"></i> Oder spouses</a></li>
                 <li><a id="addChild" class="dropdown-item waves-effect" href="javascript:void(0);"><i class="ti ti-user-plus me-2"></i> Add child</a>
                 </li>
             </ul>

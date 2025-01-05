@@ -24,9 +24,9 @@
 @section('title', 'Page 2')
 
 @section('vendor-script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{{ asset('assets/vendor/libs/jspdf/jspdf.umd.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
-    <script src="https://scaleflex.cloudimg.io/v7/plugins/filerobot-image-editor/latest/filerobot-image-editor.min.js">
+    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}">
     </script>
 
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4404583ea6b3b00ce9a73c6d25aa191a",
+    "content-hash": "74d406edda5e3e43f4a0cbc226729eaf",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3239,6 +3239,79 @@
             "time": "2024-04-12T21:02:21+00:00"
         },
         {
+            "name": "nerdsnipe/laravel-countries",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NerdSnipe/laravel-countries.git",
+                "reference": "36025c8decae4aaa8393de12142f2f620c94bdd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NerdSnipe/laravel-countries/zipball/36025c8decae4aaa8393de12142f2f620c94bdd7",
+                "reference": "36025c8decae4aaa8393de12142f2f620c94bdd7",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.19|^10.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.14.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.0",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LaravelCountries": "NerdSnipe\\LaravelCountries\\Facades\\LaravelCountries"
+                    },
+                    "providers": [
+                        "NerdSnipe\\LaravelCountries\\LaravelCountriesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NerdSnipe\\LaravelCountries\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "NerdSnipe Inc",
+                    "email": "hello@nerdsnipe.cc",
+                    "homepage": "https://www.nerdsnipe.cc",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Used to add country, state, city selectors to any laravel view. Provides all cities and states for 251 countries",
+            "homepage": "https://github.com/nerdsnipe/laravel-countries",
+            "keywords": [
+                "Laravel-Countries",
+                "NerdSnipe",
+                "country state city dropdown",
+                "country state city dynamic dependent dropdown",
+                "laravel",
+                "laravel city data",
+                "laravel country data",
+                "laravel state data"
+            ],
+            "support": {
+                "issues": "https://github.com/NerdSnipe/laravel-countries/issues",
+                "source": "https://github.com/NerdSnipe/laravel-countries/tree/v1.2.0"
+            },
+            "time": "2023-04-12T10:07:27+00:00"
+        },
+        {
             "name": "nesbot/carbon",
             "version": "2.72.3",
             "source": {
@@ -4744,6 +4817,66 @@
                 }
             ],
             "time": "2024-04-27T21:32:50+00:00"
+        },
+        {
+            "name": "spatie/laravel-package-tools",
+            "version": "1.17.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-package-tools.git",
+                "reference": "9ab30fd24f677e5aa370ea4cf6b41c517d16cf85"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/9ab30fd24f677e5aa370ea4cf6b41c517d16cf85",
+                "reference": "9ab30fd24f677e5aa370ea4cf6b41c517d16cf85",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^9.28|^10.0|^11.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5",
+                "orchestra/testbench": "^7.7|^8.0|^9.0",
+                "pestphp/pest": "^1.22|^2",
+                "phpunit/phpunit": "^9.5.24|^10.5",
+                "spatie/pest-plugin-test-time": "^1.1|^2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\LaravelPackageTools\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Tools for creating Laravel packages",
+            "homepage": "https://github.com/spatie/laravel-package-tools",
+            "keywords": [
+                "laravel-package-tools",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-package-tools/issues",
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.17.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-12-09T16:29:14+00:00"
         },
         {
             "name": "spatie/laravel-permission",
