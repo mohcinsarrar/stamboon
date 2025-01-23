@@ -54,8 +54,7 @@
         });
     </script>
     <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}">
-    </script>
+    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}"></script>
 
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
@@ -89,6 +88,7 @@
     <script src="{{ asset('admin/pedigree/js/load_gedcom.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/settings.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/export.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/pedigree/js/save.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/add_note.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/dates.js') }}?{{ time() }}"></script>
 
@@ -209,6 +209,12 @@
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right" title="Print your pedigree">
                     <button {{($has_payment == false ? 'disabled' : '')}} id="export" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-printer fs-4"></i></button>
+                </div>
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Save state">
+                    <button {{ $has_payment == false ? 'disabled' : '' }} id="save" type="button"
+                        class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-device-floppy fs-4"></i></button>
                 </div>
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right" title="Settings">
                     <button {{($has_payment == false ? 'disabled' : '')}} id="open_settings" type="button"

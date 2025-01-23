@@ -5,7 +5,6 @@ namespace App\Http\Controllers\users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\NodeResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File as StorageFile;
 use Illuminate\Support\Facades\Validator;
@@ -22,8 +21,6 @@ use App\Imports\TreeImport;
 use App\Exports\TreeExport;
 
 use App\Models\User;
-use App\Models\Tree;
-use App\Models\Node;
 use App\Models\Fantree;
 use App\Models\SettingFantree;
 use App\Models\Note;
@@ -32,7 +29,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
 
-use App\Rules\GedcomFile;
+use App\Rules\GedcomFantreeFile;
 use App\Rules\HexColor;
 use Gedcom\Parser as GedcomParser;
 use Gedcom\Writer as GedcomWriter;
@@ -59,12 +56,52 @@ class FantreeController extends Controller
 
         $user = Auth::user();
 
-        SettingFantree::create(['user_id'=>$user->id]);
 
         // get product features
         $has_payment = $user->has_payment();
+        $current_payment = $user->last_payment();
+        if($current_payment == false){
+            return redirect()->route('users.dashboard.index');
+        }
+        $product = Product::where('id',$current_payment->product_id)->first();
 
-        return view('users.fantree.index', compact('has_payment'));
+
+        $fantree_output_png = $product->fantree_output_png;
+        $fantree_output_pdf = $product->fantree_output_pdf;
+        
+        $print_types = [];
+        if($fantree_output_png == true){
+            $print_types[] = 'png';
+        }
+        if($fantree_output_pdf == true){
+            $print_types[] = 'pdf';
+        }
+
+        $fantree_max_output_png = $product->fantree_max_output_png;
+        $fantree_max_output_pdf = $product->fantree_max_output_pdf;
+
+        $max_output_png = [
+            '1' => '1344 x 839 px',
+            '2' => '2688 x 1678 px',
+            '3' => '4032 x 2517 px',
+            '4' => '5376 x 3356 px',
+            '5' => '6720 x 4195 px',
+        ];
+        $selected_output_png = array_slice($max_output_png, 0, $fantree_max_output_png, true);
+
+        $max_output_pdf = [
+            'a0' => 'A0',
+            'a1' => 'A1',
+            'a2' => 'A2',
+            'a3' => 'A3',
+            'a4' => 'A4',
+        ];
+        $selected_output_pdf = array_slice($max_output_pdf, str_replace('a', '', $fantree_max_output_pdf), 5,true);
+
+        $max_generation = $product->fantree_max_generation;
+
+
+        return view('users.fantree.index', compact('print_types','selected_output_png','selected_output_pdf','has_payment'));
     }
 
     // import a new gedcom file
@@ -80,25 +117,25 @@ class FantreeController extends Controller
                 'file' => [
                     'required',
                     'file',
-                    new GedcomFile
+                    new GedcomFantreeFile
                 ],
             ]);
-
+        
         $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+
         // delete file if exist
         if($fantree->gedcom_file != null){
             if (Storage::exists($fantree->gedcom_file)) {
                 Storage::delete($fantree->gedcom_file);
               }
         }
-        
 
         $file = $request->file('file');
         $destinationPath = 'fantree_gedcoms';
         $uniqueFilename = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $gedcom_file = $file->storeAs($destinationPath, $uniqueFilename);
 
-
+        
         $fantree->gedcom_file = $gedcom_file;
         $fantree->save();
 
@@ -113,12 +150,46 @@ class FantreeController extends Controller
             return response(null, 200);
         }
 
+        $this->filterFileLines($fantree->gedcom_file);
+
         $file = Storage::disk('local')->get($fantree->gedcom_file);
-        
+
         // Return the file as a response
         return response($file, 200)
                   ->header('Content-Type', 'application/octet-stream')
                   ->header('Content-Disposition', 'attachment; filename="' . basename($fantree->gedcom_file) . '"');
+    }
+
+    private function filterFileLines($filePath)
+    {
+        // Check if the file exists
+        if (!Storage::exists($filePath)) {
+            return false;
+        }
+    
+        // Open the file for reading
+        $stream = Storage::readStream($filePath);
+
+        if (!$stream) {
+            return false;
+        }
+
+        $filteredLines = [];
+
+        // Read the file line by line
+        while (($line = fgets($stream)) !== false) {
+            if (preg_match('/^\d/', $line)) {
+                $filteredLines[] = trim($line);
+            }
+        }
+
+        // Close the stream
+        fclose($stream);
+
+        // Write the filtered lines back to the file
+        Storage::put($filePath, implode(PHP_EOL, $filteredLines));
+        
+        return true;
     }
 
 
@@ -128,6 +199,12 @@ class FantreeController extends Controller
         // load settings
         if($request->isMethod('get')){
             $user = Auth::user();
+
+            // if no settings created it
+            if(SettingFantree::where('user_id',$user->id)->first() == null){
+                SettingFantree::create(['user_id' => $user->id]);
+            }
+            
             $settings = SettingFantree::where('user_id',$user->id)->first()->toArray();
             $fantree = Fantree::where('user_id',$user->id)->first();
             if($fantree == null){
@@ -139,7 +216,7 @@ class FantreeController extends Controller
                 return redirect()->route('users.dashboard.index');
             }
             $product = Product::where('id',$current_payment->product_id)->first();
-            $settings['max_nodes'] = $product->max_nodes;
+            $settings['max_nodes'] = pow(2,$product->fantree_max_generation)-1;
             $settings['max_generation'] = $product->fantree_max_generation;
 
             return response()->json(['error'=>false,'settings' => $settings]);
@@ -151,31 +228,756 @@ class FantreeController extends Controller
             $inputs = $request->except(['_token']);
             
             Validator::make($inputs, [
-                'box_color' => ['required',Rule::in(['gender', 'blood'])],
                 'male_color' => ['required',new HexColor],
                 'female_color' => ['required',new HexColor],
-                'blood_color' => ['required',new HexColor],
-                'notblood_color' => ['required',new HexColor],
 
                 'text_color' => ['required',new HexColor],
                 'band_color' => ['required',new HexColor],
 
+                'father_link_color' => ['required',new HexColor],
+                'mother_link_color' => ['required',new HexColor],
 
-                'spouse_link_color' => ['required',new HexColor],
-                'bio_child_link_color' => ['required',new HexColor],
-                'adop_child_link_color' => ['required',new HexColor],
+                'default_filter' => ['required',Rule::in(['none', 'grayscale', 'invert', 'sepia'])],
                 
-                'node_template' => ['required',Rule::in(['1', '2', '3', '4'])],
-                'bg_template' => ['required',Rule::in(['1', '2', '3', '4'])],
+                'bg_template' => ['nullable',Rule::in(['1', '2', '3', '4'])],
 
                 'default_date' => ['required',Rule::in(['MM-DD-YYYY', 'YYYY-MM-DD', 'DD-MM-YYYY'])]
             ])->validate();
 
+            if($request->bg_template == null){
+                $inputs['bg_template'] = '0';
+            }
+
             
             SettingFantree::where('user_id',Auth::user()->id)->update($inputs);
 
-            return redirect()->back()->with('success','settings updated with success');
+            return response()->json(['error'=>false,'message' => "settings edited with success"]);
         }
     }
 
+
+    private function get_gedcom_file(){
+
+        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        if($fantree == null){
+            return null;
+        }
+
+        if (!Storage::disk('local')->exists($fantree->gedcom_file)) {
+            return null;
+        } 
+        
+        $file = Storage::disk('local')->get($fantree->gedcom_file);
+
+        return $fantree->gedcom_file;
+
+    }
+
+    private function get_gedcom($gedcom_file){
+
+        $gedcom = $this->parse_gedcom('storage/'.$gedcom_file);
+
+        return $gedcom;
+
+    }
+
+    private function get_person($gedcom, $person_id){
+        $person = null;
+        foreach ($gedcom->getIndi() as $individual) {
+            $id = $individual->getId();
+            if ($id == $person_id) {
+                $person = $individual;
+            }
+        }
+
+        return $person;
+    }
+
+    private function convertToDateFormat($dateString) {
+
+        if($dateString == null){
+            return null;
+        }
+        // Define the accepted formats
+        $formats = [
+            'Y-m-d', // YYYY-MM-DD
+            'm-d-Y', // MM-DD-YYYY
+            'd-m-Y'  // DD-MM-YYYY
+        ];
+    
+        // Special case: Handle year-only input
+        if (preg_match('/^\d{4}$/', $dateString)) {
+            return $dateString; // Return the year as-is
+        }
+    
+        foreach ($formats as $format) {
+            $date = Carbon::createFromFormat($format, $dateString, null);
+    
+            // Check if the date is valid for the current format
+            if ($date && $date->format($format) === $dateString) {
+                // Convert to the desired format (DD-MM-YYYY)
+                return $date->format('Y-m-d');
+            }
+        }
+    
+        // If no valid date format is matched, return null or throw an exception
+        return null;
+    }
+
+    private function parse_gedcom($file){
+
+
+        $parser = new GedcomParser();
+        $gedcom = $parser->parse($file);
+
+        return $gedcom;
+
+    }
+
+    private function extractNumber($item) {
+        return intval(substr($item, 1));
+    }
+
+    private function create_indi($gedcom, $firstname, $lastname, $sex, $status, $birth_date, $death_date){
+        // create person
+        $person = new Indi();
+
+        // generate id for new indi,
+        $indis = array_keys($gedcom->getIndi());
+        if($indis != []){
+            $maxIndiId = max(array_map([$this, 'extractNumber'], $indis));
+            $newIndiId = 'I' . ($maxIndiId + 1);
+        }
+        else{
+            $newIndiId = 'I1';
+        }
+        
+        // add id
+        $person->setId($newIndiId);
+
+        // add sex
+        $person->setSex($sex);
+
+        // add name
+        $name = new IndiName();
+        $name->setName($firstname."/".$lastname."/");
+        $person->addName($name);
+
+        // add Birt even
+        $birt = new IndiBirt();
+        $birt->setType('BIRT');
+        $birt->setDate($birth_date);
+        $person->addEven($birt);
+
+        // add death even
+        if($status == 'deceased') {
+            $death = new IndiDeat();
+            $death->setType('DEAT');
+            $death->setDate($death_date);
+            $person->addEven($death);
+        }
+
+        return $person;
+    }
+
+    // update person
+    public function update(Request $request){
+        
+        $inputs = $request->except(['_token']);
+        $gedcomService = new GedcomService();
+
+        Validator::make($inputs, [
+            'person_id' => ['required','string'],
+            'firstname' => ['required','string'],
+            'lastname' => ['required','string'],
+            'status' => ['required','string'],
+        ])->validate();
+        
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $person = $this->get_person($gedcom,$person_id);
+        if($person == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+        // edit birt event
+        $birth_date = $this->convertToDateFormat($request->birth_date);
+        $gedcomService->edit_birth($person,$birth_date);
+
+        // edit death event
+        $death_date = $this->convertToDateFormat($request->death_date);
+        $gedcomService->edit_death($person, $request->status,$death_date);
+        
+        
+
+        // edit names
+        $name = $request->firstname."/".$request->lastname."/";
+        $gedcomService->edit_name($person,$name);
+
+        // if has sex edit it
+        if($request->sex != null){
+            $person->setSex($request->sex);
+        }
+
+
+        // write modification to gedcom file
+        $gedcomService->writer($gedcom,$gedcom_file);
+
+        return response()->json(['error'=>false,'msg' => 'Person updated with success']);
+
+        //return redirect()->back()->with('success','person updated with success');
+    }
+
+
+    public function addparents(Request $request){
+        
+        $inputs = $request->except(['_token']);
+        $gedcomService = new GedcomService();
+
+        Validator::make($inputs, [
+            'person_id' => ['required','string'],
+            'parent_type' => ['required','in:1,2'],
+            'firstname' => ['required','string'],
+            'lastname' => ['required','string'],
+            'status' => ['required','string'],
+        ])->validate();
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $child = $this->get_person($gedcom,$person_id);
+        if($child == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+        if($request->parent_type == 1){
+            $sex = "M";
+        }
+        else{
+            $sex = 'F';
+        }
+
+        
+        // create parent
+        $parent = $this->create_indi($gedcom, $request->firstname, $request->lastname, $sex, $request->status, $request->birth_date, $request->death_date);
+        // add parent to gedcom
+        $gedcom->addIndi($parent);
+
+        // check if the child has already a family where he is a child, else create it
+        $family = $this->get_family_for_parent($gedcom, $child, $parent, $sex);
+
+
+        $gedcomService->writer($gedcom,$gedcom_file);
+        return redirect()->back()->with('success','parent added with success');
+    }
+
+    private function get_family_for_parent($gedcom, $child, $parent, $sex){
+
+        $family = $child->getFamc();
+        
+        // the child not have a family where is it child, create it
+        if($family == null or $family == []){
+            // create new family and add the child to it (it the person)
+            $new_family = new Fam();
+            $newFamId = $this->new_family_id($gedcom);
+            $new_family->setId($newFamId);
+
+            // add child
+            $children = $new_family->getChil();
+            array_push($children,$child->getId());
+            $new_family->setChil($children);
+
+            // add parent
+            if($sex == 'M'){
+                // father
+                $new_family->setHusb($parent->getId());
+            }
+            else{
+                // mother
+                $new_family->setWife($parent->getId());
+            }
+
+            $gedcom->addFam($new_family);
+
+            // add new_family as famc to child
+            /// create FAMC for child
+            $famc = new IndiFamc();
+            $famc->setFamc($newFamId);
+            /// add FAMC to child
+            $child->addFamc($famc);
+
+            // add new_family as fams to parent
+            $fams = new IndiFams();
+            $fams->setFams($newFamId);
+            $parent->addFams($fams);
+
+        }
+        // child has family, add parent
+        else{
+            $exist_family_id = $family[0]->getFamc();
+            $families = $gedcom->getFam();
+            $exist_family = $families[$exist_family_id];
+
+            // add parent
+            if($sex == 'M'){
+                // father
+                $exist_family->setHusb($parent->getId());
+            }
+            else{
+                // mother
+                $exist_family->setWife($parent->getId());
+            }
+
+            // add exist_family as fams to parent
+            $fams = new IndiFams();
+            $fams->setFams($exist_family->getId());
+            $parent->addFams($fams);
+
+        }
+    }
+
+    private function new_family_id($gedcom){
+        // generate new Family id
+        $families = array_keys($gedcom->getFam());
+        if($families != []){
+            $maxFamId = max(array_map([$this, 'extractNumber'], $families));
+            $newFamId = 'F' . ($maxFamId + 1);
+        }
+        else{
+            $newFamId = 'F1';
+        }
+
+        return $newFamId;
+    }
+
+
+    public function delete(Request $request){
+        //dd($request);
+
+        $inputs = $request->except(['_token']);
+        $gedcomService = new GedcomService();
+
+        Validator::make($inputs, [
+            'person_id' => ['required','string'],
+        ])->validate();
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $person = $this->get_person($gedcom,$person_id);
+        if($person == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+        // get family where the person is a parent
+        $person_family_id = $person->getFams()[0]->getFams();
+        
+        
+        /// get person family
+        $families = $gedcom->getFam(); 
+        $person_family = $families[$person_family_id];
+        /// get husb and wife
+        $husb = $person_family->getHusb();
+        $wife = $person_family->getWife();
+        /// delete person if its a husb or wife
+        if($wife != null && $wife == $person_id){
+            $this->change_protected_field($person_family,'_wife',null);
+        }
+        if($husb != null && $husb == $person_id){
+            $this->change_protected_field($person_family,'_husb',null);
+        }
+
+        
+        // if family has no person delete it and delete famc from child
+        /// fet husb and wife
+        $husb = $person_family->getHusb();
+        $wife = $person_family->getWife();
+
+        
+        if($wife == null && $husb == null){
+            // get famc of child and delte it
+            $child = $this->get_person($gedcom,$person_family->getChil()[0]);
+            $this->change_protected_field($child,'famc',[]);
+            
+            // delete person family
+            $families = $gedcom->getFam(); // get all families
+            unset($families[$person_family_id]);
+            $this->change_protected_field($gedcom,'fam',$families);
+        }
+
+        // delete person
+        $indis = $gedcom->getIndi();
+        unset($indis[$person_id]);
+        $this->change_protected_field($gedcom,'indi',$indis);
+
+        // write modification to gedcom file
+        $gedcomService->writer($gedcom,$gedcom_file);
+
+        return redirect()->back()->with('success','person deleted with success');
+    }
+
+    private function change_protected_field(&$object,$field,$value){
+        $reflection = new ReflectionClass($object);
+        $property = $reflection->getProperty($field);
+        $property->setAccessible(true);
+        $property->setValue($object, $value);
+    }
+
+
+    public function deleteimage(Request $request){
+        $gedcomService = new GedcomService();
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $person = $this->get_person($gedcom,$person_id);
+        if($person == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+        
+        // get all notes
+        $notes = $person->getNote();
+
+        // iterate notes and delete all photos
+        if($notes != null && $notes != []){
+            foreach($notes as $key => $note){
+                if(str_contains($note->getNote(), '.png')){
+                    // delete old image if exist
+                    if (Storage::exists("portraits_fantree/".$note->getNote())) {
+                        Storage::delete("portraits_fantree/".$note->getNote());
+                      }
+
+                }
+            }
+        }
+
+        // empty the notes array of indi (person)
+        $this->change_protected_field($person,'note',[]);
+
+        // write modification to gedcom file
+        $gedcomService->writer($gedcom,$gedcom_file);
+        
+
+        return response()->json(['error'=>false,'msg' => 'Photo deleted with success']);
+
+    }
+
+
+    public function saveimage(Request $request){
+
+
+        $gedcomService = new GedcomService();
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $person = $this->get_person($gedcom,$person_id);
+        if($person == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+
+        // if is placeholder image
+        if($request->checkedImage != null){
+
+            $image = $request->checkedImage.'.jpg';
+            $sourcePath = 'placeholder_portraits_fantree/'.$image;
+
+            $imageName = Str::random(40).'.'.'png';
+            $destinationPath = "portraits_fantree/".$imageName;
+
+            Storage::copy($sourcePath, $destinationPath);
+        }
+        else{
+            // save image
+            $image = $request->imageBase64;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = Str::random(40).'.'.'png';
+            storage::put( "portraits_fantree/".$imageName, base64_decode($image));
+        }
+
+        
+
+        // test if person has note
+        $hasPhoto = false;
+        $notes = $person->getNote();
+        if($notes != null && $notes != []){
+            foreach($notes as $key => $note){
+                if(str_contains($note->getNote(), '.png')){
+                    // delete old image if exist
+                    if (Storage::exists("portraits_fantree/".$note->getNote())) {
+                        Storage::delete("portraits_fantree/".$note->getNote());
+                      }
+
+                    $hasPhoto = true;
+                    $note->setNote($imageName);
+                }
+            }
+        }
+
+        // if dont has photo create a note and add imagename and added it to person
+        if($hasPhoto == false){
+            $note = new IndiNoteRef();
+            $note->setNote($imageName);
+            $person->addNote($note);
+        }
+        
+        $gedcomService->writer($gedcom,$gedcom_file);
+
+        return response()->json(['error'=>false,'msg' => 'Image Added']);
+        
+        
+    }
+
+
+    public function addperson(Request $request){
+
+        $inputs = $request->except(['_token']);
+        
+        Validator::make($inputs, [
+            'firstname' => ['required','string'],
+            'lastname' => ['required','string'],
+            'sex' => ['required','string'],
+            'status' => ['required','string'],
+        ])->validate();
+
+
+        // Create a temporary file path
+        $tempFilePath = storage_path('app/temp_file.txt');
+
+        // Create an empty file
+        StorageFile::put($tempFilePath, '');
+
+
+        $todayDate = strtoupper(Carbon::now()->format('d M Y'));
+        $todayTime = Carbon::now()->format('H:i:s');
+
+        // Define the lines you want to add
+        $lines = [
+            "0 HEAD",
+            "1 SOUR Stamboom",
+            "2 VERS 10.1",
+            "2 NAME Aldfaer",
+            "2 CORP The Stamboom",
+            "3 ADDR https://www.thestamboom.nl",
+            "1 DATE ".$todayDate,
+            "2 TIME ".$todayTime,
+            "1 SUBM @SUBM1@",
+            "1 GEDC",
+            "2 VERS 5.5",
+            "2 FORM Lineage-Linked",
+            "1 CHAR UTF-8",
+            "0 @I1@ INDI",
+            "1 NAME ".$request->firstname."/".$request->lastname."/",
+            "1 SEX ".$request->sex,
+            "1 BIRT",
+        ];
+
+
+            if($request->birth_date != null){
+                array_push($lines, "2 DATE ".$this->dateStr($request->birth_date));
+            }
+            if($request->death_date != null){
+                array_push($lines, "1 DEAT");
+                array_push($lines, "2 DATE ".$this->dateStr($request->death_date));
+            }
+
+            $lines = array_merge(
+                $lines, 
+                [
+                    "1 _NEW",
+                    "2 TYPE 1",
+                    "2 DATE ".$todayDate,
+                    "3 TIME ".$todayTime,
+                    "1 CHAN",
+                    "2 DATE ".$todayDate,
+                    "3 TIME ".$todayTime,
+                    "0 @SUBM1@ SUBM",
+                    "1 NAME Unknown",
+                    "0 TRLR",
+                ]
+                );
+        
+
+        // Add lines to the file
+        foreach ($lines as $line) {
+            StorageFile::append($tempFilePath, $line . PHP_EOL);
+        }
+
+        // Store the file in Laravel's storage
+        $uniqueFilename = 'fantree_gedcoms/'.Str::uuid() . '.ged';
+        Storage::put($uniqueFilename, StorageFile::get($tempFilePath));
+
+        // store filename to pedigree
+        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree->gedcom_file = $uniqueFilename;
+        $fantree->save();
+
+        // Optionally delete the temporary file
+        StorageFile::delete($tempFilePath);
+
+        return redirect()->back()->with('success','person added with success');
+        
+    }
+
+
+    public function print(Request $request){
+        $user = Auth::user();
+        $fantree = Fantree::where('user_id',$user->id)->first();
+        $current_payment = $user->has_payment();
+        if($current_payment == false){
+            return redirect()->route('users.dashboard.index');
+        }
+        $product = Product::where('id',$current_payment->product_id)->first();
+        
+        // limit reached
+        if($fantree->print_number >= $product->print_number){
+            return response()->json(['error'=>true,'msg' => 'limit reached']);
+        }
+        else{
+            $fantree->print_number = $fantree->print_number + 1;
+            $fantree->save();
+            return response()->json(['error'=>false,'msg' => 'limit unreached']);
+        }
+        
+    }
+
+    public function download(Request $request){
+        
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file();
+        if($gedcom_file == null){
+            return back()-with('error',"can't download your familytree, please try again");
+        }
+
+        // create tmp folder
+        $tempDir = 'tmp_folder';
+        if (!Storage::exists($tempDir)) {
+            Storage::makeDirectory($tempDir, 0755, true);
+        }
+
+        
+        // add gedcom file to tmp folder
+        Storage::copy($gedcom_file, $tempDir . '/familytree.ged');
+
+        // add photos to tmp folder
+        $gedcom = $this->get_gedcom($gedcom_file);
+        $indis = $gedcom->getIndi();
+        foreach($indis as $indi){
+            $note = $indi->getNote();
+            $names = $indi->getName();
+            $name = null;
+            if($names != null and $names != []){
+                $name = trim(str_replace("/"," ",$names[0]->getName()));
+                $name = Str::slug($name, $separator = '_');
+            }
+            $photo = null;
+            if($note != null and $note != []){
+                $photo = $note[0]->getNote();
+            }
+
+            if($name != null and $photo != null){
+                Storage::copy('portraits_fantree/'.$photo, $tempDir . '/' . $name . '.png');
+            }
+        }
+        
+
+        $zip = new ZipArchive();
+        $zipFileName = 'pedigree.zip';
+        $zipFilePath = Storage::path($zipFileName); // Save in default storage disk
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            $files = Storage::allFiles($tempDir);
+
+            foreach ($files as $file) {
+                $localPath = storage_path('app/' . $file); // Get the full path of the file
+                $relativePath = substr($file, strlen($tempDir) + 1); // Relative path inside the zip
+                $zip->addFile($localPath, $relativePath);
+            }
+
+            $zip->close();
+        } else {
+            return redirect()->back()->with('error', 'Could not download your familytree, please try again');
+        }
+
+        // Clean up the temp folder
+        Storage::deleteDirectory($tempDir);
+        
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+        
+
+    }
+
+
+    public function editChartStatus(Request $request){
+        $chart_status = $request->input('chart_status');
+        $generation = $request->input('generation');
+
+        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        if($fantree == null){
+            return response()->json(['error'=>true,'msg' => 'error']);
+        }
+        
+        $fantree->chart_status = $chart_status;
+        $fantree->generation = $generation;
+        $fantree->save();
+        return response()->json(['error'=>false,'msg' => 'error']);
+    }
+
+    public function getChartStatus(Request $request){
+        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        if($fantree == null){
+            return response()->json(['error'=>true,'msg' => 'error']);
+        }
+        $chart_status = $fantree->chart_status;
+        return response()->json(['error'=>false,'chart_status' => $chart_status]);
+    }
 }

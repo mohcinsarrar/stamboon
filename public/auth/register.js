@@ -163,21 +163,24 @@
           return false;
         }
       })
+
+      if (formValidationCountry.length) {
+        formValidationCountry.wrap('<div class="position-relative"></div>');
+        formValidationCountry
+          .select2({
+            placeholder: 'Select your country',
+            dropdownParent: formValidationCountry.parent()
+          })
+          .on('change.select2', function () {
+            // Revalidate the color field when an option is chosen
+            fv.revalidateField('country');
+            formValidationCountry.select2('close');
+          });
+      }
      }
 
 
-     if (formValidationCountry.length) {
-      formValidationCountry.wrap('<div class="position-relative"></div>');
-      formValidationCountry
-        .select2({
-          placeholder: 'Select your country',
-          dropdownParent: formValidationCountry.parent()
-        })
-        .on('change.select2', function () {
-          // Revalidate the color field when an option is chosen
-          fv.revalidateField('country');
-        });
-    }
+     
 
    })();
  });

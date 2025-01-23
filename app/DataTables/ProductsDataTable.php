@@ -37,7 +37,7 @@ class ProductsDataTable extends DataTable
             ->editColumn('chart_type', function(Product $model) {
 
                 $chart_type = "";
-                if($model->fanchart == true){
+                if($model->fantree == true){
                     $chart_type .= 'Fanchart,';
                 }
 
@@ -47,9 +47,9 @@ class ProductsDataTable extends DataTable
 
                 return $chart_type;
             })
-            ->editColumn('fanchart_features', function(Product $model) {
+            ->editColumn('fantree_features', function(Product $model) {
 
-                if($model->fanchart != true){
+                if($model->fantree != true){
                     return '';
                 }
 
@@ -72,19 +72,19 @@ class ProductsDataTable extends DataTable
 
 
                 $print_type = "";
-                if($model->fanchart_output_png == true){
+                if($model->fantree_output_png == true){
                     $print_type .= 'PNG,';
                 }
 
-                if($model->fanchart_output_pdf == true){
+                if($model->fantree_output_pdf == true){
                     $print_type .= ' PDF';
                 }
 
                 $features = "<ul>";
-                $features .= "<li>Max generations : ".$model->fanchart_max_generation.'</li>';
+                $features .= "<li>Max generations : ".$model->fantree_max_generation.'</li>';
                 $features .= "<li>Print type : ".$print_type.'</li>';
-                $features .= "<li>Max png size : ".$max_output_png[$model->fanchart_max_output_png].'</li>';
-                $features .= "<li>Max pdf size : ".$max_output_pdf[$model->fanchart_max_output_pdf].'</li>';
+                $features .= "<li>Max png size : ".$max_output_png[$model->fantree_max_output_png].'</li>';
+                $features .= "<li>Max pdf size : ".$max_output_pdf[$model->fantree_max_output_pdf].'</li>';
                 $features .= "</ul>";
                 return $features;
 
@@ -173,7 +173,7 @@ class ProductsDataTable extends DataTable
 
             })
             */
-            ->rawColumns(['actions','image', 'chart_type','fanchart_features','pedigree_features'])
+            ->rawColumns(['actions','image', 'chart_type','fantree_features','pedigree_features'])
             ->setRowId('id');
     }
 
@@ -234,7 +234,7 @@ class ProductsDataTable extends DataTable
             Column::make('duration'),
             Column::make('print_number')->title('Max print'),
 
-            Column::make('fanchart_features')->title('Fanchart features'),
+            Column::make('fantree_features')->title('Fanchart features'),
             Column::make('pedigree_features')->title('pedigree features'),
 
             Column::make('created_at'),

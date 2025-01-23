@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\users\DashboardController;
 use App\Http\Controllers\users\SubscriptionController;
-use App\Http\Controllers\users\FanchartController;
 use App\Http\Controllers\users\ProfileController;
 
 

@@ -3,6 +3,10 @@
 // next, its parse data to transform gedcom file to accepted structure for d3-org-chart
 function draw_tree() {
 
+    if(chart != undefined){
+        editChartStatus()
+    }
+
     // load gedcom file from api for the current user
     const promise = fetch('/pedigree/getTree')
         .then(r => {
@@ -143,15 +147,15 @@ function draw_tree() {
                     
 
                 } else {
-                    show_toast('error', 'error', data.error)
+                    show_toast('danger', 'error', data.error)
                 }
 
             },
             error: function (xhr, status, error) {
                 if ('responseJSON' in xhr) {
-                    show_toast('error', 'error', xhr.responseJSON.message)
+                    show_toast('danger', 'error', xhr.responseJSON.message)
                 } else {
-                    show_toast('error', 'error', error)
+                    show_toast('danger', 'error', error)
                 }
 
                 return null;
@@ -681,7 +685,7 @@ function transformGedcom(gedcom) {
     // Swap the two objects
     [data[index1], data[index2]] = [data[index2], data[index1]];
     */
-    console.log(data)
+
     return (data)
 
 }

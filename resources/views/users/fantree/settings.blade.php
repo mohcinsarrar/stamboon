@@ -25,12 +25,7 @@
                             <li class="nav-item" role="presentation">
                                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab"
                                     data-bs-target="#links_colors" aria-controls="links_colors" aria-selected="false"
-                                    tabindex="-1">Links colors</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab"
-                                    data-bs-target="#node_template" aria-controls="node_template" aria-selected="false"
-                                    tabindex="-1">Node template</button>
+                                    tabindex="-1">Links & text colors</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab"
@@ -48,7 +43,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="general" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-md-4 mb-4">
+                                    <div class="col-auto mb-4">
                                         <label for="default_date" class="form-label">Default date format</label>
                                         <select id="default_date" name="default_date" class="form-select">
                                             <option value="MM-DD-YYYY">MM-DD-YYYY</option>
@@ -57,25 +52,59 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-6 col-12 mb-4">
+                                        <h6>Photos type</h6>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_type" id="photos_type1" value="round">
+                                            <label class="form-check-label" for="photos_type1">Round</label>
+                                          </div>
+                                          <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_type" id="photos_type2" value="oval">
+                                            <label class="form-check-label" for="photos_type2">Oval</label>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-6 col-12 mb-4">
+                                        <h6>Photos direction</h6>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_direction" id="photos_direction1" value="vertical">
+                                            <label class="form-check-label" for="photos_direction1">Vertical</label>
+                                          </div>
+                                          <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_direction" id="photos_direction2" value="radial">
+                                            <label class="form-check-label" for="photos_direction2">Radial</label>
+                                          </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-md-6 col-12 mb-4">
+                                        <h6>Default photos filter</h6>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter1" value="none">
+                                            <label class="form-check-label" for="default_filter1">None</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter2" value="grayscale">
+                                            <label class="form-check-label" for="default_filter2">black and white</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter3" value="invert">
+                                            <label class="form-check-label" for="default_filter3">Invert</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter4" value="sepia">
+                                            <label class="form-check-label" for="default_filter4">Sepia</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="nameboxes_colors" role="tabpanel">
                                 <div class="row mb-4">
                                     <div class="col">
                                         <div class="row">
-                                            <div class="col">
-                                                <div class="row">
-                                                    <p class="mt-2">Box colors</p>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col justify-content-start">
-                                                        <select id="boxColor" class="form-select" name="box_color">
-                                                            <option value="gender">By gender</option>
-                                                            <option value="blood">By blood</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
+                                            <div class="col-lg-3 col-md-6 col-7">
                                                 <div class="row">
                                                     <p class="mt-2">Male</p>
                                                 </div>
@@ -86,7 +115,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-lg-3 col-md-6 col-7">
                                                 <div class="row">
                                                     <p class="mt-2">Female</p>
                                                 </div>
@@ -97,28 +126,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col">
-                                                <div class="row">
-                                                    <p class="mt-2">Blood relative</p>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col justify-content-start">
-                                                        <div id="color-picker-blood"></div>
-                                                        <input type="hidden" name="blood_color">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="row">
-                                                    <p class="mt-2">Not Blood relative</p>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col justify-content-start">
-                                                        <div id="color-picker-notblood"></div>
-                                                        <input type="hidden" name="notblood_color">
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -127,53 +135,30 @@
                                 <div class="row mb-4">
                                     <div class="col">
                                         <div class="row justify-content-start">
-                                            <div class="col-3">
+                                            <div class="col-lg-3 col-md-6 col-12">
                                                 <div class="row">
-                                                    <p class="mt-2">Spouse link</p>
+                                                    <p class="mt-2">Father link</p>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col justify-content-start">
-                                                        <div id="color-picker-spouse"></div>
-                                                        <input type="hidden" name="spouse_link_color"
+                                                        <div id="color-picker-father"></div>
+                                                        <input type="hidden" name="father_link_color"
                                                             id="">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-lg-3 col-md-6 col-12">
                                                 <div class="row">
-                                                    <p class="mt-2">Biological Child link</p>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col justify-content-start">
-                                                        <div id="color-picker-bio-child"></div>
-                                                        <input type="hidden" name="bio_child_link_color">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-3">
-                                                <div class="row">
-                                                    <p class="mt-2">Adoptive Child link</p>
+                                                    <p class="mt-2">Mother link</p>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col justify-content-start">
-                                                        <div id="color-picker-adop-child"></div>
-                                                        <input type="hidden" name="adop_child_link_color">
+                                                        <div id="color-picker-mother"></div>
+                                                        <input type="hidden" name="mother_link_color">
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="divider text-start mb-0">
-                                                <div class="divider-text">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row justify-content-start">
-                                            <div class="col-3">
+                                            <div class="col-lg-3 col-md-6 col-12">
                                                 <div class="row">
                                                     <p class="mt-2">Text color</p>
                                                 </div>
@@ -184,9 +169,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-lg-3 col-md-6 col-12">
                                                 <div class="row">
-                                                    <p class="mt-2">Portrait band color</p>
+                                                    <p class="mt-2">Band color</p>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col justify-content-start">
@@ -199,80 +184,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="node_template" role="tabpanel">
-                                <div class="row mb-4">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col-md">
-                                                <div
-                                                    class="form-check custom-option custom-option-image custom-option-image-check checked">
-                                                    <input class="form-check-input customimagescheckbox"
-                                                        type="checkbox" name="node_template" value="4"
-                                                        id="customCheckboxImg4">
-                                                    <label class="form-check-label custom-option-content"
-                                                        for="customCheckboxImg4" style="height: 140px;">
-                                                        <span class="custom-option-body">
-                                                            <img src="{{ asset('admin/images/template4.png') }}"
-                                                                alt="cbImg" style="object-fit: scale-down;">
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md mb-md-0 mb-5">
-                                                <div
-                                                    class="form-check custom-option custom-option-image custom-option-image-check">
-                                                    <input class="form-check-input customimagescheckbox"
-                                                        type="checkbox" name="node_template" value="1"
-                                                        id="customCheckboxImg1">
-                                                    <label class="form-check-label custom-option-content"
-                                                        for="customCheckboxImg1" style="height: 140px;">
-                                                        <span class="custom-option-body">
-                                                            <img src="{{ asset('admin/images/template1.png') }}"
-                                                                alt="cbImg" style="object-fit: scale-down;">
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md mb-md-0 mb-5">
-                                                <div
-                                                    class="form-check custom-option custom-option-image custom-option-image-check">
-                                                    <input class="form-check-input customimagescheckbox "
-                                                        type="checkbox" name="node_template" value="2"
-                                                        id="customCheckboxImg2">
-                                                    <label class="form-check-label custom-option-content"
-                                                        for="customCheckboxImg2" style="height: 140px;">
-                                                        <span class="custom-option-body">
-                                                            <img src="{{ asset('admin/images/template2.png') }}"
-                                                                alt="cbImg" style="object-fit: scale-down;">
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div
-                                                    class="form-check custom-option custom-option-image custom-option-image-check">
-                                                    <input class="form-check-input customimagescheckbox"
-                                                        type="checkbox" name="node_template" value="3"
-                                                        id="customCheckboxImg3">
-                                                    <label class="form-check-label custom-option-content"
-                                                        for="customCheckboxImg3" style="height: 140px;">
-                                                        <span class="custom-option-body">
-                                                            <img src="{{ asset('admin/images/template3.png') }}"
-                                                                alt="cbImg" style="object-fit: scale-down;">
-                                                        </span>
-                                                    </label>
-                                                </div>
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="tab-pane fade" id="tree_background" role="tabpanel">
                                 <div class="row mb-4">
                                     <div class="col">
                                         <div class="row">
-                                            <div class="col-md mb-md-0 mb-5">
+                                            <div class="col-lg-3 col-md-6 col-12 mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check checked">
                                                     <input class="form-check-input customimagescheckboxbg"
@@ -287,7 +204,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-md mb-md-0 mb-5">
+                                            <div class="col-lg-3 col-md-6 col-12 mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg "
@@ -302,7 +219,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-md">
+                                            <div class="col-lg-3 col-md-6 col-12  mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg"
@@ -317,7 +234,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-md">
+                                            <div class="col-lg-3 col-md-6 col-12  mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg"
@@ -339,11 +256,10 @@
                             <div class="tab-pane fade" id="default_portrait" role="tabpanel">
                                 <div class="row mb-4">
                                     <div class="col">
-                                        <div class="row">
                                             <div class="row">
                                                 <h5 class="mt-3">Female Portrait</h5>
                                                 @for ($i = 1; $i <= 6; $i++)
-                                                    <div class="col-md-2 mb-md-4 mb-5">
+                                                    <div class="col-lg-2 col-md-4 col-6 mb-2">
                                                         <div
                                                             class="form-check custom-option custom-option-image custom-option-image-check">
                                                             <input class="form-check-input"
@@ -361,9 +277,11 @@
                                                         </div>
                                                     </div>
                                                 @endfor
+                                            </div>
+                                            <div class="row">
                                                 <h5 class="mt-3">Male Portrait</h5>
                                                 @for ($i = 1; $i <= 6; $i++)
-                                                    <div class="col-md-2 mb-md-4 mb-5">
+                                                    <div class="col-lg-2 col-md-4 col-6 mb-2">
                                                         <div
                                                             class="form-check custom-option custom-option-image custom-option-image-check">
                                                             <input class="form-check-input" name="default_male_image"
@@ -382,7 +300,6 @@
                                                     </div>
                                                 @endfor
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -85,7 +85,7 @@
                     <label class="fw-medium d-block">Chart type</label>
                     <div class="form-check form-check-inline mt-2">
                         <input class="form-check-input" type="checkbox" name="chart_type[]" id="add-product-chart_type1"
-                            value="fanchart">
+                            value="fantree">
                         <label class="form-check-label" for="add-product-chart_type1">Fanchart</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -100,28 +100,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="add-product-fanchart_max_generation">Max generations<span
+                    <label class="form-label" for="add-product-fantree_max_generation">Max generations<span
                             class="text-danger ps-1">*</span></label>
                     <input type="number" step='1' min="0" value='0' class="form-control"
-                        id="add-product-fanchart_max_generation" name="fanchart_max_generation" required />
+                        id="add-product-fantree_max_generation" name="fantree_max_generation" required />
                 </div>
                 <div class="mb-3">
                     <label class="fw-medium d-block">Print type</label>
                     <div class="form-check form-check-inline mt-2">
-                        <input class="form-check-input" type="checkbox" name="fanchart_print_type[]"
-                            id="add-product-fanchart_print_type1" value="png">
-                        <label class="form-check-label" for="add-product-fanchart_print_type1">PNG</label>
+                        <input class="form-check-input" type="checkbox" name="fantree_print_type[]"
+                            id="add-product-fantree_print_type1" value="png">
+                        <label class="form-check-label" for="add-product-fantree_print_type1">PNG</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="fanchart_print_type[]"
-                            id="add-product-fanchart_print_type2" value="pdf">
-                        <label class="form-check-label" for="add-product-fanchart_print_type2">PDF</label>
+                        <input class="form-check-input" type="checkbox" name="fantree_print_type[]"
+                            id="add-product-fantree_print_type2" value="pdf">
+                        <label class="form-check-label" for="add-product-fantree_print_type2">PDF</label>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="add-product-fanchart_max_output_png" class="form-label">Max png sizes</label>
-                    <select id="add-product-fanchart_max_output_png" class="form-select" name="fanchart_max_output_png"
+                    <label for="add-product-fantree_max_output_png" class="form-label">Max png sizes</label>
+                    <select id="add-product-fantree_max_output_png" class="form-select" name="fantree_max_output_png"
                         required>
                         <option value="1">1344 x 839 px</option>
                         <option value="2">2688 x 1678 px</option>
@@ -132,8 +132,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="add-product-fanchart_max_output_pdf" class="form-label">Max pdf sizes</label>
-                    <select id="add-product-fanchart_max_output_pdf" class="form-select" name="fanchart_max_output_pdf"
+                    <label for="add-product-fantree_max_output_pdf" class="form-label">Max pdf sizes</label>
+                    <select id="add-product-fantree_max_output_pdf" class="form-select" name="fantree_max_output_pdf"
                         required>
                         <option value="a4">A4</option>
                         <option value="a3">A3</option>
@@ -260,7 +260,7 @@
                     <label class="fw-medium d-block">Chart type</label>
                     <div class="form-check form-check-inline mt-2">
                         <input class="form-check-input" type="checkbox" name="chart_type[]"
-                            id="update-product-chart_type1" value="fanchart">
+                            id="update-product-chart_type1" value="fantree">
                         <label class="form-check-label" for="update-product-chart_type1">Fanchart</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -277,28 +277,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="update-product-fanchart_max_generation">Max generations<span
+                    <label class="form-label" for="update-product-fantree_max_generation">Max generations<span
                             class="text-danger ps-1">*</span></label>
                     <input type="number" step='1' min="0" value='0' class="form-control"
-                        id="update-product-fanchart_max_generation" name="fanchart_max_generation" required />
+                        id="update-product-fantree_max_generation" name="fantree_max_generation" required />
                 </div>
                 <div class="mb-3">
                     <label class="fw-medium d-block">Print type</label>
                     <div class="form-check form-check-inline mt-2">
-                        <input class="form-check-input" type="checkbox" name="fanchart_print_type[]"
-                            id="update-product-fanchart_print_type1" value="png">
-                        <label class="form-check-label" for="update-product-fanchart_print_type1">PNG</label>
+                        <input class="form-check-input" type="checkbox" name="fantree_print_type[]"
+                            id="update-product-fantree_print_type1" value="png">
+                        <label class="form-check-label" for="update-product-fantree_print_type1">PNG</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="fanchart_print_type[]"
-                            id="update-product-fanchart_print_type2" value="pdf">
-                        <label class="form-check-label" for="update-product-fanchart_print_type2">PDF</label>
+                        <input class="form-check-input" type="checkbox" name="fantree_print_type[]"
+                            id="update-product-fantree_print_type2" value="pdf">
+                        <label class="form-check-label" for="update-product-fantree_print_type2">PDF</label>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="update-product-fanchart_max_output_png" class="form-label">Max png sizes</label>
-                    <select id="update-product-fanchart_max_output_png" class="form-select" name="fanchart_max_output_png"
+                    <label for="update-product-fantree_max_output_png" class="form-label">Max png sizes</label>
+                    <select id="update-product-fantree_max_output_png" class="form-select" name="fantree_max_output_png"
                         required>
                         <option value="1">1344 x 839 px</option>
                         <option value="2">2688 x 1678 px</option>
@@ -309,8 +309,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="update-product-fanchart_max_output_pdf" class="form-label">Max pdf sizes</label>
-                    <select id="update-product-fanchart_max_output_pdf" class="form-select" name="fanchart_max_output_pdf"
+                    <label for="update-product-fantree_max_output_pdf" class="form-label">Max pdf sizes</label>
+                    <select id="update-product-fantree_max_output_pdf" class="form-select" name="fantree_max_output_pdf"
                         required>
                         <option value="a4">A4</option>
                         <option value="a3">A3</option>

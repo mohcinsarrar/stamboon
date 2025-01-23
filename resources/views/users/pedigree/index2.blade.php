@@ -611,7 +611,7 @@
 
 
             if (!file) {
-                show_toast('error', 'error', 'No file selected')
+                show_toast('danger', 'error', 'No file selected')
                 return;
             }
 
@@ -638,16 +638,16 @@
                         show_toast('success', 'upload file', data.msg)
                         draw_tree()
                     } else {
-                        show_toast('error', 'error', data.error)
+                        show_toast('danger', 'error', data.error)
                     }
 
                 },
                 error: function(xhr, status, error) {
                     modal.hide();
                     if ('responseJSON' in xhr) {
-                        show_toast('error', 'error', xhr.responseJSON.message)
+                        show_toast('danger', 'error', xhr.responseJSON.message)
                     } else {
-                        show_toast('error', 'error', error)
+                        show_toast('danger', 'error', error)
                     }
 
                     return null;

@@ -6,4 +6,4 @@ let constants = {
     rootId: "hidden_root",
 }
 let compact = false;
-
+let chart_status;

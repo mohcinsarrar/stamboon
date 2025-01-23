@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\Tree;
 use App\Models\Pedigree;
+use App\Models\Fantree;
+
 
 
 
@@ -80,8 +81,8 @@ class AdminDashboardService
 
     }
 
-    public function total_fanchart_print(){
-        return Tree::sum('print_number');
+    public function total_fantree_print(){
+        return Fantree::sum('print_number');
     }
 
     public function total_pedigree_print(){

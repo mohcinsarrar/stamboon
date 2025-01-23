@@ -33,7 +33,7 @@ class DashboardController extends Controller
     $total_sales = $adminDashboardService->total_sales();
     $last_month_sales = $adminDashboardService->last_month_sales();
 
-    $total_fanchart_print = $adminDashboardService->total_fanchart_print();
+    $total_fantree_print = $adminDashboardService->total_fantree_print();
     $total_pedigree_print = $adminDashboardService->total_pedigree_print();
 
     $products = $adminDashboardService->get_products();
@@ -70,7 +70,7 @@ class DashboardController extends Controller
       'last_month_users',
       'total_sales',
       'last_month_sales',
-      'total_fanchart_print',
+      'total_fantree_print',
       'total_pedigree_print',
       'products',
       'colors',

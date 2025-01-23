@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('payment_status');
             $table->string('payment_method');
             $table->boolean('expired')->default(0);
+            $table->float('price')->nullable();
+            $table->boolean('month')->default(false);
+            $table->boolean('week')->default(false);
+            $table->boolean('end')->default(false);
             $table->timestamps();
         });
     }

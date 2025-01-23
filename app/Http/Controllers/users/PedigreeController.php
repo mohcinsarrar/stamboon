@@ -5,7 +5,6 @@ namespace App\Http\Controllers\users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\NodeResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File as StorageFile;
 use Illuminate\Support\Facades\Validator;
@@ -22,8 +21,6 @@ use App\Imports\TreeImport;
 use App\Exports\TreeExport;
 
 use App\Models\User;
-use App\Models\Tree;
-use App\Models\Node;
 use App\Models\Pedigree;
 use App\Models\Setting;
 use App\Models\Note;
@@ -196,6 +193,7 @@ class PedigreeController extends Controller
 
     public function editChartStatus(Request $request){
         $chart_status = $request->input('chart_status');
+        $generation = $request->input('generation');
 
         $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
         if($pedigree == null){
@@ -203,6 +201,7 @@ class PedigreeController extends Controller
         }
         
         $pedigree->chart_status = $chart_status;
+        $pedigree->generation = $generation;
         $pedigree->save();
         return response()->json(['error'=>false,'msg' => 'error']);
     }
@@ -644,7 +643,7 @@ class PedigreeController extends Controller
         }
 
         $file = Storage::disk('local')->get($pedigree->gedcom_file);
-        
+
         // Return the file as a response
         return response($file, 200)
                   ->header('Content-Type', 'application/octet-stream')

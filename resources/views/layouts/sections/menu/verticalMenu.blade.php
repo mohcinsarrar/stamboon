@@ -41,8 +41,8 @@ $configData = Helper::appClasses();
     @foreach ($menuData[0]->menu as $menu)
 
      {{-- test if user has acces to this route --}}
-    @if($menu->slug == "users.fanchart.index")
-      @if(auth()->user()->has_one_payment('fanchart') == false)
+    @if($menu->slug == "users.fantree.index")
+      @if(auth()->user()->has_one_payment('fantree') == false)
         @continue
       @endif
     @endif

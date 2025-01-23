@@ -9,7 +9,7 @@ use Mollie\Laravel\Facades\Mollie;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Pedigree;
-use App\Models\Tree;
+use App\Models\Fantree;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubscriptionEmail;
 use LaravelCountries;
@@ -191,10 +191,10 @@ class SubscriptionController extends Controller
             $pedigree->print_number = 0;
             $pedigree->save();
 
-            // reset fanchart features
-            $tree = Tree::where("user_id",$user->id)->first();
-            $tree->print_number = 0;
-            $tree->save();
+            // reset fantree features
+            $fantree = Fantree::where("user_id",$user->id)->first();
+            $fantree->print_number = 0;
+            $fantree->save();
             
             return redirect()->route('users.subscription.index');
         } else {

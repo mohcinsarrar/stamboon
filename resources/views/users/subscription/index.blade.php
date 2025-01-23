@@ -261,7 +261,7 @@
                                 <div class="table-content">
                                     <ul class="table-list ps-0">
                                         <li> <i class="ti ti-circle-check"></i> Chart type :
-                                            {{ $product->fanchart == true ? 'Fanchart, ' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
+                                            {{ $product->fantree == true ? 'Fanchart, ' : '' }}{{ $product->pedigree == true ? 'Pedigree' : '' }}
                                         </li>
                                         <li> <i class="ti ti-circle-check"></i> Max Print charts :
                                             {{ $product->print_number > 0 ? $product->print_number . '' : 'Unlimited' }}
@@ -286,19 +286,19 @@
                                     ];
                                 @endphp
 
-                                @if ($product->fanchart == true)
+                                @if ($product->fantree == true)
                                     <h6 class="text-start mt-3">Fanchart Features</h6>
                                     <div class="table-content">
                                         <ul class="table-list ps-0">
                                             <li> <i class="ti ti-circle-check"></i> Max generations :
-                                                {{ $product->fanchart_max_generation }}</li>
+                                                {{ $product->fantree_max_generation }}</li>
                                             <li> <i class="ti ti-circle-check"></i> Output products :
-                                                {{ $product->fanchart_output_png == true ? 'PNG, ' : '' }}{{ $product->fanchart_output_pdf == true ? 'PDF' : '' }}
+                                                {{ $product->fantree_output_png == true ? 'PNG, ' : '' }}{{ $product->fantree_output_pdf == true ? 'PDF' : '' }}
                                             </li>
                                             <li> <i class="ti ti-circle-check"></i> Max PNG sizes :
-                                                {{ $max_output_png[$product->fanchart_max_output_png] }}</li>
+                                                {{ $max_output_png[$product->fantree_max_output_png] }}</li>
                                             <li> <i class="ti ti-circle-check"></i> Max PDF sizes :
-                                                {{ $max_output_pdf[$product->fanchart_max_output_pdf] }}</li>
+                                                {{ $max_output_pdf[$product->fantree_max_output_pdf] }}</li>
                                         </ul>
                                     </div>
                                 @endif

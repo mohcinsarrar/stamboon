@@ -218,7 +218,7 @@
                             <span class="avatar-initial rounded bg-label-danger"><i
                                     class="ti ti-chart-arcs-3 ti-28px"></i></span>
                         </div>
-                        <h4 class="mb-0">{{ $total_fanchart_print }}</h4>
+                        <h4 class="mb-0">{{ $total_fantree_print }}</h4>
                     </div>
                     <p class="mb-1">Total Fanchart prints</p>
 

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\File;
 
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\Tree;
 use App\Models\Pedigree;
+use App\Models\Fantree;
 
 class DashboardController extends Controller
 {
@@ -30,11 +30,15 @@ class DashboardController extends Controller
 
     $user = Auth::user();
     $payment = $user->has_payment();
-
+    $current_payment = $user->last_payment();
+    if($current_payment == false){
+      abort(404);
+    }
+    $product = Product::where('id',$current_payment->product_id)->first();
 
     $pedigree = Pedigree::where('user_id',$user->id)->first();
-    $fanchart = Tree::where("user_id",$user->id)->first();
+    $fantree = Fantree::where("user_id",$user->id)->first();
 
-    return view('users.dashboard.index',compact('video', 'payment','pedigree','fanchart'));
+    return view('users.dashboard.index',compact('video', 'payment','pedigree','fantree','product'));
   }
 }

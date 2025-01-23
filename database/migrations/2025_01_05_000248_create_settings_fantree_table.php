@@ -18,29 +18,29 @@ return new class extends Migration
             ->onUpdate('cascade')
             ->onDelete('cascade');
             // box color settings
-            $table->string('box_color')->default("gender");
             $table->string('male_color')->default("#00CED1");
             $table->string('female_color')->default("#FF69B4");
-            $table->string('blood_color')->default("#C33131");
-            $table->string('notblood_color')->default("#55CF5E");
 
             // text color settings
             $table->string('text_color')->default("#000000");
 
             // link color settings
-            $table->string('spouse_link_color')->default('#000000');
-            $table->string('bio_child_link_color')->default('#000000');
-            $table->string('adop_child_link_color')->default('#000000');
-            
+            $table->string('father_link_color')->default('#000000');
+            $table->string('mother_link_color')->default('#000000');
+
             // portrait band color
             $table->string('band_color')->default("#ffffff");
-
-            $table->string('node_template')->default("4");
-            $table->string('bg_template')->default("1");
+            
+            $table->string('bg_template')->default("0");
 
             $table->string('default_date')->default("YYYY-MM-DD");
             $table->string('default_male_image')->nullable()->default("man1");
             $table->string('default_female_image')->nullable()->default("female1");
+            $table->string('default_filter')->nullable()->default("none");
+
+            $table->string('photos_type')->default("round");
+            $table->string('photos_direction')->default("vertical");
+
             $table->timestamps();
         });
     }

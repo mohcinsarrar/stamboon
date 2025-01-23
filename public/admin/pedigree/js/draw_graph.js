@@ -2,21 +2,14 @@
 function renderChart() {
 
     d3.select(treeConfiguration.chartContainer).selectAll("*").remove();
+    chart = undefined
     var data = familyData;
     chart = new d3.OrgChart()
         .container(treeConfiguration.chartContainer)
-        //.initialZoom(treeConfiguration.zoomLevel)
         .data(data)
         .initialExpandLevel(5)
         .layout('top')
         .onNodeClick((nodeId) => nodeClicked(nodeId))
-        .onExpandOrCollapse((nodeId) => {
-            editChartStatus();
-        }
-        )
-        .onZoomEnd(e => {
-            //editChartStatus();
-        })
         .rootMargin(treeConfiguration.rootMargin)
         .nodeWidth((d) => {
             if (d.data.id === constants.rootId) return 0;
@@ -109,29 +102,6 @@ function renderChart() {
             return nodeHtml;
         })
         .compact(false);
-
-
-    /*
-    const originalRender = chart.render;
-
-    // Create a new render function that wraps the original one
-   
-    chart.render = function () {
-
-        // Call the original render method
-        originalRender.call(this);
-
-        d3.selectAll('.node')  // Assuming `.node` is the class for nodes
-            .update()
-            .on('end', function () {
-                console.log("All transitions are finished. Applying node position changes.");
-                apply_change_node_position();
-            });
-
-        console.log("before render")
-
-    };
-    */
 
 
     // change connections link to straight
@@ -297,24 +267,11 @@ function renderChart() {
 
     chart.connections(multipleSpouseConnections);
 
-    // apply stored chart statu
-    //applyChartStatus()
 
     // render the chart
-    chart.render().fit();
+    chart.render();
     applyChartStatus()
-    // get first hidden_root children and center chart on it
-    /*
-    var hidden_root_children 
 
-    familyData.forEach(node => {
-        if (node.parentId == "hidden_root") {
-            hidden_root_children = node.id
-            return;
-        }
-    });
-    chart.setCentered(hidden_root_children).render();
-    */
 
     // set background from settings
     set_background()
@@ -322,7 +279,12 @@ function renderChart() {
     // get notes from DB and draw them
     get_notes()
 
-    test_all_max_nodes()
+    res = test_all_max_nodes()
+    console.log(res)
+    if(res == false){
+        chart = undefined
+        return;
+    }
     test_max_generation()
 
 
@@ -337,51 +299,41 @@ function renderChart() {
     // add tools zoom, expand ...
     $(document).on("click", "#fit", function () {
         chart.fit()
-        //editChartStatus()
     });
 
     $(document).on("click", "#zoomIn", function () {
         chart.zoomIn()
-        //editChartStatus()
     });
 
     $(document).on("click", "#zoomOut", function () {
         chart.zoomOut()
-        //editChartStatus()
     });
+
+    document.addEventListener('keyup', (event) => {
+        if (event.key === '+') {
+            chart.zoomIn()
+        }
+        if (event.key === '-') {
+            chart.zoomOut()
+        }
+      });
 
     $(document).on("click", "#viewVertical", function () {
         chart.layout('top').fit()
-        //editChartStatus()
     });
 
     $(document).on("click", "#viewHorizontal", function () {
         chart.layout('left').fit()
-        //editChartStatus()
     });
 
     $(document).on("click", "#compactView", function () {
         apply_change_node_position()
-        /*
-        if ($('#compactView').data('compact') == false) {
-            chart.compact(true).fit()
-            $('#compactView').data('compact', true)
-            $('#compactView').html('Decompact')
-        } else {
-            chart.compact(false).fit()
-            $('#compactView').data('compact', false)
-            $('#compactView').html('Compact')
-        }
-        */
-        //editChartStatus()
 
     });
 
     $(document).on("click", "#expandView", function () {
 
-        chart.expandAll().fit();
-        editChartStatus();
-        
+        chart.expandAll().fit();        
 
     });
 
@@ -394,7 +346,6 @@ function renderChart() {
         allNodes.forEach(d => d.data._expanded = false);
         chart.initialExpandLevel(1)
         chart.render().fit();
-        //editChartStatus()
     });
 
 }

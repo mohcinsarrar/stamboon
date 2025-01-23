@@ -3,11 +3,10 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
-use App\Models\Tree;
 use App\Models\Setting;
-use App\Models\Node;
 use App\Models\Pedigree;
 use App\Models\Fantree;
+use App\Models\SettingFantree;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -60,26 +59,23 @@ class CreateNewUser implements CreatesNewUsers
         $user->assignRole("user");
         $user->save();
 
-        // create tree
-        $tree = Tree::create([
-            'user_id' => $user->id
-        ]);
-
-        // create familytree
-        Node::createFamilyTree($user->name, "", "", $tree->id);
-
         // create pedigree
         Pedigree::create([
             'user_id' => $user->id
         ]);
 
-        // create pedigree
+        // create pedigree settings
+        $setting = Setting::create(['user_id' => $user->id]);
+
+        // create fantree
         Fantree::create([
             'user_id' => $user->id
         ]);
 
-        // create settings
-        $setting = Setting::create(['user_id' => $user->id]);
+        // create fantree settings
+        SettingFantree::create(['user_id' => $user->id]);
+
+        
         
         
         return $user;

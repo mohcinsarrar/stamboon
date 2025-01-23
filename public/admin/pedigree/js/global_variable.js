@@ -22,15 +22,15 @@ $.ajaxSetup({
       if (data.error == false) {
         date_format = data.settings.default_date
       } else {
-        show_toast('error', 'error', data.error)
+        show_toast('danger', 'error', data.error)
       }
 
     },
     error: function (xhr, status, error) {
       if ('responseJSON' in xhr) {
-        show_toast('error', 'error', xhr.responseJSON.message)
+        show_toast('danger', 'error', xhr.responseJSON.message)
       } else {
-        show_toast('error', 'error', error)
+        show_toast('danger', 'error', error)
       }
 
       return null;

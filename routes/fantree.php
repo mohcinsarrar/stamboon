@@ -10,11 +10,13 @@ use App\Http\Controllers\users\NoteController;
 
 
 
-Route::middleware(['auth:sanctum','verified','active','role:user','product_type:pedigree','payment_reminder'])
+Route::middleware(['auth:sanctum','verified','active','role:user','product_type:fantree','payment_reminder'])
     ->name('users.')
     ->group( function(){
 
         Route::post('/fantree/saveimage', [FantreeController::class,'saveimage'])->name('fantree.saveimage');
+        Route::post('/fantree/deleteimage', [FantreeController::class,'deleteimage'])->name('fantree.deleteimage');
+
         Route::get('/fantree', [FantreeController::class,'index'])->name('fantree.index');
         Route::get('/fantree/settings', [FantreeController::class,'settings'])->name('fantree.settings');
         Route::post('/fantree/settings', [FantreeController::class,'settings'])->name('fantree.settings');
@@ -29,7 +31,7 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/fantree/update', [FantreeController::class,'update'])->name('fantree.update');
         Route::post('/fantree/delete', [FantreeController::class,'delete'])->name('fantree.delete');
         Route::post('/fantree/addspouse', [FantreeController::class,'addspouse'])->name('fantree.addspouse');
-        Route::post('/fantree/addchild', [FantreeController::class,'addchild'])->name('fantree.addchild');
+        Route::post('/fantree/addparents', [FantreeController::class,'addparents'])->name('fantree.addparents');
         Route::post('/fantree/addperson', [FantreeController::class,'addperson'])->name('fantree.addperson');
         Route::post('/fantree/getpersons', [FantreeController::class,'getpersons'])->name('fantree.getpersons');
         Route::post('/fantree/orderspouses', [FantreeController::class,'orderspouses'])->name('fantree.orderspouses');

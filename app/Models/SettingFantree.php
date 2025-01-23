@@ -14,16 +14,19 @@ class SettingFantree extends Model
 
     protected $fillable = [
         'user_id',
-        'spouse_link_color',
-        'bio_child_link_color',
-        'adop_child_link_color',
+        'text_color',
+        'band_color',
+        'father_link_color',
+        'mother_link_color',
         'female_color',
         'male_color',
-        'node_template',
         'bg_template',
         'default_male_image',
         'default_female_image',
-        'default_date'
+        'default_filter',
+        'default_date',
+        'photos_type',
+        'photos_direction'
     ];
 
     public function user(): BelongsTo

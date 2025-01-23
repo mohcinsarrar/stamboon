@@ -13,22 +13,16 @@
       "slug": "users.profile.index"
     },
     {
-      "url": "/fanchart",
+      "url": "/fantree",
       "icon": "menu-icon tf-icons ti ti-chart-arcs-3",
       "name": "Fanchart",
-      "slug": "users.fanchart.index"
+      "slug": "users.fantree.index"
     },
     {
       "url": "/pedigree",
       "icon": "menu-icon tf-icons ti ti-growth",
       "name": "Pedigree",
       "slug": "users.pedigree.index"
-    },
-    {
-      "url": "/fantree",
-      "icon": "menu-icon tf-icons ti ti-growth",
-      "name": "Fantree",
-      "slug": "users.fantree.index"
     },
     {
       "url": "/subscription",

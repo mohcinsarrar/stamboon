@@ -1,8 +1,14 @@
 
-// the function draw_tree load gedcom file from API '/pedigree/getTree' 
+// the function draw_tree load gedcom file from API '/fantree/getTree' 
 // next, its parse data to transform gedcom file to accepted structure for d3-org-chart
 function draw_tree() {
 
+    if(chart != undefined){
+        editChartStatus()
+    }
+    load_settings()
+    applyChartStatus()
+    
     // load gedcom file from api for the current user
     const promise = fetch('/fantree/getTree')
         .then(r => {
@@ -13,10 +19,13 @@ function draw_tree() {
         })
         .then(Gedcom.readGedcom)
         .catch(error => {
-            //console.log(error)
+            console.log(error)
             if (document.getElementById("add-first-person-container") != null) {
                 document.getElementById("add-first-person-container").classList.remove('d-none');
             }
+
+            
+
             return false;
         });
 
@@ -24,10 +33,19 @@ function draw_tree() {
         // transform readGedcom structure to a structure accepted from d3-org-chart
         if (!gedcom) return;
 
-        const treeData = transformGedcom(gedcom);
+        let treeData;
+
+        try {
+            treeData = transformGedcom(gedcom);
+        } catch (error) {
+            console.log(error)
+            return;
+        }
+        
         familyData = treeData;
 
 
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -35,31 +53,32 @@ function draw_tree() {
         });
 
         $.ajax({
-            url: "/pedigree/settings",
+            url: "/fantree/settings",
             type: 'GET',
             dataType: 'json',
             success: function (data) {
                 if (data.error == false) {
-                    console.log(data)
+
                     treeConfiguration = data.settings
 
                     // after loading settings draw chart with treeData and treeConfiguration
                     renderChart();
+
                     if(document.getElementById("add-first-person-container") != null){
                         document.getElementById("add-first-person-container").remove();
                     }
                     
 
                 } else {
-                    show_toast('error', 'error', data.error)
+                    show_toast('danger', 'error', data.error)
                 }
 
             },
             error: function (xhr, status, error) {
                 if ('responseJSON' in xhr) {
-                    show_toast('error', 'error', xhr.responseJSON.message)
+                    show_toast('danger', 'error', xhr.responseJSON.message)
                 } else {
-                    show_toast('error', 'error', error)
+                    show_toast('danger', 'error', error)
                 }
 
                 return null;
@@ -67,6 +86,8 @@ function draw_tree() {
         });
 
     });
+
+    
 
 }
 
@@ -208,7 +229,6 @@ function buildFamilyTree(individualRecords,childToParents,personId, order = 0) {
     
     const parents = childToParents[personId];
     const personObject = individualRecords[personId];
-    
 
     if (!parents) {
         // If the person has no parents, return just their ID
@@ -242,43 +262,57 @@ function transformGedcom(gedcom) {
     // get all families
     families = gedcom.getFamilyRecord().arraySelect()
 
+    if (families.length == 0) {
+        let indi = gedcom.getIndividualRecord().arraySelect()[0];
+        
+        indi = parsePerson(indi)
+        indi.parents = []
+        indi.order = 0
 
-    families.forEach((family, key, array) => {
+        return indi;
+        
+    }
+    else{
+        families.forEach((family, key, array) => {
 
-        // check if family is an object
-        if (!isObject(family[0])) {
-            return;
-        }
+            // check if family is an object
+            if (!isObject(family[0])) {
+                return;
+            }
+    
+            // get husband, wife and child
+            husband = family.getHusband().getIndividualRecord()
+            wife = family.getWife().getIndividualRecord()
+            child = family.getChild().getIndividualRecord()
+    
+            husband_id = husband[0] != undefined ? husband[0].pointer : null
+            wife_id = wife[0] != undefined ? wife[0].pointer : null
+            child_id = child[0].pointer
+    
+            husband = husband_id != null ? parsePerson(husband) : null
+            wife = wife_id != null ? parsePerson(wife) : null
+            child = parsePerson(child)
+    
+            individualRecords[husband_id] = husband
+            individualRecords[wife_id] = wife
+            individualRecords[child_id] = child
+    
+            // Map the child to their parents
+            childToParents[child_id] = { husband_id, wife_id };
+            
+    
+        });
+        
+    
+        // get root person
+        potentialRoots = getRoot(childToParents)
+    
+        // Build trees for each root
+        const familyTrees = potentialRoots.map(root => buildFamilyTree(individualRecords,childToParents,root));
+        return familyTrees[0];
+    }
 
-        // get husband, wife and child
-        husband = family.getHusband().getIndividualRecord()
-        wife = family.getWife().getIndividualRecord()
-        child = family.getChild().getIndividualRecord()
-
-        husband_id = husband[0].pointer
-        wife_id = wife[0].pointer
-        child_id = child[0].pointer
-
-        husband = parsePerson(husband)
-        wife = parsePerson(wife)
-        child = parsePerson(child)
-
-        individualRecords[husband_id] = husband
-        individualRecords[wife_id] = wife
-        individualRecords[child_id] = child
-
-        // Map the child to their parents
-        childToParents[child_id] = { husband_id, wife_id };
-
-    });
-
-    // get root person
-    potentialRoots = getRoot(childToParents)
-
-    // Build trees for each root
-    const familyTrees = potentialRoots.map(root => buildFamilyTree(individualRecords,childToParents,root));
-
-    return familyTrees[0];
+    
 
 
 }

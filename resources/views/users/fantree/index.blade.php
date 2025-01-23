@@ -10,28 +10,63 @@
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css"/> <!-- 'monolith' theme -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css"/> <!-- 'nano' theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+    <!-- 'classic' theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css" />
+    <!-- 'monolith' theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css" />
+    <!-- 'nano' theme -->
 
 
 @endsection
 
 @section('page-style')
     <style>
-        .person-text {
-            padding-top: 1px;
-            background-color: gray;
-            color: black;
-            --c: 80;
-            width: 100px;
-            height: 50px;
-            aspect-ratio: 3/2;
-            -webkit-mask: radial-gradient(
-                calc(80*1%) 100% at 50% calc(90% + 100%*cos(asin(50/80))), #0000 calc(100% - 5px), #000
-                );
-            mask: radial-gradient(calc(var(--c)*1%) 100% at 50% calc(100% + 100%*cos(asin(50/var(--c)))), #0000 calc(100% - 1px), #000);
-            clip-path: ellipse(calc(var(--c)*1%) 100% at bottom);
+        .pcr-button{
+    border: 1px solid black !important;
+    width: 100% !important;
+  }
+
+    </style>
+    <style>
+        /* custom-modal  */
+
+        .custom-modal {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            min-width: 350px;
+        }
+
+        .custom-modal-body {
+            position: relative
+        }
+
+        .custom-modal-close {
+            position: absolute;
+            right: -20px;
+            top: -20px;
+            cursor: pointer;
+            z-index: 1000;
+            background-color: white !important;
+            opacity: 1 !important;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+            transition: all .15s ease .1s !important;
+        }
+
+        .custom-modal-close:hover {
+            right: -18px;
+            top: -18px;
+        }
+
+        .custom-modal .btn-group {
+            position: absolute;
+            bottom: 0;
+            right: 0;
         }
     </style>
 
@@ -42,6 +77,7 @@
 
 @section('vendor-script')
     <script src="{{ asset('assets/vendor/libs/jqueryui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}"></script>
 
     <!-- d3-js -->
     <script src="{{ asset('assets/vendor/libs/d3js/d3.v7.min.js') }}"></script>
@@ -49,15 +85,35 @@
 
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/pickr/pickr.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/jspdf/jspdf.umd.min.js') }}"></script>
+
+
+    
 
 @endsection
 
 @section('page-script')
     <script src="{{ asset('admin/fantree/js/global_variable.js') }}?{{ time() }}"></script>
-    
-    <script src="{{ asset('admin/fantree/js/import_gedcom.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/utils.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/load_gedcom.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/import_gedcom.js') }}?{{ time() }}"></script>
+    
     <script src="{{ asset('admin/fantree/js/settings.js') }}?{{ time() }}"></script>
+    
+    <script src="{{ asset('admin/fantree/js/add_parents.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/add_person.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/edit_person.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/show_person.js') }}?{{ time() }}"></script>
+
+    <script src="{{ asset('admin/fantree/js/edit_image.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/delete_image.js') }}?{{ time() }}"></script>
+
+    <script src="{{ asset('admin/fantree/js/delete_person.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/dates.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/d3_to_png.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/export.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/save.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/download.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/index.js') }}?{{ time() }}"></script>
     <script>
         draw_tree()
@@ -70,7 +126,22 @@
 
 @section('content')
 
-    @include('users.pedigree.settings')
+    @include('users.fantree.settings')
+
+    @include('users.fantree.show_person')
+
+    @include('users.fantree.add_parents')
+
+    @include('users.fantree.add_person')
+
+    @include('users.fantree.edit_person')
+
+    @include('users.fantree.edit_image')
+
+    @include('users.fantree.export')
+
+    @include('users.fantree.download')
+
 
 
     <!-- modal to upload gedcom file -->
@@ -125,8 +196,7 @@
     <div class="card h-100" id="main_graph">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
-                <button {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasAddPerson" type="button" class="btn btn-primary waves-effect waves-light">
+                <button {{ $has_payment == false ? 'disabled' : '' }} id="add-first-person" type="button" class="btn btn-primary waves-effect waves-light">
                     <span class="ti-xs ti ti-plus me-1"></span>
                     Add person
                 </button>
@@ -149,11 +219,11 @@
                             class="ti ti-download fs-4"></i></button>
                 </div>
                 <!--
-                        <div class="row  mb-2 justify-content-center">
-                            <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
-                                    class="ti ti-note fs-4"></i></button>
-                        </div>
-                    -->
+                            <div class="row  mb-2 justify-content-center">
+                                <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                                        class="ti ti-note fs-4"></i></button>
+                            </div>
+                        -->
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
                     title="Print your pedigree">
                     <button {{ $has_payment == false ? 'disabled' : '' }} id="export" type="button"
@@ -161,14 +231,21 @@
                             class="ti ti-printer fs-4"></i></button>
                 </div>
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Save state">
+                    <button {{ $has_payment == false ? 'disabled' : '' }} id="save" type="button"
+                        class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-device-floppy fs-4"></i></button>
+                </div>
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
                     title="Settings">
                     <button {{ $has_payment == false ? 'disabled' : '' }} id="open_settings" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-settings fs-4"></i></button>
                 </div>
+
                 <hr class="border-1 text-white my-2 ">
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                    title="Project asset">
+                    title="Project asset" style="visibility: hidden; height:0">
                     <div class="btn-group dropend col-auto">
                         <button type="button" class="btn text-white border-0 p-2  rounded-circle"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

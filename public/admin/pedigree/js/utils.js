@@ -111,6 +111,8 @@ function convertImageToBase64(imageUrl, callback) {
 function editChartStatus() {
 
     const nodes = chart.getChartState().allNodes;
+    const generation = Math.max(...nodes.map(obj => obj.depth));
+    const lastTransform = chart.getChartState().lastTransform
 
     const nodeStatuses = nodes.map(node => ({
         id: node.data.id,
@@ -119,6 +121,9 @@ function editChartStatus() {
 
     var chart_status = {
         'expand': nodeStatuses,
+        'translateX' : lastTransform.x,
+        'translateY' : lastTransform.y,
+        'scale' : lastTransform.k,
     }
 
     $.ajaxSetup({
@@ -132,6 +137,7 @@ function editChartStatus() {
         type: 'POST',
         data: {
             'chart_status': chart_status,
+            'generation' : generation
         },
         dataType: 'json',
         success: function (data) {
@@ -172,6 +178,9 @@ function applyChartStatus() {
                 if (chart_status == null) {
                     return;
                 }
+                if(chart == undefined){
+                    return;
+                }
                 const getChartState = chart.getChartState()
 
                 // apply expand
@@ -189,7 +198,16 @@ function applyChartStatus() {
                     }
 
                 });
-                chart.render().fit();
+
+                const zoom = chart.getChartState().zoomBehavior
+                const svg = chart.getChartState().svg
+
+                const initialTransform = d3.zoomIdentity.translate(chart_status.translateX, chart_status.translateY).scale(chart_status.scale);
+                svg.call(zoom.transform, initialTransform); 
+                svg.select('.chart').attr("transform", initialTransform.toString());
+
+                chart.getChartState().zoomBehavior = zoom
+
 
             } else {
                 show_toast('danger', 'error', "can't get chart status, please try again !")
@@ -309,13 +327,15 @@ function test_max_nodes(targetDepth) {
 }
 
 function test_all_max_nodes() {
+
+    result = true
     if (chart == undefined) {
-        return false;
+        result = false;
     }
 
     nodes = chart.getChartState().allNodes
     if (nodes == undefined || nodes == []) {
-        return false;
+        result = false;
     }
 
     nodes.forEach((node) => {
@@ -323,11 +343,14 @@ function test_all_max_nodes() {
         if (count > treeConfiguration.maxNodes) {
             document.querySelector('#max-node-alert').style.display = "block";
             document.querySelector('#max-node-alert div.alert').innerHTML = "The number of persons (" + count + ") in generation " + node.depth + " exceed the max nodes available (" + treeConfiguration.maxNodes + ")";
-            disable_tools_bar()
-            return false;
+            d3.select(treeConfiguration.chartContainer).selectAll("*").remove();
+            
+            result = false;
+            return;
         }
     });
 
+    return result
 }
 
 function disable_tools_bar() {

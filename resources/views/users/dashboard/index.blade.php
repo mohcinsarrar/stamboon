@@ -212,7 +212,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="{{ route('users.fanchart.index') }}">
+                                <a href="{{ route('users.fantree.index') }}">
                                     <div class="content-right">
                                         <h5 class="text-primary mb-0">Fanchart</h5>
                                     </div>
@@ -275,104 +275,123 @@
         </div>
     </div>
     @if (Auth::user()->has_payment() != false)
-        <!--
-                <div class="row mt-4">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header pb-0">
-                                <h5 class="card-title mb-0">Fanchart Stats</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="w-100 mt-3">
-                                        <h6 class="mb-2">Generation number</h6>
-                                        <div class="progress" style="height: 5px;">
-                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 95%;"
-                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="w-100 mt-3">
-                                        <h6 class="mb-2">Person number</h6>
-                                        <div class="progress" style="height: 5px;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: 95%;"
-                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header pb-0">
-                                <h5 class="card-title mb-0">Pedigree Stats</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="w-100 mt-3">
-                                        <h6 class="mb-2">Generation number</h6>
-                                        <div class="progress" style="height: 5px;">
-                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 95%;"
-                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="w-100 mt-3">
-                                        <h6 class="mb-2">Person number</h6>
-                                        <div class="progress" style="height: 5px;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: 95%;"
-                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card  h-100">
-                            <div class="card-header pb-0">
-                                <h5 class="card-title mb-0">Total prints</h5>
-                            </div>
-                            <div class="card-body pb-2">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mt-lg-4 mt-lg-2 mb-lg-6 mb-2">
-                                            <h3 class="mb-0">{{ $payment->product->print_number }}</h3>
-                                            <p class="mb-0">Total Prints</p>
-                                        </div>
-                                        
-                                    </div>
-                                    <div class="col">
-                                        <ul class="p-0 m-0">
-                                            @if ($payment->product->fanchart == true)
-    <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
-                                                    <div class="badge rounded bg-label-primary p-1_5"><i
-                                                            class="ti ti-ticket ti-md"></i>
-                                                    </div>
-                                                    <div>
-                                                        <h6 class="mb-0 text-nowrap">Fanchart</h6>
-                                                        <small class="text-muted">{{ $fanchart->print_number }}</small>
-                                                    </div>
-                                                </li>
-    @endif
-                                            @if ($payment->product->pedigree == true)
-    <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
-                                                    <div class="badge rounded bg-label-info p-1_5"><i
-                                                            class="ti ti-circle-check ti-md"></i></div>
-                                                    <div>
-                                                        <h6 class="mb-0 text-nowrap">Pedigree</h6>
-                                                        <small class="text-muted">{{ $pedigree->print_number }}</small>
-                                                    </div>
-                                                </li>
-    @endif
-                                        </ul>
-                                    </div>
-                                </div>
 
+        <div class="row mt-4">
+            @if ($payment->product->fantree == true)
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5 class="card-title mb-0">Fanchart Stats</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="w-100 mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>{{$fantree->generation}} Generations</span>
+                                    <span>Max generation ({{$product->fantree_max_generation}})</span>
+                                </div>
+                                
+                                <div class="progress" style="height: 16px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{floor($fantree->generation/$product->fantree_max_generation*100)}}%;" aria-valuenow="{{$fantree->generation}}" aria-valuemin="0" aria-valuemax="{{$product->fantree_max_generation}}">
+                                        {{floor($fantree->generation/$product->fantree_max_generation*100)}}%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-100 mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>{{$fantree->person_count()}} Persons</span>
+                                    <span>Max persons ({{(pow(2,$product->fantree_max_generation)-1)}})</span>
+                                </div>
+                                <div class="progress" style="height: 16px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{floor($fantree->person_count()/(pow(2,$product->fantree_max_generation)-1)*100)}}%;"
+                                        aria-valuenow="{{$fantree->person_count()}}" aria-valuemin="0" aria-valuemax="{{(pow(2,$product->fantree_max_generation)-1)}}">{{floor($fantree->person_count()/(pow(2,$product->fantree_max_generation)-1)*100)}}%</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            -->
+            </div>
+            @endif
+            @if ($payment->product->pedigree == true)
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5 class="card-title mb-0">Pedigree Stats</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="w-100 mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>{{$pedigree->generation}} Generations</span>
+                                    <span>Max generation ({{$product->pedigree_max_generation}})</span>
+                                </div>
+                                <div class="progress" style="height: 16px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{floor($pedigree->generation/$product->pedigree_max_generation*100)}}%;" aria-valuenow="{{$pedigree->generation}}" aria-valuemin="0" aria-valuemax="{{$product->pedigree_max_generation}}">
+                                        {{floor($pedigree->generation/$product->pedigree_max_generation*100)}}%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-100 mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>{{$pedigree->person_count()}} Persons</span>
+                                    <span>Max persons ({{$product->max_nodes}})</span>
+                                </div>
+                                <div class="progress" style="height: 16px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{floor($pedigree->person_count()/$product->max_nodes*100)}}%;"
+                                        aria-valuenow="{{$pedigree->person_count()}}" aria-valuemin="0" aria-valuemax="{{$product->max_nodes}}">{{floor($pedigree->person_count()/$product->max_nodes*100)}}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            <div class="col-md-4 mb-4">
+                <div class="card  h-100">
+                    <div class="card-header pb-0">
+                        <h5 class="card-title mb-0">Total prints</h5>
+                    </div>
+                    <div class="card-body pb-2">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-lg-4 mt-lg-2 mb-lg-6 mb-2">
+                                    <h3 class="mb-0">{{ $payment->product->print_number }}</h3>
+                                    <p class="mb-0">Total Prints</p>
+                                </div>
+
+                            </div>
+                            <div class="col">
+                                <ul class="p-0 m-0">
+                                    @if ($payment->product->fantree == true)
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded bg-label-primary p-1_5"><i
+                                                    class="ti ti-chart-arcs-3 ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Fanchart</h6>
+                                                <small class="text-muted">{{ $fantree->print_number }}</small>
+                                            </div>
+                                        </li>
+                                    @endif
+                                    @if ($payment->product->pedigree == true)
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded bg-label-info p-1_5"><i
+                                                    class="ti ti-growth ti-md"></i></div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Pedigree</h6>
+                                                <small class="text-muted">{{ $pedigree->print_number }}</small>
+                                            </div>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row mt-4">
             <div class="card">
                 <div class="card-body">
@@ -383,9 +402,9 @@
                     </div>
                     <div class="card academy-content shadow-none border">
                         <div class="p-2 w-100" id="plyr-video-player" style="height: 700px">
-                            <iframe
-                                src="https://www.youtube.com/embed/{{$video}}?si=r8h-o-pyRn6iXvCF"
-                                allowfullscreen allowtransparency allow="autoplay" width="100%" height="100%"></iframe>
+                            <iframe src="https://www.youtube.com/embed/{{ $video }}?si=r8h-o-pyRn6iXvCF"
+                                allowfullscreen allowtransparency allow="autoplay" width="100%"
+                                height="100%"></iframe>
                         </div>
                     </div>
                 </div>

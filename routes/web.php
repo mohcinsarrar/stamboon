@@ -25,7 +25,6 @@ use Illuminate\Support\Arr;
 require_once __DIR__ .'/auth.php';
 require_once __DIR__ .'/users.php';
 require_once __DIR__ .'/admin.php';
-require_once __DIR__ .'/fanchart.php';
 require_once __DIR__ .'/pedigree.php';
 require_once __DIR__ .'/fantree.php';
 require_once __DIR__ .'/utils.php';

@@ -30,21 +30,21 @@ class ProductController extends Controller
       'duration' => 'required|numeric|min:0',
       'print_number' => 'required|numeric|min:0',
       'chart_type' => 'required|array|min:1',
-      'chart_type.*' => 'required|string|in:fanchart,pedigree',
+      'chart_type.*' => 'required|string|in:fantree,pedigree',
       
-      'fanchart_max_generation' => 'required|numeric|min:0',
+      'fantree_max_generation' => 'required|numeric|min:0',
       'pedigree_max_generation' => 'required|numeric|min:0',
 
       'max_nodes' => 'required|numeric|min:0',
 
-      'fanchart_print_type' => 'nullable|array|min:0',
-      'fanchart_print_type.*' => 'nullable|string|in:png,pdf',
+      'fantree_print_type' => 'nullable|array|min:0',
+      'fantree_print_type.*' => 'nullable|string|in:png,pdf',
 
       'pedigree_print_type' => 'nullable|array|min:0',
       'pedigree_print_type.*' => 'nullable|string|in:png,pdf',
 
-      'fanchart_max_output_png' => 'required|string|in:1,2,3,4,5',
-      'fanchart_max_output_pdf' => 'required|string|in:a0,a1,a2,a3,a4',
+      'fantree_max_output_png' => 'required|string|in:1,2,3,4,5',
+      'fantree_max_output_pdf' => 'required|string|in:a0,a1,a2,a3,a4',
 
       'pedigree_max_output_png' => 'required|string|in:1,2,3,4,5',
       'pedigree_max_output_pdf' => 'required|string|in:a0,a1,a2,a3,a4',
@@ -52,11 +52,11 @@ class ProductController extends Controller
     ])->validate();
 
     // chart type
-    if (in_array("fanchart", $inputs['chart_type'])) {
-      $fanchart = true;
+    if (in_array("fantree", $inputs['chart_type'])) {
+      $fantree = true;
     }
     else{
-      $fanchart = false;
+      $fantree = false;
     }
 
     if (in_array("pedigree", $inputs['chart_type'])) {
@@ -66,25 +66,25 @@ class ProductController extends Controller
       $pedigree = false;
     }
 
-    // fanchart print type
-    if($request->fanchart_print_type != null){
-      if (in_array("png", $inputs['fanchart_print_type'])) {
-        $fanchart_png = true;
+    // fantree print type
+    if($request->fantree_print_type != null){
+      if (in_array("png", $inputs['fantree_print_type'])) {
+        $fantree_png = true;
       }
       else{
-        $fanchart_png = false;
+        $fantree_png = false;
       }
 
-      if (in_array("pdf", $inputs['fanchart_print_type'])) {
-        $fanchart_pdf = true;
+      if (in_array("pdf", $inputs['fantree_print_type'])) {
+        $fantree_pdf = true;
       }
       else{
-        $fanchart_pdf = false;
+        $fantree_pdf = false;
       }
     }
     else{
-      $fanchart_png = false;
-      $fanchart_pdf = false;
+      $fantree_png = false;
+      $fantree_pdf = false;
     }
 
       // pedigree print type
@@ -119,26 +119,26 @@ class ProductController extends Controller
       'name' => $inputs['name'],
       'description' => $inputs['description'],
       'image' => $image,
-      'fanchart' => $fanchart,
+      'fantree' => $fantree,
       'pedigree' => $pedigree,
       'duration' => $inputs['duration'],
       'print_number' => $inputs['print_number'],
       'price' => $inputs['price'],
 
-      'fanchart_max_generation' => $inputs['fanchart_max_generation'],
+      'fantree_max_generation' => $inputs['fantree_max_generation'],
       'pedigree_max_generation' => $inputs['pedigree_max_generation'],
 
       'max_nodes' => $inputs['max_nodes'],
 
-      'fanchart_max_output_png' => $inputs['fanchart_max_output_png'],
-      'fanchart_max_output_pdf' => $inputs['fanchart_max_output_pdf'],
+      'fantree_max_output_png' => $inputs['fantree_max_output_png'],
+      'fantree_max_output_pdf' => $inputs['fantree_max_output_pdf'],
 
       'pedigree_max_output_png' => $inputs['pedigree_max_output_png'],
       'pedigree_max_output_pdf' => $inputs['pedigree_max_output_pdf'],
 
 
-      'fanchart_output_png' => $fanchart_png,
-      'fanchart_output_pdf' => $fanchart_pdf,
+      'fantree_output_png' => $fantree_png,
+      'fantree_output_pdf' => $fantree_pdf,
 
       'pedigree_output_png' => $pedigree_png,
       'pedigree_output_pdf' => $pedigree_pdf,
@@ -163,32 +163,32 @@ class ProductController extends Controller
       'duration' => 'required|numeric|min:0',
       'print_number' => 'required|numeric|min:0',
       'chart_type' => 'required|array|min:1',
-      'chart_type.*' => 'required|string|in:fanchart,pedigree',
+      'chart_type.*' => 'required|string|in:fantree,pedigree',
       
-      'fanchart_max_generation' => 'required|numeric|min:0',
+      'fantree_max_generation' => 'required|numeric|min:0',
       'pedigree_max_generation' => 'required|numeric|min:0',
 
       'max_nodes' => 'required|numeric|min:0',
 
-      'fanchart_print_type' => 'nullable|array|min:0',
-      'fanchart_print_type.*' => 'nullable|string|in:png,pdf',
+      'fantree_print_type' => 'nullable|array|min:0',
+      'fantree_print_type.*' => 'nullable|string|in:png,pdf',
 
       'pedigree_print_type' => 'nullable|array|min:0',
       'pedigree_print_type.*' => 'nullable|string|in:png,pdf',
 
-      'fanchart_max_output_png' => 'required|string|in:1,2,3,4,5',
-      'fanchart_max_output_pdf' => 'required|string|in:a0,a1,a2,a3,a4',
+      'fantree_max_output_png' => 'required|string|in:1,2,3,4,5',
+      'fantree_max_output_pdf' => 'required|string|in:a0,a1,a2,a3,a4',
 
       'pedigree_max_output_png' => 'required|string|in:1,2,3,4,5',
       'pedigree_max_output_pdf' => 'required|string|in:a0,a1,a2,a3,a4',
     ])->validate();
 
      // chart type
-     if (in_array("fanchart", $inputs['chart_type'])) {
-      $fanchart = true;
+     if (in_array("fantree", $inputs['chart_type'])) {
+      $fantree = true;
     }
     else{
-      $fanchart = false;
+      $fantree = false;
     }
 
     if (in_array("pedigree", $inputs['chart_type'])) {
@@ -198,25 +198,25 @@ class ProductController extends Controller
       $pedigree = false;
     }
 
-    // fanchart print type
+    // fantree print type
     if($request->pedigree_print_type != null){
-      if (in_array("png", $inputs['fanchart_print_type'])) {
-        $fanchart_png = true;
+      if (in_array("png", $inputs['fantree_print_type'])) {
+        $fantree_png = true;
       }
       else{
-        $fanchart_png = false;
+        $fantree_png = false;
       }
 
-      if (in_array("pdf", $inputs['fanchart_print_type'])) {
-        $fanchart_pdf = true;
+      if (in_array("pdf", $inputs['fantree_print_type'])) {
+        $fantree_pdf = true;
       }
       else{
-        $fanchart_pdf = false;
+        $fantree_pdf = false;
       }
     }
     else{
-      $fanchart_png = false;
-      $fanchart_pdf = false;
+      $fantree_png = false;
+      $fantree_pdf = false;
     }
 
       // pedigree print type
@@ -260,26 +260,26 @@ class ProductController extends Controller
       'name' => $inputs['name'],
       'description' => $inputs['description'],
       'image' => $image,
-      'fanchart' => $fanchart,
+      'fantree' => $fantree,
       'pedigree' => $pedigree,
       'duration' => $inputs['duration'],
       'print_number' => $inputs['print_number'],
       'price' => $inputs['price'],
 
-      'fanchart_max_generation' => $inputs['fanchart_max_generation'],
+      'fantree_max_generation' => $inputs['fantree_max_generation'],
       'pedigree_max_generation' => $inputs['pedigree_max_generation'],
 
       'max_nodes' => $inputs['max_nodes'],
 
-      'fanchart_max_output_png' => $inputs['fanchart_max_output_png'],
-      'fanchart_max_output_pdf' => $inputs['fanchart_max_output_pdf'],
+      'fantree_max_output_png' => $inputs['fantree_max_output_png'],
+      'fantree_max_output_pdf' => $inputs['fantree_max_output_pdf'],
 
       'pedigree_max_output_png' => $inputs['pedigree_max_output_png'],
       'pedigree_max_output_pdf' => $inputs['pedigree_max_output_pdf'],
 
 
-      'fanchart_output_png' => $fanchart_png,
-      'fanchart_output_pdf' => $fanchart_pdf,
+      'fantree_output_png' => $fantree_png,
+      'fantree_output_pdf' => $fantree_pdf,
 
       'pedigree_output_png' => $pedigree_png,
       'pedigree_output_pdf' => $pedigree_pdf,

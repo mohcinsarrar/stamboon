@@ -1,7 +1,3 @@
-
-
-
-  
   document.querySelector('#open_settings').addEventListener('click', function(event) {
     
     document.querySelectorAll('#settings input[name="default_male_image"]').forEach((checkbox) => {
@@ -45,6 +41,7 @@
           document.querySelectorAll('.customimagescheckbox').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
+              cb.parentElement.classList.remove("checked")
             }
           });
         } else {
@@ -54,6 +51,7 @@
       });
     });
 
+    
     document.querySelectorAll('.customimagescheckboxbg').forEach((checkbox) => {
       checkbox.addEventListener('click', function(event) {
         // If the checkbox is already checked, prevent it from being unchecked
@@ -61,11 +59,12 @@
           document.querySelectorAll('.customimagescheckboxbg').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
+              cb.parentElement.classList.remove("checked")
             }
           });
         } else {
           // If trying to uncheck the only checked checkbox, prevent it
-          event.preventDefault();
+          //event.preventDefault();
         }
       });
     });
@@ -76,6 +75,54 @@
     myModal.show()
 
     
+
+  });
+
+
+  document.querySelector('#settings form').addEventListener('submit', (event) => {
+    // Execute your custom function
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Create a FormData object to gather form data
+    const formData = new FormData(document.querySelector('#settings form'));
+
+    // Convert FormData to a plain object
+    const data = Object.fromEntries(formData.entries());
+
+
+    $.ajaxSetup({
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+  });
+
+  result = $.ajax({
+      url: "/fantree/settings",
+      type: 'POST',
+      data: data,
+      encode: true,
+      dataType: 'json',
+      success: function(data) {
+          if (data.error == false) {
+            const modal = document.getElementById('settings')
+            const bsmodal = bootstrap.Modal.getInstance(modal)
+            bsmodal.hide()
+              show_toast('success', 'success', data.message)
+              draw_tree()
+              
+          } else {
+              show_toast('danger', 'error', "can't edit settings, please try again !")
+          }
+
+      },
+      error: function(xhr, status, error) {
+          console.log(error)
+          show_toast('danger', 'error', "can't edit settings, please try again !")
+          return null;
+      }
+  });
+
 
   });
 
@@ -138,19 +185,19 @@
 
     const colorMale = document.querySelector('#color-picker-male');
     const colorFemale = document.querySelector('#color-picker-female');
-    const colorBlood = document.querySelector('#color-picker-blood');
-    const colorNotBlood = document.querySelector('#color-picker-notblood');
 
     const colorText = document.querySelector('#color-picker-text');
+    const colorFather = document.querySelector('#color-picker-father');
+    const colorMother = document.querySelector('#color-picker-mother');
+
     const colorBand = document.querySelector('#color-picker-band');
-    
-    const colorSpouse = document.querySelector('#color-picker-spouse');
-    const colorBioChild = document.querySelector('#color-picker-bio-child');
-    const colorAdopChild = document.querySelector('#color-picker-adop-child');
 
+    // init photos types and direction
+    document.querySelector('#settings input[name="photos_type"][value="'+settings.photos_type+'"]').checked = true
+    document.querySelector('#settings input[name="photos_direction"][value="'+settings.photos_direction+'"]').checked = true
 
-    // init colors types
-    document.getElementById('boxColor').value=settings.box_color;
+    // init filter
+    document.querySelector('#settings input[name="default_filter"][value="'+settings.default_filter+'"]').checked = true
 
     // init node-template
     const checkbox = document.querySelector(`.customimagescheckbox[value="${settings.node_template}"]`);
@@ -178,21 +225,21 @@
 
     }
 
-    if (colorBlood) {
-
-      initColorPicker(colorBlood, settings.blood_color, 'input[name="blood_color"]')
-
-    }
-
-    if (colorNotBlood) {
-
-      initColorPicker(colorNotBlood, settings.notblood_color, 'input[name="notblood_color"]')
-
-    }
-
     if (colorText) {
 
       initColorPicker(colorText, settings.text_color, 'input[name="text_color"]')
+
+    }
+
+
+    if (colorFather) {
+
+      initColorPicker(colorFather, settings.father_link_color, 'input[name="father_link_color"]')
+    }
+
+    if (colorMother) {
+
+      initColorPicker(colorMother, settings.mother_link_color, 'input[name="mother_link_color"]')
 
     }
 
@@ -202,22 +249,6 @@
 
     }
 
-    if (colorSpouse) {
-
-      initColorPicker(colorSpouse, settings.spouse_link_color, 'input[name="spouse_link_color"]')
-    }
-
-    if (colorBioChild) {
-
-      initColorPicker(colorBioChild, settings.bio_child_link_color, 'input[name="bio_child_link_color"]')
-
-    }
-
-    if (colorAdopChild) {
-
-      initColorPicker(colorAdopChild, settings.adop_child_link_color, 'input[name="adop_child_link_color"]')
-
-    }
 
 
 

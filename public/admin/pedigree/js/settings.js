@@ -3,7 +3,9 @@
 
   
   document.querySelector('#open_settings').addEventListener('click', function(event) {
-    
+    if(chart == undefined){
+      return;
+  }
     document.querySelectorAll('#settings input[name="default_male_image"]').forEach((checkbox) => {
       checkbox.addEventListener('click', function(event) {
         // If the checkbox is already checked, prevent it from being unchecked
@@ -90,15 +92,15 @@
 
           
         } else {
-          show_toast('error', 'error', data.error)
+          show_toast('danger', 'error', data.error)
         }
   
       },
       error: function (xhr, status, error) {
         if ('responseJSON' in xhr) {
-          show_toast('error', 'error', xhr.responseJSON.message)
+          show_toast('danger', 'error', xhr.responseJSON.message)
         } else {
-          show_toast('error', 'error', error)
+          show_toast('danger', 'error', error)
         }
   
         return null;

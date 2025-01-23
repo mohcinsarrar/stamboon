@@ -1,7 +1,9 @@
 
 
 $(document).on("click", "#export", function () {
-
+  if(chart == undefined){
+    return;
+}
   var type = document.querySelector('#exportModal #type').value;
   if (type == "pdf") {
     document.querySelector('#exportModal #formatPdfContainer').style.display = "block";

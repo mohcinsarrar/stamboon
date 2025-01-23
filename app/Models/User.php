@@ -82,11 +82,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(SettingFantree::class);
     }
 
-    public function tree(): HasOne
-    {
-        return $this->hasOne(Tree::class);
-    }
-
     public function pedigree(): HasOne
     {
         return $this->hasOne(Pedigree::class);
@@ -176,8 +171,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
         $product = $payment->product;
 
-        if($type == 'fanchart'){
-            if($product->fanchart == true){
+        if($type == 'fantree'){
+            if($product->fantree == true){
                 return true;
             }
             else{
@@ -258,8 +253,8 @@ class User extends Authenticatable implements MustVerifyEmail
         if($this->has_payment() != false){
             $payment = $this->has_payment();
             $product = $payment->product;
-            if($type == 'fanchart'){
-                if($product->fanchart == true){
+            if($type == 'fantree'){
+                if($product->fantree == true){
                     return true;
                 }
                 else{

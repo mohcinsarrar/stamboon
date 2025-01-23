@@ -36,7 +36,13 @@ return new class extends Migration
             $table->string('band_color')->default("#ffffff");
 
             $table->string('node_template')->default("4");
-            $table->string('bg_template')->default("1");
+            $table->string('bg_template')->default("0");
+
+            $table->string('default_male_image')->nullable()->default("man1");
+            $table->string('default_female_image')->nullable()->default("female1");
+            
+            $table->string('default_date')->default("YYYY-MM-DD");
+
             $table->timestamps();
         });
     }

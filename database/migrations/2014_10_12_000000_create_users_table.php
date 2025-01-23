@@ -20,6 +20,16 @@ return new class extends Migration
             $table->boolean('active')->default(1);
             $table->string('status')->nullable();
             $table->string('verification_code')->nullable()->default(null);
+
+            // added fields
+            $table->timestamp('password_changed_at')->nullable();
+            $table->string('image')->nullable();
+            $table->string('firstname')->nullable();
+            $table->string('lastname')->nullable();
+            $table->string('address')->default("");
+            $table->string('city')->default("");
+            $table->integer('country')->default(null)->nullable();
+            
             $table->rememberToken();
             $table->timestamps();
         });
