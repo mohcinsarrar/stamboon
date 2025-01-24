@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File as FileStorage;
 use LaravelCountries;
 use App\Models\Pedigree;
+use App\Models\Fantree;
 use Gedcom\Parser as GedcomParser;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubscriptionEmail;
@@ -141,9 +142,15 @@ class ProfileController extends Controller
 
 }
 
-  private function get_gedcom_file(){
-
-    $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+  private function get_gedcom_file($type = "pedigree"){
+    
+    if($type == 'pedigree'){
+      $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+    }
+    else{
+      $pedigree = Fantree::where('user_id',Auth::user()->id)->first();
+    }
+    
     if($pedigree == null){
         return null;
     }
@@ -173,7 +180,8 @@ private function get_gedcom($gedcom_file){
 
     $user = Auth::user();
 
-    // delete all user data
+    // delete all user data pedigree
+
     /// get gedcom file
     $gedcom_file = $this->get_gedcom_file();
     if($gedcom_file != null){
@@ -200,6 +208,37 @@ private function get_gedcom($gedcom_file){
       /// delete gedcom file
       if (Storage::exists('gedcoms/'.$gedcom_file)) {
         Storage::delete('gedcoms/'.$gedcom_file);
+      }
+    }
+
+    // delete all user data fantree
+
+    /// get gedcom file
+    $gedcom_file = $this->get_gedcom_file("fantree");
+    if($gedcom_file != null){
+      /// get gedcom object
+      $gedcom = $this->get_gedcom($gedcom_file);
+      /// get all indis
+      $indis = $gedcom->getIndi();
+      /// iterate over all indis and delete photo if exist
+      foreach($indis as $indi){
+            $note = $indi->getNote();
+
+            $photo = null;
+            if($note != null and $note != []){
+                $photo = $note[0]->getNote();
+            }
+
+            if($photo != null){
+              if (Storage::exists('portraits_fantree/'.$photo)) {
+                  Storage::delete('portraits_fantree/'.$photo);
+              }
+            }
+      }
+
+      /// delete gedcom file
+      if (Storage::exists('fantree_gedcoms/'.$gedcom_file)) {
+        Storage::delete('fantree_gedcoms/'.$gedcom_file);
       }
     }
     

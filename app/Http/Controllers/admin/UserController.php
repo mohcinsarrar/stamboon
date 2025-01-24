@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Validator;
 use App\DataTables\UsersDataTable;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Pedigree;
+use App\Models\Fantree;
+use Gedcom\Parser as GedcomParser;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SubscriptionEmail;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -77,14 +83,129 @@ class UserController extends Controller
         //
     }
 
+
+    private function get_gedcom_file($type = "pedigree", $user_id){
+    
+        if($type == 'pedigree'){
+          $pedigree = Pedigree::where('user_id',$user_id)->first();
+        }
+        else{
+          $pedigree = Fantree::where('user_id',$user_id)->first();
+        }
+        
+        if($pedigree == null){
+            return null;
+        }
+        if($pedigree->gedcom_file == null){
+          return null;
+      }
+    
+        if (!Storage::disk('local')->exists($pedigree->gedcom_file)) {
+            return null;
+        } 
+        
+        $file = Storage::disk('local')->get($pedigree->gedcom_file);
+    
+        return $pedigree->gedcom_file;
+    
+    }
+    
+    private function get_gedcom($gedcom_file){
+    
+      $gedcom = $this->parse_gedcom('storage/'.$gedcom_file);
+    
+      return $gedcom;
+    
+    }
+
+    private function parse_gedcom($file){
+
+
+        $parser = new GedcomParser();
+        $gedcom = $parser->parse($file);
+    
+        return $gedcom;
+    
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         //
+
         $user = User::findOrFail($id);
+
+        // delete all user data pedigree
+    
+        /// get gedcom file
+        $gedcom_file = $this->get_gedcom_file('pedigree',$user->id);
+        if($gedcom_file != null){
+          /// get gedcom object
+          $gedcom = $this->get_gedcom($gedcom_file);
+          /// get all indis
+          $indis = $gedcom->getIndi();
+          /// iterate over all indis and delete photo if exist
+          foreach($indis as $indi){
+                $note = $indi->getNote();
+    
+                $photo = null;
+                if($note != null and $note != []){
+                    $photo = $note[0]->getNote();
+                }
+    
+                if($photo != null){
+                  if (Storage::exists('portraits/'.$photo)) {
+                      Storage::delete('portraits/'.$photo);
+                  }
+                }
+          }
+    
+          /// delete gedcom file
+          if (Storage::exists('gedcoms/'.$gedcom_file)) {
+            Storage::delete('gedcoms/'.$gedcom_file);
+          }
+        }
+    
+        // delete all user data fantree
+    
+        /// get gedcom file
+        $gedcom_file = $this->get_gedcom_file('fantree',$user->id);
+        if($gedcom_file != null){
+          /// get gedcom object
+          $gedcom = $this->get_gedcom($gedcom_file);
+          /// get all indis
+          $indis = $gedcom->getIndi();
+          /// iterate over all indis and delete photo if exist
+          foreach($indis as $indi){
+                $note = $indi->getNote();
+    
+                $photo = null;
+                if($note != null and $note != []){
+                    $photo = $note[0]->getNote();
+                }
+    
+                if($photo != null){
+                  if (Storage::exists('portraits_fantree/'.$photo)) {
+                      Storage::delete('portraits_fantree/'.$photo);
+                  }
+                }
+          }
+    
+          /// delete gedcom file
+          if (Storage::exists('fantree_gedcoms/'.$gedcom_file)) {
+            Storage::delete('fantree_gedcoms/'.$gedcom_file);
+          }
+        }
+
+        
         $user->delete();
+
+        $title = "Your Account deleted forever";
+        $user_fullname = $user->firstname. " " . $user->lastname;
+        $content = "<b>Thank you for your journey in thestamboom.</b><br> all your data has been removed forever, you can create new account any time at thestamboom.com  ";
+        Mail::to($user->email)->send(new SubscriptionEmail($title, $user_fullname, $content));
 
         return redirect()->back()->with('success','user deleted with success');
     }

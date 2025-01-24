@@ -193,6 +193,7 @@
 @endsection
 @section('content')
     <!-- Start Pricing  Area -->
+
     <div class="row mt-4">
         <div class="col">
             <div class="card bg-transparent shadow-none my-6 border-0">
@@ -247,16 +248,19 @@
                         </div>
                         <div class="row mt-4">
                             <div class="plan-statistics">
+                                @if(!$payment->expired)
                                 <div class="d-flex justify-content-between">
                                     <h6 class="mb-1"></h6>
                                     <h6 class="mb-1">{{ $payment->countdown()['passedDays'] }} of
                                         {{ $payment->countdown()['totalDays'] }} Days</h6>
                                 </div>
+                                
                                 <div class="progress mb-1 bg-label-primary" style="height: 10px;">
                                     <div class="progress-bar" style="width: {{ $payment->countdown()['percentage'] }}%;"
                                         role="progressbar" aria-valuenow="{{ $payment->countdown()['percentage'] }}"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
+                                @endif
                                 @if ($payment->countdown()['percentage'] > 75)
                                     <small>Your plan requires update</small>
                                 @endif
@@ -274,8 +278,9 @@
             </div>
         </div>
     </div>
-    @if (Auth::user()->has_payment() != false)
 
+
+    
         <div class="row mt-4">
             @if ($payment->product->fantree == true)
             <div class="col-md-4">
@@ -411,5 +416,4 @@
             </div>
         </div>
 
-    @endif
 @endsection

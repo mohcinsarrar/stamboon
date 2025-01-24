@@ -1,8 +1,8 @@
 {
     "hero": {
         "enable": true,
-        "title": "Ancestry made visible",
-        "subTitle": "Visualizing your ancestry made easy! The Stamboom enables you to create your own Pedigree Chart and Fanchart. Make it to your personal size and colours, using our templates, backgrounds and other options.",
+        "title": "Remember Your Ancestry",
+        "subTitle": "\"Uncovering your ancestors has never been more exciting, bringing stories from the past to life. At The Stamboom, you create your own beautifully designed family tree. Perfect as a unique gift or a meaningful piece for your own wall!\"",
         "image": "images\/pCLbAOmxpyqN1z04cCTmiQXOyH4ej5uXLobRRta5.png",
         "buttonTitle": "Get Started!",
         "videoTitle": "Watch The Stamboom Video",
@@ -10,21 +10,13 @@
     },
     "aboutus": {
         "enable": true,
-        "image": "images\/BTpnNgvs0x5KaHWyf6IuuTvbSZMxrWW0PoSJ61GZ.webp",
-        "title": "Unique approach of your family tree",
-        "subTitle": "The Stamboom lets you create your familytree with great ease, in an attractive overview.",
+        "image": "images\/iroysn267nbsLxfe39k6HnAMlE5AHUMAXzaAJFox.png",
+        "title": "What is The Stamboom?",
+        "subTitle": "The Stamboom team provides beautifully designed tools to create and showcase family trees, helping you turn genealogical data into a stunning visual piece for your family.",
         "paragraphs": [
             {
-                "title": "How The Stamboom was created",
-                "content": "When working on the family history, you will gather a lot of data. At some point you want to put all that in an attractive overiew."
-            },
-            {
-                "title": "The added value of The Stamboom",
-                "content": "By enabling this tool for everybody, carpe diem"
-            },
-            {
-                "title": "We would appreciate you contacting us!",
-                "content": "Carpe diem"
+                "title": "Why The Stamboom?",
+                "content": "We created The Stamboom to fill a gap: attractive and easy-to-use templates for pedigree charts, fan charts, and more were hard to find. <br><br>Our tools make it simple for everyone to design and display their family history in a clear, engaging way - so you can share your family\u2019s story beautifully."
             }
         ]
     },
@@ -55,7 +47,7 @@
     "cta": {
         "enable": true,
         "title": "Distinguish between Fanchart and Pedigree",
-        "subTitle": "A Fanchart is a semi-circular diagram that radiates outward from a central person, visually expanding in a fan shape as it traces multiple generations of ancestors. It offers a broader, more comprehensive view, displaying numerous family lines at once. \r\n\r\n\r\nA Pedigree is a traditional, branching family tree that represents the relationships between multiple family members over generations, often including siblings.  It typically displays how various individuals within a family are related, with each branch representing a different line of descent.",
+        "subTitle": "A Fanchart is a semi-circular diagram that radiates outward from a central person,  expanding in a fan shape as it traces multiple generations of ancestors. It offers a broader, more comprehensive view, displaying numerous family lines at once. <br><br>A Pedigree is a traditional, branching family tree that represents the relationships between multiple family members over generations, often including siblings.  It typically displays how various individuals within a family are related, with each branch representing a different line of descent.",
         "buttonTitle": "Get started"
     },
     "faq": {
@@ -71,8 +63,12 @@
                 "response": "A payment system is a way to transfer money from one person or organization to another."
             },
             {
-                "question": "What do I need to get started?",
+                "question": "How do I create a person in the pedigree ( also called 'node')?",
                 "response": "Create 'persons' by entering their First Name(s), Familyname, DateOfBirth, DateOfDeath and a Photo. Missing some data? No problem; leave it open and\/or add it later on."
+            },
+            {
+                "question": "What does 'Stamboom' mean?",
+                "response": "Stamboom is Dutch for Pedigree, comparable with  Familytree."
             }
         ],
         "subTitle": null
