@@ -8,8 +8,8 @@ function add_parents(){
     formAddParents.querySelector("#mother_container input").disabled == false;
 
     formAddParents.querySelector('.person_id').value = personInfo.id
-    formAddParents.querySelector('.living').checked = true;
-    formAddParents.querySelector('.death-container').classList.add("d-none");
+    formAddParents.querySelector('.deceased').checked = true;
+    formAddParents.querySelector('.death-container').classList.remove("d-none");
 
     formAddParents.querySelector('#date-msg span').innerHTML = "Date format : "+treeConfiguration.default_date+" or YYYY"
 

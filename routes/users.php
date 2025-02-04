@@ -4,7 +4,12 @@ use App\Http\Controllers\users\DashboardController;
 use App\Http\Controllers\users\SubscriptionController;
 use App\Http\Controllers\users\ProfileController;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
+Route::get('/check-auth', function (Request $request) {
+    return response()->json(['authenticated' => Auth::check()]);
+});
 
 
 

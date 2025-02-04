@@ -49,7 +49,7 @@ $(document).on("change", "#exportModal #type", function () {
 
 
 $(document).on("click", "#exportBtn", function () {
-  document.getElementById('fit').click();
+  //document.getElementById('fit').click();
 
   var type = document.querySelector('#exportModal #type').value;
   var include_note = document.querySelector('#exportModal #include_note').checked;
@@ -167,7 +167,7 @@ function downloadPdf(formatpdf, orientation,include_note,include_weapon) {
   }
 
   d3_to_png('#graph svg', 'familytree', {
-      scale: 1 ,
+      scale: 3 ,
       format: 'png',
       quality: 1,
       download: false,
@@ -200,7 +200,7 @@ function downloadPdf(formatpdf, orientation,include_note,include_weapon) {
         const yOffset = (pageHeight - drawHeight) / 2;
       
         pdf.addImage(img, 'JPEG', 5, 5, drawWidth - 5 , drawHeight - 5);
-        pdf.save('chart.pdf');
+        pdf.save('familytree.pdf');
       
       };
       img.src = fileData;

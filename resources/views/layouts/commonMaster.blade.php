@@ -98,6 +98,21 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+    <script>
+        function checkAuth() {
+            fetch('/check-auth')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.authenticated) {
+                        window.location.href = "/login"; // Redirect to login page
+                    }
+                })
+                .catch(error => console.error('Auth check failed:', error));
+        }
+
+        // Check authentication every 60 seconds (adjust as needed)
+        setInterval(checkAuth, 60000);
+    </script>
 
 </body>
 

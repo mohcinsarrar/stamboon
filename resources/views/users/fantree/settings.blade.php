@@ -203,9 +203,24 @@
                                 <div class="row mb-4">
                                     <div class="col">
                                         <div class="row">
-                                            <div class="col-lg-3 col-md-6 col-12 mb-2">
+                                            <div class="col-lg-4 col-md-6 col-12 mb-2">
                                                 <div
-                                                    class="form-check custom-option custom-option-image custom-option-image-check checked">
+                                                    class="form-check custom-option custom-option-image custom-option-image-check">
+                                                    <input class="form-check-input customimagescheckboxbg"
+                                                        type="checkbox" name="bg_template" value="0"
+                                                        id="customCheckboxImgbg0">
+                                                    <label
+                                                        class="form-check-label custom-option-content  d-flex justify-content-center align-items-center"
+                                                        for="customCheckboxImgbg0" style="height: 120px;">
+                                                        <span class="custom-option-body">
+                                                            <h5>No background</h5>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-12 mb-2">
+                                                <div
+                                                    class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg"
                                                         type="checkbox" name="bg_template" value="1"
                                                         id="customCheckboxImgbg1">
@@ -218,7 +233,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-6 col-12 mb-2">
+                                            <div class="col-lg-4 col-md-6 col-12 mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg "
@@ -233,7 +248,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-6 col-12  mb-2">
+                                            <div class="col-lg-4 col-md-6 col-12  mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg"
@@ -248,7 +263,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-6 col-12  mb-2">
+                                            <div class="col-lg-4 col-md-6 col-12  mb-2">
                                                 <div
                                                     class="form-check custom-option custom-option-image custom-option-image-check">
                                                     <input class="form-check-input customimagescheckboxbg"

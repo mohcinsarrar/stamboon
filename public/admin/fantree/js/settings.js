@@ -12,6 +12,7 @@ document.querySelector('#open_settings').addEventListener('click', function (eve
         });
       } else {
         // If trying to uncheck the only checked checkbox, prevent it
+        this.parentElement.classList.add("checked")
         event.preventDefault();
       }
     });
@@ -29,6 +30,7 @@ document.querySelector('#open_settings').addEventListener('click', function (eve
         });
       } else {
         // If trying to uncheck the only checked checkbox, prevent it
+        this.parentElement.classList.add("checked")
         event.preventDefault();
       }
     });
@@ -46,6 +48,7 @@ document.querySelector('#open_settings').addEventListener('click', function (eve
         });
       } else {
         // If trying to uncheck the only checked checkbox, prevent it
+        this.parentElement.classList.add("checked")
         event.preventDefault();
       }
     });
@@ -63,6 +66,7 @@ document.querySelector('#open_settings').addEventListener('click', function (eve
         });
       } else {
         // If trying to uncheck the only checked checkbox, prevent it
+        this.parentElement.classList.add("checked")
         event.preventDefault();
       }
     });
@@ -75,13 +79,15 @@ document.querySelector('#open_settings').addEventListener('click', function (eve
       if (this.checked) {
         document.querySelectorAll('.customimagescheckboxbg').forEach((cb) => {
           if (cb !== this) {
+            console.log(cb)
             cb.checked = false;
             cb.parentElement.classList.remove("checked")
           }
         });
       } else {
         // If trying to uncheck the only checked checkbox, prevent it
-        //event.preventDefault();
+        this.parentElement.classList.add("checked")
+        event.preventDefault();
       }
     });
   });
@@ -225,15 +231,18 @@ function init_settings(settings) {
   document.querySelector('#settings input[name="default_filter"][value="' + settings.default_filter + '"]').checked = true
 
   // init node-template
+
   const checkbox = document.querySelector(`.customimagescheckbox[value="${settings.node_template}"]`);
   const checkboxbg = document.querySelector(`.customimagescheckboxbg[value="${settings.bg_template}"]`);
 
   if (checkbox) {
     checkbox.checked = true;
+    checkbox.parentElement.classList.add("checked")
   }
 
   if (checkboxbg) {
     checkboxbg.checked = true;
+    checkboxbg.parentElement.classList.add("checked")
   }
   // classic  
 

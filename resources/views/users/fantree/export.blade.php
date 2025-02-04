@@ -55,7 +55,7 @@
                     <label for="orientation" class="form-label">Orientation</label>
                     <select id="orientation" class="form-select">
                         <option value="p">Portrait</option>
-                        <option value="l">Landscape</option>
+                        <option value="l" checked>Landscape</option>
                     </select>
                 </div>
                 <div class="row mt-4 justify-content-end">

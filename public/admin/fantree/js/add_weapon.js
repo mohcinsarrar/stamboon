@@ -102,7 +102,8 @@ document.querySelector('#addWeaponModal #import-weapon').onclick = function () {
     const file = $('#addWeaponModal #weapon').prop('files')[0];
 
     var myModal = bootstrap.Modal.getInstance(document.getElementById('addWeaponModal'));
-    if (!file) {
+
+        if (!file) {
         show_toast('danger', 'error', 'No file selected')
         return;
     }
@@ -132,8 +133,9 @@ document.querySelector('#addWeaponModal #import-weapon').onclick = function () {
                 draw_tree()
             } else {
                 show_toast('danger', 'error', data.error)
+                myModal.hide();
             }
-            myModal.hide();
+            
 
         },
         error: function (xhr, status, error) {
