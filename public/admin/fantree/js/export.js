@@ -49,7 +49,14 @@ $(document).on("change", "#exportModal #type", function () {
 
 
 $(document).on("click", "#exportBtn", function () {
+  document.getElementById('fit').click();
+
   var type = document.querySelector('#exportModal #type').value;
+  var include_note = document.querySelector('#exportModal #include_note').checked;
+  var include_weapon = document.querySelector('#exportModal #include_weapon').checked;
+
+  document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-none')
+  document.querySelector('#exportModal #exportModalSpinner').classList.add('d-flex')
 
   $.ajaxSetup({
     headers: {
@@ -66,23 +73,33 @@ $(document).on("click", "#exportBtn", function () {
           if (data.error == false) {
             if (type == "png") {
               var format = document.querySelector('#exportModal #format').value;
-              exportGraph(format)
+
+              exportGraph(format,include_note,include_weapon)
+              document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
+                document.querySelector('#exportModal #exportModalSpinner').classList.add('d-none')
             }
             else {
               if (type == "pdf") {
-                var format = document.querySelector('#exportModal #formatPdf').value;
+                var formatpdf = document.querySelector('#exportModal #formatPdf').value;
+
                 var orientation = document.querySelector('#exportModal #orientation').value;
-                downloadPdf(format, orientation)
+                downloadPdf(formatpdf, orientation,include_note,include_weapon)
+                document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
+                document.querySelector('#exportModal #exportModalSpinner').classList.add('d-none')
               }
             }
             
           } else {
               show_toast('danger', 'error', "can't print, print limit reached!")
+              document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
+              document.querySelector('#exportModal #exportModalSpinner').classList.add('d-none')
           }
 
       },
       error: function(xhr, status, error) {
           show_toast('danger', 'error', "can't print, please try again !")
+          document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
+          document.querySelector('#exportModal #exportModalSpinner').classList.add('d-none')
           return null;
       }
   });
@@ -92,7 +109,7 @@ $(document).on("click", "#exportBtn", function () {
 
 });
 
-function exportGraph(format) {
+function exportGraph(scale,include_note,include_weapon) {
   let background;
   if(treeConfiguration.bg_template != '0'){
     background = 'white'
@@ -101,19 +118,28 @@ function exportGraph(format) {
     background = null
   }
 
+  let ignores = [];
+
+  if(include_note == false){
+    ignores.push('.draggable')
+  }
+
+  if(include_weapon == false){
+    ignores.push('.weapon')
+  }
+
   d3_to_png('#graph svg', 'familytree', {
-      scale: format ,
+      scale: scale ,
       format: 'png',
       quality: 1,
       download: true,
-      ignore: '.ignored'
+      ignores: ignores,
+      fonts: [{name:'Charm', url : 'https://fonts.gstatic.com/s/charm/v11/7cHmv4oii5K0MdYoK-4.woff2'}]
     }).then(fileData => {
-      
+
     });
 
-    const modal = document.getElementById('exportModal')
-    const bsmodal = bootstrap.Modal.getInstance(modal)
-    bsmodal.hide()
+    
 
   
 }
@@ -121,58 +147,98 @@ function exportGraph(format) {
 
 
 
-function downloadPdf(format, orientation) {
+function downloadPdf(formatpdf, orientation,include_note,include_weapon) {
+  let background;
+  if(treeConfiguration.bg_template != '0'){
+    background = 'white'
+  }
+  else{
+    background = null
+  }
 
+  let ignores = [];
+
+  if(include_note == false){
+    ignores.push('.draggable')
+  }
+
+  if(include_weapon == false){
+    ignores.push('.weapon')
+  }
 
   d3_to_png('#graph svg', 'familytree', {
-    scale: 3,
+      scale: 1 ,
+      format: 'png',
+      quality: 1,
+      download: false,
+      ignores: ignores,
+      fonts: [{name:'Charm', url : 'https://fonts.gstatic.com/s/charm/v11/7cHmv4oii5K0MdYoK-4.woff2'}]
+    }).then(fileData => {
+
+      var img = new Image();
+      
+      img.onload = function () {
+        var pdf = new jspdf.jsPDF({ orientation: orientation, unit: 'px', format: formatpdf });
+
+        var pageWidth = pdf.internal.pageSize.getWidth();
+        var pageHeight = pdf.internal.pageSize.getHeight();
+      
+        const imgAspectRatio = img.width / img.height;
+        const pageAspectRatio = pageWidth / pageHeight;
+      
+        let drawWidth, drawHeight;
+      
+        if (imgAspectRatio > pageAspectRatio) {
+          drawWidth = pageWidth;
+          drawHeight = drawWidth / imgAspectRatio;
+        } else {
+          drawHeight = pageHeight;
+          drawWidth = drawHeight * imgAspectRatio;
+        }
+      
+        const xOffset = (pageWidth - drawWidth) / 2;
+        const yOffset = (pageHeight - drawHeight) / 2;
+      
+        pdf.addImage(img, 'JPEG', 5, 5, drawWidth - 5 , drawHeight - 5);
+        pdf.save('chart.pdf');
+      
+      };
+      img.src = fileData;
+      
+    });
+
+
+  /*
+  d3_to_png('#graph svg', 'familytree', {
+    scale: scale,
     format: 'png',
-    quality: 0.01,
+    quality: 1,
     download: false,
-    ignore: '.ignored',
-    background: 'white'
-  }).then(base64 => {
-
-    var pdf = new jspdf.jsPDF({ orientation: orientation, unit: 'px', format: format });
-    var img = new Image();
-    img.src = base64;
+    ignores: ignores,
+    fonts: [{name:'Charm', url : 'https://fonts.gstatic.com/s/charm/v11/7cHmv4oii5K0MdYoK-4.woff2'}]
+  }).then(fileData => {
+    console.log(fileData)
     
-    // get pdf sizes
-    var pageWidth = pdf.internal.pageSize.getWidth();
-    var pageHeight = pdf.internal.pageSize.getHeight();
+    
+    var img = new Image();
+    
+    img.src = fileData;
 
-    const imgAspectRatio = img.width / img.height;
-    const pageAspectRatio = pageWidth / pageHeight;
+    img.onload = function () {
 
-    // compute image sizes to fit page and keep aspect ration
-    let drawWidth, drawHeight;
-
-    // Determine whether to scale based on width or height
-    if (imgAspectRatio > pageAspectRatio) {
-      // Scale based on width
-      drawWidth = pageWidth;
-      drawHeight = drawWidth / imgAspectRatio;
-    } else {
-      // Scale based on height
-      drawHeight = pageHeight;
-      drawWidth = drawHeight * imgAspectRatio;
-    }
-
-    // Center the image on the page
-    const xOffset = (pageWidth - drawWidth) / 2;
-    const yOffset = (pageHeight - drawHeight) / 2;
+      
+    };
+    
+    
 
 
-    pdf.addImage(
-      img,
-      'JPEG',
-      5,
-      5,
-      drawWidth - 5,
-      drawHeight - 5
-    );
-    pdf.save('chart.pdf');
   });
+  */
+
+
+  const modal = document.getElementById('exportModal')
+    const bsmodal = bootstrap.Modal.getInstance(modal)
+    bsmodal.hide()
 
 
 }

@@ -14,13 +14,13 @@
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button type="button" class="nav-link active waves-effect" role="tab"
-                                    data-bs-toggle="tab" data-bs-target="#general"
-                                    aria-controls="general" aria-selected="true">General</button>
+                                    data-bs-toggle="tab" data-bs-target="#general" aria-controls="general"
+                                    aria-selected="true">General</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link waves-effect" role="tab"
-                                    data-bs-toggle="tab" data-bs-target="#nameboxes_colors"
-                                    aria-controls="nameboxes_colors" aria-selected="true">Nameboxes colors</button>
+                                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#nameboxes_colors" aria-controls="nameboxes_colors"
+                                    aria-selected="true">Nameboxes colors</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab"
@@ -37,6 +37,11 @@
                                     data-bs-target="#default_portrait" aria-controls="default_portrait"
                                     aria-selected="false" tabindex="-1">Default Portrait</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#notes_tab" aria-controls="notes_tab" aria-selected="false"
+                                    tabindex="-1">Notes</button>
+                            </li>
 
 
                         </ul>
@@ -47,7 +52,7 @@
                                         <label for="default_date" class="form-label">Default date format</label>
                                         <select id="default_date" name="default_date" class="form-select">
                                             <option value="MM-DD-YYYY">MM-DD-YYYY</option>
-                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option> 
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
                                             <option value="DD-MM-YYYY">DD-MM-YYYY</option>
                                         </select>
                                     </div>
@@ -56,45 +61,54 @@
                                     <div class="col-md-6 col-12 mb-4">
                                         <h6>Photos type</h6>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="photos_type" id="photos_type1" value="round">
+                                            <input class="form-check-input" type="radio" name="photos_type"
+                                                id="photos_type1" value="round">
                                             <label class="form-check-label" for="photos_type1">Round</label>
-                                          </div>
-                                          <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="photos_type" id="photos_type2" value="oval">
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_type"
+                                                id="photos_type2" value="oval">
                                             <label class="form-check-label" for="photos_type2">Oval</label>
-                                          </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 col-12 mb-4">
                                         <h6>Photos direction</h6>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="photos_direction" id="photos_direction1" value="vertical">
+                                            <input class="form-check-input" type="radio" name="photos_direction"
+                                                id="photos_direction1" value="vertical">
                                             <label class="form-check-label" for="photos_direction1">Vertical</label>
-                                          </div>
-                                          <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="photos_direction" id="photos_direction2" value="radial">
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_direction"
+                                                id="photos_direction2" value="radial">
                                             <label class="form-check-label" for="photos_direction2">Radial</label>
-                                          </div>
+                                        </div>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div class="row mt-4">
                                     <div class="col-md-6 col-12 mb-4">
                                         <h6>Default photos filter</h6>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter1" value="none">
+                                            <input class="form-check-input" type="radio" name="default_filter"
+                                                id="default_filter1" value="none">
                                             <label class="form-check-label" for="default_filter1">None</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter2" value="grayscale">
-                                            <label class="form-check-label" for="default_filter2">black and white</label>
+                                            <input class="form-check-input" type="radio" name="default_filter"
+                                                id="default_filter2" value="grayscale">
+                                            <label class="form-check-label" for="default_filter2">black and
+                                                white</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter3" value="invert">
+                                            <input class="form-check-input" type="radio" name="default_filter"
+                                                id="default_filter3" value="invert">
                                             <label class="form-check-label" for="default_filter3">Invert</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="default_filter" id="default_filter4" value="sepia">
+                                            <input class="form-check-input" type="radio" name="default_filter"
+                                                id="default_filter4" value="sepia">
                                             <label class="form-check-label" for="default_filter4">Sepia</label>
                                         </div>
                                     </div>
@@ -256,50 +270,90 @@
                             <div class="tab-pane fade" id="default_portrait" role="tabpanel">
                                 <div class="row mb-4">
                                     <div class="col">
-                                            <div class="row">
-                                                <h5 class="mt-3">Female Portrait</h5>
-                                                @for ($i = 1; $i <= 6; $i++)
-                                                    <div class="col-lg-2 col-md-4 col-6 mb-2">
-                                                        <div
-                                                            class="form-check custom-option custom-option-image custom-option-image-check">
-                                                            <input class="form-check-input"
-                                                                name="default_female_image" type="checkbox"
-                                                                id="default_female_image{{ $i }}"
-                                                                value="female{{ $i }}">
-                                                            <label class="form-check-label custom-option-content"
-                                                                for="default_female_image{{ $i }}">
-                                                                <span class="custom-option-body">
-                                                                    <img src="{{ asset('storage/placeholder_portraits/female' . $i . '.jpg') }}"
-                                                                        alt="cbImg"
-                                                                        style="height: 190px;object-fit: cover;">
-                                                                </span>
-                                                            </label>
-                                                        </div>
+                                        <div class="row">
+                                            <h5 class="mt-3">Female Portrait</h5>
+                                            @for ($i = 1; $i <= 6; $i++)
+                                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                                    <div
+                                                        class="form-check custom-option custom-option-image custom-option-image-check">
+                                                        <input class="form-check-input" name="default_female_image"
+                                                            type="checkbox"
+                                                            id="default_female_image{{ $i }}"
+                                                            value="female{{ $i }}">
+                                                        <label class="form-check-label custom-option-content"
+                                                            for="default_female_image{{ $i }}">
+                                                            <span class="custom-option-body">
+                                                                <img src="{{ asset('storage/placeholder_portraits/female' . $i . '.jpg') }}"
+                                                                    alt="cbImg"
+                                                                    style="height: 190px;object-fit: cover;">
+                                                            </span>
+                                                        </label>
                                                     </div>
-                                                @endfor
-                                            </div>
-                                            <div class="row">
-                                                <h5 class="mt-3">Male Portrait</h5>
-                                                @for ($i = 1; $i <= 6; $i++)
-                                                    <div class="col-lg-2 col-md-4 col-6 mb-2">
-                                                        <div
-                                                            class="form-check custom-option custom-option-image custom-option-image-check">
-                                                            <input class="form-check-input" name="default_male_image"
-                                                                type="checkbox"
-                                                                id="default_male_image{{ $i + 7 }}"
-                                                                value="man{{ $i }}">
-                                                            <label class="form-check-label custom-option-content"
-                                                                for="default_male_image{{ $i + 7 }}">
-                                                                <span class="custom-option-body">
-                                                                    <img src="{{ asset('storage/placeholder_portraits/man' . $i . '.jpg') }}"
-                                                                        alt="cbImg"
-                                                                        style="height: 190px;object-fit: cover;">
-                                                                </span>
-                                                            </label>
-                                                        </div>
+                                                </div>
+                                            @endfor
+                                        </div>
+                                        <div class="row">
+                                            <h5 class="mt-3">Male Portrait</h5>
+                                            @for ($i = 1; $i <= 6; $i++)
+                                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                                    <div
+                                                        class="form-check custom-option custom-option-image custom-option-image-check">
+                                                        <input class="form-check-input" name="default_male_image"
+                                                            type="checkbox" id="default_male_image{{ $i + 7 }}"
+                                                            value="man{{ $i }}">
+                                                        <label class="form-check-label custom-option-content"
+                                                            for="default_male_image{{ $i + 7 }}">
+                                                            <span class="custom-option-body">
+                                                                <img src="{{ asset('storage/placeholder_portraits/man' . $i . '.jpg') }}"
+                                                                    alt="cbImg"
+                                                                    style="height: 190px;object-fit: cover;">
+                                                            </span>
+                                                        </label>
                                                     </div>
-                                                @endfor
+                                                </div>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="notes_tab" role="tabpanel">
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <div class="row justify-content-center">
+                                            <h5 class="mt-3 mb-3">Note background type</h5>
+                                            @for ($i = 1; $i <= 3; $i++)
+                                                <div class="col-lg-3 col-md-3 col-12 mb-2">
+                                                    <div
+                                                        class="form-check custom-option custom-option-image custom-option-image-check">
+                                                        <input class="form-check-input" name="note_type"
+                                                            type="checkbox" id="note_type{{ $i }}"
+                                                            value="{{ $i }}">
+                                                        <label class="form-check-label custom-option-content"
+                                                            for="note_type{{ $i }}">
+                                                            <span class="custom-option-body">
+                                                                <img src="{{ asset('assets/img/notesbg/note' . $i . '.png') }}"
+                                                                    alt="cbImg"
+                                                                    style="height: 190px;object-fit: cover;">
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endfor
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-6 col-12">
+                                                <div class="row">
+                                                    <p class="mt-2">Note text color</p>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col justify-content-start">
+                                                        <div id="color-picker-note"></div>
+                                                        <input type="hidden" name="note_text_color" id="">
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

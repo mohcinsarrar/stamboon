@@ -12,6 +12,42 @@ function inlineStyles(source, target) {
   }
 
 
+  async function loadFonts(fonts,target){
+
+
+    const imagePromises = Array.from(fonts).map(async (font) => {
+      const url = font.url;
+      if (url) {
+          const dataUrl = await fetch(url)
+              .then((res) => res.blob())
+              .then((blob) => {
+                  return new Promise((resolve) => {
+                      const reader = new FileReader();
+                      reader.onload = () => resolve(reader.result);
+                      reader.readAsDataURL(blob);
+                  });
+              });
+
+              let defs = target.querySelector("defs");
+              if (!defs) {
+                defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+                target.insertBefore(defs, target.firstChild); // Insert at the top
+              }
+              const styleElement = document.createElementNS("http://www.w3.org/2000/svg", "style");
+              styleElement.textContent = `
+              @font-face {
+                font-family: '${font.name}';
+                src: url('${dataUrl}') format('woff2');
+              }
+            `;
+              defs.appendChild(styleElement);
+      }
+  });
+
+
+  }
+
+
 
   async function embedImages(svgElement) {
     const images = svgElement.querySelectorAll('img');
@@ -56,13 +92,16 @@ function inlineStyles(source, target) {
       'src',
       'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
     );
+
+    
     return new Promise(resolve => {
       img.onload = () => {
         ctxt.drawImage(img, 0, 0);
-        resolve(
-          canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : format}`, quality)
-        );
+        // Log the base64 data URL after the image is drawn on the canvas
+        const base64Data = canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : format}`, quality);
+        resolve(base64Data);
       };
+    
     });
   }
   
@@ -83,20 +122,30 @@ function inlineStyles(source, target) {
       format = 'png',
       quality = 0.92,
       download = true,
-      ignore = null,
+      ignores = null,
       cssinline = 1,
-      background = null
+      background = null,
+      fonts = null
     } = {}
   ) {
+
+    
     // Accept a selector or directly a DOM Element
     source = source instanceof Element ? source : document.querySelector(source);
-  
+    
+    
+
     // Create a new SVG element similar to the source one to avoid modifying the
     // source element.
     let target = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     target.innerHTML = source.innerHTML;
     for (const attr of source.attributes) {
       target.setAttribute(attr.name, attr.value);
+    }
+
+     // embed fonts
+     if(fonts != null){
+      await loadFonts(fonts,target)
     }
     const backgroundImage = target.style.backgroundImage
 
@@ -111,12 +160,19 @@ function inlineStyles(source, target) {
     }
   
     //Remove unwanted elements
-    if (ignore != null) {
-      const elts = target.querySelectorAll(ignore);
+    if (ignores != []) {
+      ignores.forEach(ignore => {
+        const elts = target.querySelectorAll(ignore);
       [].forEach.call(elts, elt => elt.parentNode.removeChild(elt));
+      });
+      
     }
 
     await embedImages(target); // Embed images in the SVG
+
+   
+
+
   
     //Copy all html to a new canvas
     const file = await copyToCanvas({
@@ -126,9 +182,12 @@ function inlineStyles(source, target) {
       format,
       quality
     });
+
+
   
     if (download) {
       downloadImage({ file, name, format });
     }
+
     return file;
   };

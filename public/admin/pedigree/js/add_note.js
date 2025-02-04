@@ -72,7 +72,7 @@ function change_text(note_id, text) {
         success: function (data) {
             if (data.error == false) {
                 show_toast('success', 'success', 'note edited with success')
-                
+
             } else {
                 show_toast('danger', 'error', "can't edit note, please try again !")
             }
@@ -132,9 +132,9 @@ function showToolbar(rectGroup) {
         .on("click", function () {
             // Handle edit functionality
             var currentText = rectGroup.selectAll("text")
-            .nodes() // Get all the text nodes
-            .map(node => node.textContent) // Extract the text content from each node
-            .join(" ");
+                .nodes() // Get all the text nodes
+                .map(node => node.textContent) // Extract the text content from each node
+                .join(" ");
 
             edit_note(currentText, function (newText) {
                 // Update the rectangle's text with the new text
@@ -156,15 +156,15 @@ function showToolbar(rectGroup) {
             delete_note(note_id);
             rectGroup.remove(); // Remove the rectangle group
             toolbar.remove();   // Remove the toolbar
-            
-            
+
+
         });
 }
 
 // function to add note to DB and draw the note in the chart
 function add_note(text, xPos, yPos) {
 
-    
+
     // save note to DB if its a new note
     $.ajaxSetup({
         headers: {
@@ -183,7 +183,7 @@ function add_note(text, xPos, yPos) {
         dataType: 'json',
         success: function (data) {
             if (data.error == false) {
-                draw_note(text,xPos,yPos,data.note_id)
+                draw_note(text, xPos, yPos, data.note_id)
                 show_toast('success', 'success', 'note added with success')
             } else {
                 show_toast('danger', 'error', "can't add note, please try again !")
@@ -214,7 +214,7 @@ function edit_note(currentText, onSave) {
     document.querySelector('#editNoteModal #editNoteBtn').onclick = function () {
         const newText = document.querySelector('#editNoteModal #note').value;
         onSave(newText);  // Call the onSave callback with the new text
-        
+
         // Hide modal and overlay
         myModal.hide()
     };
@@ -223,7 +223,7 @@ function edit_note(currentText, onSave) {
 }
 
 // function to delete note
-function delete_note(note_id){
+function delete_note(note_id) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -289,7 +289,7 @@ function get_notes() {
 }
 
 // draw note on the graph
-function draw_note(text,xPos,yPos,note_id) {
+function draw_note(text, xPos, yPos, note_id) {
     // draw the note in the graph
     const textContent = text;
 

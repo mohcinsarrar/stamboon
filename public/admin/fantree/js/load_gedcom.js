@@ -8,6 +8,7 @@ function draw_tree() {
     }
     load_settings()
     applyChartStatus()
+    disable_tools_bar()
     
     // load gedcom file from api for the current user
     const promise = fetch('/fantree/getTree')
@@ -84,6 +85,9 @@ function draw_tree() {
                 return null;
             }
         });
+
+
+        
 
     });
 
@@ -228,7 +232,7 @@ function getRoot(childToParents) {
 function buildFamilyTree(individualRecords,childToParents,personId, order = 0) {
     
     const parents = childToParents[personId];
-    const personObject = individualRecords[personId];
+    let personObject = individualRecords[personId];
 
     if (!parents) {
         // If the person has no parents, return just their ID
@@ -273,6 +277,8 @@ function transformGedcom(gedcom) {
         
     }
     else{
+        // 63 families in total for 7 generations
+        
         families.forEach((family, key, array) => {
 
             // check if family is an object
@@ -302,14 +308,28 @@ function transformGedcom(gedcom) {
             
     
         });
-        
-    
+
         // get root person
         potentialRoots = getRoot(childToParents)
-    
+
+        // add persons to get an equal fantree
+        /*
+        let generations = calculateGenerations(childToParents,potentialRoots[0]);
+        let maxGeneration = Math.max(...Object.values(generations));
+        generateAncestors(childToParents,individualRecords,generations,maxGeneration)
+        */
+        //complete_tree(childToParents,potentialRoots[0])
+        
+
+        // 63 families and 127 individus
+
+        
         // Build trees for each root
         const familyTrees = potentialRoots.map(root => buildFamilyTree(individualRecords,childToParents,root));
+
         return familyTrees[0];
+
+        
     }
 
     
@@ -317,6 +337,96 @@ function transformGedcom(gedcom) {
 
 }
 
+function complete_tree(childToParents,potentialRoots){
+    let generations = calculateGenerations(childToParents,potentialRoots);
+
+    const countByGenerations = Object.values(generations).reduce((acc, value) => {
+        acc[value] = (acc[value] || 0) + 1;
+        return acc;
+    }, {});
+
+    
+    for (let generation_number = 2; generation_number <= 7; generation_number++) {
+
+        let generation = countByGenerations[generation_number];
+
+        if(generation != undefined && generation <  Math.pow(2, generation_number-1)){
+            let childs = Object.keys(generations).filter(key => generations[key] == generation_number-1);
+            const difference = childs.filter(item => !Object.keys(childToParents).includes(item));
+            difference.forEach(key => {
+                if (!childToParents[key]) {
+                    childToParents[key] = { husband_id: null, wife_id: null };
+                }
+            });
+        }
+
+    }
+    
+
+    
+
+
+}
+
+function calculateGenerations(familyTree, root) {
+    let generations = {};
+    let visited = new Set();  // To track visited nodes and avoid cycles
+  
+    function assignGeneration(child, generation) {
+      if (!visited.has(child)) {
+        visited.add(child);
+        generations[child] = generation;
+        
+        const parents = familyTree[child];
+        if (parents) {
+          // Recursive calls for parents
+          assignGeneration(parents.husband_id, generation + 1);
+          assignGeneration(parents.wife_id, generation + 1);
+        }
+      }
+    }
+  
+    // Assuming "@I1@" is the root (you can change this based on your root child)
+    assignGeneration(root, 1);
+  
+    return generations;
+  }
+let uniqueCounter = 1
+function generateAncestors(families, individualRecords,generations,maxGeneration) {
+    let husbands = new Set();
+    let wives = new Set();
+    let children = new Set(Object.keys(families)); // The keys are the children
+
+    // Identify husbands and wives from families
+    Object.entries(families).forEach(([child, { husband_id, wife_id }]) => {
+        husbands.add(husband_id);
+        wives.add(wife_id);
+    });
+
+    // Process husbands
+    Array.from(husbands).forEach((husbandId) => {
+        if (!children.has(husbandId) && generations[husbandId] < maxGeneration) {
+            let newHusbandId = `@HH${uniqueCounter++}`;
+            let newWifeId = `@HW${uniqueCounter++}`;
+            families[husbandId] = { husband_id: newHusbandId, wife_id: newWifeId };
+            individualRecords[newHusbandId] = {id: newHusbandId};
+            individualRecords[newWifeId] = {id: newWifeId};
+
+        }
+    });
+
+    // Process wives
+    Array.from(wives).forEach((wifeId) => {
+        if (!children.has(wifeId) && generations[wifeId] < maxGeneration) {
+            let newHusbandId = `@WH${uniqueCounter++}`;
+            let newWifeId = `@WW${uniqueCounter++}`;
+            families[wifeId] = { husband_id: newHusbandId, wife_id: newWifeId };
+            individualRecords[newHusbandId] = {id: newHusbandId};
+            individualRecords[newWifeId] = {id: newWifeId};
+        }
+    });
+
+}
 
 
 function parseDateToSort(dateStr) {

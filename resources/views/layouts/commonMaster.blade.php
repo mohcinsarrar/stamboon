@@ -25,6 +25,8 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
 
+    <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- toastr -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
@@ -46,7 +48,8 @@
     @yield('layoutContent')
     <!--/ Layout Content -->
     <!-- Toast with Animation -->
-    <div class="bs-toast toast toast-ex animate__animated my-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+    <div class="bs-toast toast toast-ex animate__animated my-2" role="alert" aria-live="assertive" aria-atomic="true"
+        data-bs-delay="5000">
         <div class="toast-header text-white">
             <div class="icon text-white"><i class="ti ti-bell ti-xs me-2"></i></div>
             <div class="me-auto fw-semibold title">Bootstrap</div>
@@ -86,14 +89,13 @@
         })
     </script>
     <script>
-        
         $(function() {
             $('[data-toggle="tooltip"]').tooltip()
         })
         // Initialize tooltip
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
 

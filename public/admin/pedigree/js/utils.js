@@ -385,6 +385,7 @@ function test_max_generation() {
     }
 
     const maxDepth = Math.max(...nodes.map(item => item.depth));
+    
     if(maxDepth > treeConfiguration.maxGenerations){
         document.querySelector('#max-generations-alert').style.display = "block";
         document.querySelector('#max-generations-alert div.alert').innerHTML = "The number of generations (" + maxDepth + ") exceed the max generations available (" + treeConfiguration.maxGenerations + ")";

@@ -51,6 +51,24 @@ use ZipArchive;
 class FantreeController extends Controller
 {
 
+    private array $months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+     
+
+    private function dateStr($date){
+        $records = explode('-', $date);
+        if(sizeof($records) == 1){
+            $year = $records[0];
+            return "$year";
+        }
+        $day = $records[1];
+        $month = $records[1];
+        $year = $records[0];
+        $monthName = $this->months[$month-1];
+
+        return "$day $monthName $year";
+    }
+    
 
     public function index(Request $request){
 
@@ -100,6 +118,7 @@ class FantreeController extends Controller
 
         $max_generation = $product->fantree_max_generation;
 
+        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
 
         return view('users.fantree.index', compact('print_types','selected_output_png','selected_output_pdf','has_payment'));
     }
@@ -107,10 +126,6 @@ class FantreeController extends Controller
     // import a new gedcom file
     public function importgedcom(Request $request){
 
-        Fantree::create([
-            'user_id' => Auth::user()->id
-        ]);
-        
         $input = $request->all();
 
         Validator::validate($input, [
@@ -226,7 +241,7 @@ class FantreeController extends Controller
         if($request->isMethod('post')){
 
             $inputs = $request->except(['_token']);
-            
+
             Validator::make($inputs, [
                 'male_color' => ['required',new HexColor],
                 'female_color' => ['required',new HexColor],
@@ -241,8 +256,14 @@ class FantreeController extends Controller
                 
                 'bg_template' => ['nullable',Rule::in(['1', '2', '3', '4'])],
 
+                'note_type' => ['required',Rule::in(['1', '2', '3', '4'])],
+
+                'note_text_color' => ['required',new HexColor],
+
                 'default_date' => ['required',Rule::in(['MM-DD-YYYY', 'YYYY-MM-DD', 'DD-MM-YYYY'])]
             ])->validate();
+
+            
 
             if($request->bg_template == null){
                 $inputs['bg_template'] = '0';
@@ -474,17 +495,18 @@ class FantreeController extends Controller
             $sex = 'F';
         }
 
-        
+
         // create parent
         $parent = $this->create_indi($gedcom, $request->firstname, $request->lastname, $sex, $request->status, $request->birth_date, $request->death_date);
+        
         // add parent to gedcom
         $gedcom->addIndi($parent);
 
         // check if the child has already a family where he is a child, else create it
         $family = $this->get_family_for_parent($gedcom, $child, $parent, $sex);
 
-
         $gedcomService->writer($gedcom,$gedcom_file);
+        
         return redirect()->back()->with('success','parent added with success');
     }
 
@@ -494,11 +516,12 @@ class FantreeController extends Controller
         
         // the child not have a family where is it child, create it
         if($family == null or $family == []){
+            
             // create new family and add the child to it (it the person)
             $new_family = new Fam();
             $newFamId = $this->new_family_id($gedcom);
             $new_family->setId($newFamId);
-
+            
             // add child
             $children = $new_family->getChil();
             array_push($children,$child->getId());
@@ -514,7 +537,11 @@ class FantreeController extends Controller
                 $new_family->setWife($parent->getId());
             }
 
+            
+
             $gedcom->addFam($new_family);
+
+            
 
             // add new_family as famc to child
             /// create FAMC for child
@@ -523,10 +550,13 @@ class FantreeController extends Controller
             /// add FAMC to child
             $child->addFamc($famc);
 
+            
             // add new_family as fams to parent
             $fams = new IndiFams();
             $fams->setFams($newFamId);
             $parent->addFams($fams);
+
+            
 
         }
         // child has family, add parent

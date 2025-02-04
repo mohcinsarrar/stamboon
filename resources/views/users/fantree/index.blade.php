@@ -22,11 +22,10 @@
 
 @section('page-style')
     <style>
-        .pcr-button{
-    border: 1px solid black !important;
-    width: 100% !important;
-  }
-
+        .pcr-button {
+            border: 1px solid black !important;
+            width: 100% !important;
+        }
     </style>
     <style>
         /* custom-modal  */
@@ -88,7 +87,7 @@
     <script src="{{ asset('assets/vendor/libs/jspdf/jspdf.umd.min.js') }}"></script>
 
 
-    
+
 
 @endsection
 
@@ -97,9 +96,9 @@
     <script src="{{ asset('admin/fantree/js/utils.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/load_gedcom.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/import_gedcom.js') }}?{{ time() }}"></script>
-    
+
     <script src="{{ asset('admin/fantree/js/settings.js') }}?{{ time() }}"></script>
-    
+
     <script src="{{ asset('admin/fantree/js/add_parents.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/add_person.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/edit_person.js') }}?{{ time() }}"></script>
@@ -114,6 +113,11 @@
     <script src="{{ asset('admin/fantree/js/export.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/save.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/fantree/js/download.js') }}?{{ time() }}"></script>
+
+    <script src="{{ asset('admin/fantree/js/add_note.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/fantree/js/add_weapon.js') }}?{{ time() }}"></script>
+
+
     <script src="{{ asset('admin/fantree/js/index.js') }}?{{ time() }}"></script>
     <script>
         draw_tree()
@@ -137,6 +141,10 @@
     @include('users.fantree.edit_person')
 
     @include('users.fantree.edit_image')
+
+    @include('users.fantree.add_note')
+
+    @include('users.fantree.add_weapon')
 
     @include('users.fantree.export')
 
@@ -193,10 +201,30 @@
         </div>
     </div>
     <!-- main graph -->
+    @if (Auth::user()->has_payment() == false)
+        @if (Auth::user()->last_payment() != false)
+            <a href="{{ route('users.subscription.index') }}">
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <span class="alert-icon text-secondary me-2">
+                        <i class="ti ti-alert-triangle ti-xs"></i>
+                    </span>
+                    You subscription expired, Order newto extend your account !!
+                </div>
+            </a>
+        @else
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <span class="alert-icon text-secondary me-2">
+                    <i class="ti ti-alert-triangle ti-xs"></i>
+                </span>
+                You don't have any subscription plan, Order one now !!
+            </div>
+        @endif
+    @endif
     <div class="card h-100" id="main_graph">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
-                <button {{ $has_payment == false ? 'disabled' : '' }} id="add-first-person" type="button" class="btn btn-primary waves-effect waves-light">
+                <button {{ $has_payment == false ? 'disabled' : '' }} id="add-first-person" type="button"
+                    class="btn btn-primary waves-effect waves-light">
                     <span class="ti-xs ti ti-plus me-1"></span>
                     Add person
                 </button>
@@ -218,12 +246,19 @@
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-download fs-4"></i></button>
                 </div>
-                <!--
-                            <div class="row  mb-2 justify-content-center">
-                                <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
-                                        class="ti ti-note fs-4"></i></button>
-                            </div>
-                        -->
+
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Add Family weapon">
+                    <button id="addWeapon" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-shield-chevron fs-4"></i></button>
+                </div>
+
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Add notes">
+                    <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
+                            class="ti ti-note fs-4"></i></button>
+                </div>
+
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
                     title="Print your pedigree">
                     <button {{ $has_payment == false ? 'disabled' : '' }} id="export" type="button"

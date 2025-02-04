@@ -355,31 +355,6 @@ function apply_change_node_position() {
 }
 
 
-function test_max_nodes(targetDepth) {
-    if (chart == undefined) {
-        return false;
-    }
-
-    nodes = chart.selectAll(".node").data()
-    if (nodes == undefined || nodes == []) {
-        return false;
-    }
-    var idVisited = []
-    var count = 0;
-    nodes.forEach((node) => {
-        id = node.data.personId
-        if (node.depth == targetDepth && !idVisited.includes(id)) {
-            idVisited.push(id)
-            count = count + 1
-            if (node.data.spouseIds != undefined) {
-
-                count = count + node.data.spouseIds.length
-            }
-        }
-    });
-
-    return count
-}
 
 function test_all_max_nodes() {
     if (chart == undefined) {
@@ -391,16 +366,19 @@ function test_all_max_nodes() {
         return false;
     }
 
-    nodes.forEach((node) => {
-        var count = test_max_nodes(node.depth);
-        if (count > treeConfiguration.max_nodes) {
-            document.querySelector('#max-node-alert').style.display = "block";
-            document.querySelector('#max-node-alert div.alert').innerHTML = "The number of persons (" + count + ") in generation " + node.depth + " exceed the max nodes available (" + treeConfiguration.maxNodes + ")";
-            d3.select("div#graph").selectAll("*").remove();
-            chart = undefined
-            return false;
+    const nodes_count = nodes.filter(obj => !obj.data || obj.data.id != undefined).length;
+
+    if (nodes_count >= treeConfiguration.max_nodes) {
+        document.querySelector('#max-node-alert').style.display = "block";
+        document.querySelector('#max-node-alert div.alert').innerHTML = "You have reached the max nodes available (" + treeConfiguration.max_nodes + ")";
+        return false;
+    }
+    else{
+        if(document.querySelector('#max-node-alert')){
+            document.querySelector('#max-node-alert').style.display = "none";
         }
-    });
+        return true;
+    }
 
 }
 
@@ -424,6 +402,16 @@ function disable_tools_bar() {
     });
 }
 
+function enable_tools_bar() {
+    const div = document.querySelector('#tools-bar');
+
+    // Disable all buttons inside the div
+    div.querySelectorAll('button').forEach(button => {
+        button.disabled = false;
+    });
+
+}
+
 
 function test_max_generation() {
     if (chart == undefined) {
@@ -436,11 +424,16 @@ function test_max_generation() {
     }
 
     const maxDepth = Math.max(...nodes.map(item => item.depth));
-    if(maxDepth > treeConfiguration.max_generation){
+
+    if(maxDepth+1 >= treeConfiguration.max_generation){
         document.querySelector('#max-generations-alert').style.display = "block";
-        document.querySelector('#max-generations-alert div.alert').innerHTML = "The number of generations (" + maxDepth + ") exceed the max generations available (" + treeConfiguration.maxGenerations + ")";
-        d3.select("div#graph").selectAll("*").remove();
-        chart = undefined
+        document.querySelector('#max-generations-alert div.alert').innerHTML = "You have reached the max generations available (" + treeConfiguration.max_generation + ")";
+    }
+    else{
+        if(document.querySelector('#max-generations-alert')){
+            document.querySelector('#max-generations-alert').style.display = "none";
+        }
+        
     }
 
     return maxDepth

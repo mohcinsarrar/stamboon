@@ -26,7 +26,9 @@ class SettingFantree extends Model
         'default_filter',
         'default_date',
         'photos_type',
-        'photos_direction'
+        'photos_direction',
+        'note_type',
+        'note_text_color'
     ];
 
     public function user(): BelongsTo

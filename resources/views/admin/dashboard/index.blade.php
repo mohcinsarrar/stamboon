@@ -253,7 +253,11 @@
                                 <h5 class="mb-0 fw-bold">{{ $name }}</h5>
                                 <span class="badge badge-dot my-2 cursor-pointer rounded-pill"
                                     style="background-color: {{ $colors[$loop->index] }};width:35px; height:6px;"></span>
-                                <div class="text-muted">{{ ($product / array_sum($products)) * 100 }} %</div>
+                                    @if(array_sum($products) != 0)
+                                <div class="text-muted">{{ ($product / array_sum($products)) * 100}} %</div>
+                                @else
+                                <div class="text-muted">{{ 0 }} %</div>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

@@ -293,15 +293,18 @@ class GedcomService
             
             // write WIFE
             $wife = $family->getWife();
-            if($husb != null){
+            if($wife != null){
                 fwrite($fileHandle, "1 WIFE @$wife@\n");
             }
-
+            
             // write children
             $children = $family->getChil();
+            
             foreach ($children as $key => $child){
                 fwrite($fileHandle, "1 CHIL @$child@\n");
             }
+
+            
         }
     }
 
@@ -338,11 +341,12 @@ class GedcomService
 
         // convert families
         $families = $gedcom->getFam();
+        
         $this->convert_families($families, $file);
 
         // write footer
         fwrite($file, "0 TRLR\n");
-
+        
         // Close the file
         fclose($file);
 

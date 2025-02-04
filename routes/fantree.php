@@ -4,7 +4,7 @@ use App\Http\Controllers\users\DashboardController;
 use App\Http\Controllers\users\SubscriptionController;
 use App\Http\Controllers\users\FantreeController;
 use App\Http\Controllers\users\ProfileController;
-use App\Http\Controllers\users\NoteController;
+use App\Http\Controllers\users\NoteFantreeController;
 
 
 
@@ -39,11 +39,18 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         
 
         // notes
-        Route::post('/fantree/savenote', [NoteController::class,'save'])->name('fantree.savenote');
-        Route::post('/fantree/editnoteposition', [NoteController::class,'edit_position'])->name('fantree.editnoteposition');
-        Route::post('/fantree/editnotetext', [NoteController::class,'edit_text'])->name('fantree.editnotetext');
-        Route::post('/fantree/deletenote', [NoteController::class,'delete'])->name('fantree.deletenote');
-        Route::get('/fantree/getnotes', [NoteController::class,'index'])->name('fantree.getnotes');
+        Route::post('/fantree/savenote', [NoteFantreeController::class,'save'])->name('fantree.savenote');
+        Route::post('/fantree/editnoteposition', [NoteFantreeController::class,'edit_position'])->name('fantree.editnoteposition');
+        Route::post('/fantree/editnotetext', [NoteFantreeController::class,'edit_text'])->name('fantree.editnotetext');
+        Route::post('/fantree/deletenote', [NoteFantreeController::class,'delete'])->name('fantree.deletenote');
+        Route::get('/fantree/getnotes', [NoteFantreeController::class,'index'])->name('fantree.getnotes');
+
+        // add weapon inside NoteFantreeController  
+        Route::post('/fantree/addweapon', [NoteFantreeController::class,'addweapon'])->name('fantree.addweapon');
+        Route::post('/fantree/deleteweapon', [NoteFantreeController::class,'deleteweapon'])->name('fantree.deleteweapon');
+        Route::get('/fantree/loadweapon', [NoteFantreeController::class,'loadweapon'])->name('fantree.loadweapon');
+
+
         
 
 

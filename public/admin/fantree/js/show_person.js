@@ -33,12 +33,16 @@ function nodeClicked(d) {
         modalBody.querySelector('.personImage').src = "/storage/placeholder_portraits_fantree/" + treeConfiguration.default_female_image + ".jpg";
       }
     }
-  
-    // check if person can add parents
-    if (person_parent_length(personInfo) == 2) {
+
+
+    // check if person can add parents and if max generations not reached
+    nodes = chart.selectAll(".node").data()
+    const nodes_count = nodes.filter(obj => !obj.data || obj.data.id != undefined).length;
+
+    if(person_parent_length(personInfo) == 2 || d.depth + 1 >= treeConfiguration.max_generation || nodes_count >= treeConfiguration.max_nodes){
       modalBody.querySelector('#addParentsContainer').style.display = 'none';
     }
-    else {
+    else{
       modalBody.querySelector('#addParentsContainer').style.display = 'block';
       document.getElementById('nodeModalBody').querySelector('#addParents').addEventListener('click', (event) => {
         add_parents()
