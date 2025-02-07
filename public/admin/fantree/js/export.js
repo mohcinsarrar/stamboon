@@ -109,6 +109,8 @@ $(document).on("click", "#exportBtn", function () {
 
 });
 
+
+
 function exportGraph(scale,include_note,include_weapon) {
   let background;
   if(treeConfiguration.bg_template != '0'){

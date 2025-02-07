@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Pedigree;
 use App\Models\Note;
+use Illuminate\Support\Facades\Storage;
 
 
 class NoteController extends Controller
@@ -110,6 +111,73 @@ class NoteController extends Controller
         
             return response()->json(['error'=>false,'msg' => 'error']);
     }
+
+    public function addweapon(Request $request){
+        $inputs = $request->all();
+
+        Validator::validate($inputs, [
+            'file' => 'required|image|mimes:png|max:2048',
+        ]);
+
+        $pedigree = pedigree::where('user_id',Auth::user()->id)->first();
+            if($pedigree == null){
+                return response()->json(['error'=>true,'msg' => 'error']);
+            }
+
+        // delete file if exist
+        if($pedigree->weapon != null){
+            if (Storage::exists($pedigree->weapon)) {
+                Storage::delete($pedigree->weapon);
+              }
+        }
+
+        $weapon = $request->file('file')->store('pedigree_weapons');
+        
+        $pedigree->weapon = $weapon;
+
+        $pedigree->save();
+
+        return response()->json(['error'=>false,'msg' => 'weapon added']);
+
+    }
+
+    public function deleteweapon(Request $request){
+
+
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            if($pedigree == null){
+                return response()->json(['error'=>true,'msg' => 'error']);
+            }
+
+        // delete file if exist
+        if($pedigree->weapon != null){
+            if (Storage::exists($pedigree->weapon)) {
+                Storage::delete($pedigree->weapon);
+              }
+        }
+        
+        $pedigree->weapon = null;
+
+        $pedigree->save();
+
+        return response()->json(['error'=>false,'msg' => 'weapon deleted']);
+
+    }
+
+    public function loadweapon(Request $request){
+
+
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            if($pedigree == null){
+                return response()->json(['error'=>true,'msg' => 'error']);
+            }
+
+
+
+        return response()->json(['error'=>false,'weapon' => $pedigree->weapon]);
+
+    }
+
 
 
 

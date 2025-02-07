@@ -6,28 +6,47 @@
     if(chart == undefined){
       return;
   }
-    document.querySelectorAll('#settings input[name="default_male_image"]').forEach((checkbox) => {
-      checkbox.addEventListener('click', function(event) {
-        // If the checkbox is already checked, prevent it from being unchecked
-        if (this.checked) {
-          document.querySelectorAll('#settings input[name="default_male_image"]').forEach((cb) => {
-            if (cb !== this) {
-              cb.checked = false;
-              cb.parentElement.classList.remove("checked")
-            }
-          });
-        } else {
-          // If trying to uncheck the only checked checkbox, prevent it
-          event.preventDefault();
-        }
-      });
+  document.querySelectorAll('#settings input[name="default_male_image"]').forEach((checkbox) => {
+    checkbox.addEventListener('click', function (event) {
+      // If the checkbox is already checked, prevent it from being unchecked
+      if (this.checked) {
+        document.querySelectorAll('#settings input[name="default_male_image"]').forEach((cb) => {
+          if (cb !== this) {
+            cb.checked = false;
+            cb.parentElement.classList.remove("checked")
+          }
+        });
+      } else {
+        // If trying to uncheck the only checked checkbox, prevent it
+        this.parentElement.classList.add("checked")
+        event.preventDefault();
+      }
     });
+  });
 
-    document.querySelectorAll('#settings input[name="default_female_image"]').forEach((checkbox) => {
-      checkbox.addEventListener('click', function(event) {
+  document.querySelectorAll('#settings input[name="default_female_image"]').forEach((checkbox) => {
+    checkbox.addEventListener('click', function (event) {
+      // If the checkbox is already checked, prevent it from being unchecked
+      if (this.checked) {
+        document.querySelectorAll('#settings input[name="default_female_image"]').forEach((cb) => {
+          if (cb !== this) {
+            cb.checked = false;
+            cb.parentElement.classList.remove("checked")
+          }
+        });
+      } else {
+        // If trying to uncheck the only checked checkbox, prevent it
+        this.parentElement.classList.add("checked")
+        event.preventDefault();
+      }
+    });
+  });
+
+    document.querySelectorAll('#settings input[name="note_type"]').forEach((checkbox) => {
+      checkbox.addEventListener('click', function (event) {
         // If the checkbox is already checked, prevent it from being unchecked
         if (this.checked) {
-          document.querySelectorAll('#settings input[name="default_female_image"]').forEach((cb) => {
+          document.querySelectorAll('#settings input[name="note_type"]').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
               cb.parentElement.classList.remove("checked")
@@ -35,38 +54,44 @@
           });
         } else {
           // If trying to uncheck the only checked checkbox, prevent it
+          this.parentElement.classList.add("checked")
           event.preventDefault();
         }
       });
     });
 
     document.querySelectorAll('.customimagescheckbox').forEach((checkbox) => {
-      checkbox.addEventListener('click', function(event) {
+      checkbox.addEventListener('click', function (event) {
         // If the checkbox is already checked, prevent it from being unchecked
         if (this.checked) {
           document.querySelectorAll('.customimagescheckbox').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
+              cb.parentElement.classList.remove("checked")
             }
           });
         } else {
           // If trying to uncheck the only checked checkbox, prevent it
+          this.parentElement.classList.add("checked")
           event.preventDefault();
         }
       });
     });
-
+  
+  
     document.querySelectorAll('.customimagescheckboxbg').forEach((checkbox) => {
-      checkbox.addEventListener('click', function(event) {
+      checkbox.addEventListener('click', function (event) {
         // If the checkbox is already checked, prevent it from being unchecked
         if (this.checked) {
           document.querySelectorAll('.customimagescheckboxbg').forEach((cb) => {
             if (cb !== this) {
               cb.checked = false;
+              cb.parentElement.classList.remove("checked")
             }
           });
         } else {
           // If trying to uncheck the only checked checkbox, prevent it
+          this.parentElement.classList.add("checked")
           event.preventDefault();
         }
       });
@@ -180,6 +205,14 @@
     const colorBioChild = document.querySelector('#color-picker-bio-child');
     const colorAdopChild = document.querySelector('#color-picker-adop-child');
 
+    const colorNoteText = document.querySelector('#color-picker-note');
+
+    document.querySelector('#settings input[name="photos_type"][value="' + settings.photos_type + '"]').checked = true
+    document.querySelector('#settings input[name="default_filter"][value="' + settings.default_filter + '"]').checked = true
+
+    notetype = document.querySelector('#settings input[name="note_type"][value="' + settings.note_type + '"]')
+    notetype.checked = true
+    notetype.parentElement.classList.add("checked")
 
     // init colors types
     document.getElementById('boxColor').value=settings.box_color;
@@ -252,7 +285,9 @@
     }
 
 
-
+    if (colorNoteText) {
+      initColorPicker(colorNoteText, settings.note_text_color, 'input[name="note_text_color"]')
+    }
     
 
 

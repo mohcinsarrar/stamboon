@@ -4,9 +4,13 @@ function renderChart() {
     d3.select(treeConfiguration.chartContainer).selectAll("*").remove();
     chart = undefined
     var data = familyData;
+    const width = 1344;
+    const height = 839;
     chart = new d3.OrgChart()
         .container(treeConfiguration.chartContainer)
         .data(data)
+        .svgWidth(width)
+        .svgHeight(height)
         .initialExpandLevel(5)
         .layout('top')
         .onNodeClick((nodeId) => nodeClicked(nodeId))
@@ -272,6 +276,9 @@ function renderChart() {
     chart.render();
     applyChartStatus()
 
+    
+    
+
 
     // set background from settings
     set_background()
@@ -279,8 +286,12 @@ function renderChart() {
     // get notes from DB and draw them
     get_notes()
 
+    get_weapon()
+
+    enable_tools_bar()
+
     res = test_all_max_nodes()
-    console.log(res)
+
     if(res == false){
         chart = undefined
         return;
@@ -360,6 +371,28 @@ function getPersonNodeContent(personData, personType) {
     */
     // get the layout type to change nodeContent depending on layout type
     //console.log(chart.layout())
+
+    // photo settings
+    let filter;
+    if (treeConfiguration.default_filter == 'none') {
+      filter = "none"
+    }
+    if (treeConfiguration.default_filter == 'grayscale') {
+      filter = "grayscale(1)"
+    }
+    if (treeConfiguration.default_filter == 'invert') {
+      filter = "invert(1)"
+    }
+    if (treeConfiguration.default_filter == 'sepia') {
+      filter = "sepia(1)"
+    }
+
+
+
+    let imgSize;
+    
+
+    /////
     const person = {};
 
     if (personType === 'spouse') {
@@ -581,6 +614,7 @@ function getPersonNodeContent(personData, personType) {
                     ">
                     <img class="" src="${personIcon}" alt="${person.personName}" 
                     style="
+                        filter: ${filter};
                         vertical-align: middle;
                         box-sizing: border-box;
                         object-fit: cover;
@@ -700,6 +734,7 @@ function getPersonNodeContent(personData, personType) {
                 <div class="" style="margin-bottom: 1rem !important; box-sizing: border-box;"> 
                 <img src="${personIcon}" alt="${person.personName}" class="" 
                 style="
+                    filter: ${filter};
                     box-sizing: border-box;
                     /* style */
                     height: 100px;
@@ -777,7 +812,9 @@ function getPersonNodeContent(personData, personType) {
                 <div style="width: 100% !important; box-sizing: border-box;">
                 <img src="${personIcon}" alt="${person.personName}" class="" 
                 style="
+
                     /* style */
+                    filter: ${filter};
                     height: 100px;
                     width: 100px;
                     object-fit: cover;
@@ -823,6 +860,21 @@ function getPersonNodeContent(personData, personType) {
 
     if (treeConfiguration.nodeTemplate == "4") {
 
+        let top = "-20px";
+        if (treeConfiguration.photos_type == 'round') {
+            imgSize = {
+              width: `${treeConfiguration.nodeWidth - 2}px`,
+              height: `${treeConfiguration.nodeWidth - 2}px`
+            }
+            top = "-5px";
+          }
+          else {
+            imgSize = {
+              width: `${treeConfiguration.nodeWidth + 30}px`,
+              height: `${treeConfiguration.nodeWidth - 5}px`
+            }
+          }
+
         nodeContent += `
         <div class="person-member person-${person.personId}" 
         style="
@@ -861,15 +913,17 @@ function getPersonNodeContent(personData, personType) {
             box-sizing: border-box;
             "
             >
+
                 <img src="${personIcon}" alt="${person.personName}" class=""
                 style="
                     /* style */
+                    filter: ${filter};
                     position: absolute;
                     left: 50%;
-                    top: -20px;
+                    top: ${top};
                     transform: translate(-50%, -50%);
-                    height: ${treeConfiguration.nodeWidth + 30}px;
-                    width: ${treeConfiguration.nodeWidth - 5}px;
+                    height: ${imgSize.width};
+                    width: ${imgSize.height};
                     object-fit: cover;
                     border: 4px solid ${bandColor};
                     /* rounded */

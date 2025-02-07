@@ -2,6 +2,7 @@ document.getElementById('downloadButton').addEventListener('click', function () 
     if(chart == undefined){
         return;
     }
+    
     Swal.fire({
         title: 'Are you sure?',
         icon: 'info',
@@ -13,7 +14,8 @@ document.getElementById('downloadButton').addEventListener('click', function () 
         },
         buttonsStyling: false
       }).then(function (result) {
-        if(result.isConfiremd){
+        if(result.isConfirmed){
+            console.log('ff')
             fetch('/pedigree/download', {
                 method: 'POST',
                 headers: {

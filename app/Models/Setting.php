@@ -21,7 +21,11 @@ class Setting extends Model
         'bg_template',
         'default_male_image',
         'default_female_image',
-        'default_date'
+        'default_date',
+        'note_type',
+        'note_text_color',
+        'default_filter',
+        'photos_type'
     ];
 
     public function user(): BelongsTo

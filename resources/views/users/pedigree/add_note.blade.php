@@ -9,6 +9,7 @@
             <div class="modal-body pt-2">
                 <div class="mb-4">
                     <textarea class="form-control" id="note" rows="3"></textarea>
+                    <span id="charCounter"></span>
                 </div>
                 <div class="row mt-4 justify-content-end">
                     <div class="col-auto">
@@ -36,6 +37,7 @@
             <div class="modal-body pt-2">
                 <div class="mb-4">
                     <textarea class="form-control" id="note" rows="3"></textarea>
+                    <span id="charCounter"></span>
                 </div>
                 <div class="row mt-4 justify-content-end">
                     <div class="col-auto">

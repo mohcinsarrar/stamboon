@@ -254,7 +254,7 @@ class FantreeController extends Controller
 
                 'default_filter' => ['required',Rule::in(['none', 'grayscale', 'invert', 'sepia'])],
                 
-                'bg_template' => ['nullable',Rule::in(['1', '2', '3', '4'])],
+                'bg_template' => ['nullable',Rule::in(['0','1', '2', '3', '4'])],
 
                 'note_type' => ['required',Rule::in(['1', '2', '3', '4'])],
 

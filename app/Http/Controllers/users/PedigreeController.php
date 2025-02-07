@@ -529,12 +529,20 @@ class PedigreeController extends Controller
                 'adop_child_link_color' => ['required',new HexColor],
                 
                 'node_template' => ['required',Rule::in(['1', '2', '3', '4'])],
-                'bg_template' => ['required',Rule::in(['1', '2', '3', '4'])],
+                'bg_template' => ['nullable',Rule::in(['0','1', '2', '3', '4'])],
+
+                'note_type' => ['required',Rule::in(['1', '2', '3', '4'])],
+
+                'note_text_color' => ['required',new HexColor],
 
                 'default_date' => ['required',Rule::in(['MM-DD-YYYY', 'YYYY-MM-DD', 'DD-MM-YYYY'])]
             ])->validate();
 
             
+            if($request->bg_template == null){
+                $inputs['bg_template'] = '0';
+            }
+
             Setting::where('user_id',Auth::user()->id)->update($inputs);
 
             return redirect()->back()->with('success','settings updated with success');

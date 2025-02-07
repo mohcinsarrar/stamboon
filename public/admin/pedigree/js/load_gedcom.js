@@ -7,6 +7,9 @@ function draw_tree() {
         editChartStatus()
     }
 
+
+    disable_tools_bar()
+
     // load gedcom file from api for the current user
     const promise = fetch('/pedigree/getTree')
         .then(r => {
@@ -93,6 +96,13 @@ function draw_tree() {
                         // tempale
                         nodeTemplate : data.settings.node_template,
                         bgTemplate : data.settings.bg_template,
+                        // note settings
+                        note_type : data.settings.note_type,
+                        note_text_color : data.settings.note_text_color,
+
+                        // photo settings
+                        photos_type : data.settings.photos_type,
+                        default_filter : data.settings.default_filter,
                         // height & width
                         nodeWidth: node_width,
                         nodeWidthSpouse: node_width_spouse,

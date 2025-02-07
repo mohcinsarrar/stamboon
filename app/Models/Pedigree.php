@@ -18,7 +18,8 @@ class Pedigree extends Model
         'excel_file',
         'gedcom_file',
         'template',
-        'chart_status'
+        'chart_status',
+        'weapon'
     ];
 
     protected $casts = [

@@ -174,39 +174,42 @@ function applyChartStatus() {
             if (data.error == false) {
 
                 // get chart status
-                const chart_status = data.chart_status;
-                if (chart_status == null) {
-                    return;
-                }
-                if(chart == undefined){
-                    return;
-                }
-                const getChartState = chart.getChartState()
-
-                // apply expand
-                const nodes = getChartState.allNodes;
-                nodes.forEach(node => {
-                    const status = chart_status['expand'].find(s => s.id === node.data.id);
-                    if (status) {
-                        if (status.expanded == "true") {
-
-                            chart.setExpanded(node.data.id)
-                        }
-                        else {
-                            chart.setExpanded(node.data.id, false)
-                        }
+                    const chart_status = data.chart_status;
+                    if (chart_status == null) {
+                        return;
                     }
+                    if(chart == undefined){
+                        return;
+                    }
+                    const getChartState = chart.getChartState()
 
-                });
+                    // apply expand
+                    const nodes = getChartState.allNodes;
+                    nodes.forEach(node => {
+                        const status = chart_status['expand'].find(s => s.id === node.data.id);
+                        if (status) {
+                            if (status.expanded == "true") {
 
-                const zoom = chart.getChartState().zoomBehavior
-                const svg = chart.getChartState().svg
+                                chart.setExpanded(node.data.id)
+                            }
+                            else {
+                                chart.setExpanded(node.data.id, false)
+                            }
+                        }
 
-                const initialTransform = d3.zoomIdentity.translate(chart_status.translateX, chart_status.translateY).scale(chart_status.scale);
-                svg.call(zoom.transform, initialTransform); 
-                svg.select('.chart').attr("transform", initialTransform.toString());
+                    });
 
-                chart.getChartState().zoomBehavior = zoom
+                    const zoom = chart.getChartState().zoomBehavior
+                    const svg = chart.getChartState().svg
+
+                    const initialTransform = d3.zoomIdentity.translate(chart_status.translateX, chart_status.translateY).scale(chart_status.scale);
+                    svg.call(zoom.transform, initialTransform); 
+                    svg.select('.chart').attr("transform", initialTransform.toString());
+
+                    chart.getChartState().zoomBehavior = zoom
+
+                    chart.render();
+                
 
 
             } else {
@@ -371,6 +374,27 @@ function disable_tools_bar() {
         }
 
     });
+}
+
+function enable_tools_bar() {
+    const div = document.querySelector('#tools-bar');
+
+    // enable all buttons inside the div
+    div.querySelectorAll('button').forEach(button => {
+        button.disabled = false;
+    });
+
+    div.querySelectorAll('a').forEach(anchor => {
+        
+        anchor.removeEventListener('click', (e) => e.preventDefault()); // Prevent the default action
+        anchor.style.pointerEvents = 'auto'; // Disable click
+        anchor.style.color = '#5d596c'; // Change appearance to indicate disabled
+        if (anchor.querySelector('i') != null) {
+            anchor.querySelector('i').style.color = "#5d596c"
+        }
+        
+    });
+
 }
 
 

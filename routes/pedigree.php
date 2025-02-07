@@ -43,6 +43,10 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/pedigree/deletenote', [NoteController::class,'delete'])->name('pedigree.deletenote');
         Route::get('/pedigree/getnotes', [NoteController::class,'index'])->name('pedigree.getnotes');
         
+        // add weapon inside NotereeController  
+        Route::post('/pedigree/addweapon', [NoteController::class,'addweapon'])->name('fantree.addweapon');
+        Route::post('/pedigree/deleteweapon', [NoteController::class,'deleteweapon'])->name('fantree.deleteweapon');
+        Route::get('/pedigree/loadweapon', [NoteController::class,'loadweapon'])->name('fantree.loadweapon');
 
 
 
