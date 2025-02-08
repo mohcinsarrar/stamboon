@@ -160,7 +160,7 @@ class FantreeController extends Controller
 
     public function getTree(Request $request){
         $fantree = Fantree::where('user_id',Auth::user()->id)->first();
-
+        
         if($fantree->gedcom_file == null){
             return response(null, 200);
         }

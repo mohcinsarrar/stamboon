@@ -22,6 +22,35 @@
 
 @section('page-style')
     <style>
+        .diagonal-text {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: inline-block;
+            transform: translateX(-190%) translateY(-50%) rotate(-45deg);
+            transform-origin: center;
+            z-index: 1;
+        }
+
+        .diagonal-text::before {
+            content: "";
+            display: block;
+            height: 0;
+            padding-top: 100%;
+        }
+
+        .diagonal-text>span {
+            display: inline-block;
+            background: #000000;
+            padding: 6px 45px;
+            transform: translateY(-50%);
+            font-size: 18px;
+            text-align: center;
+            color: white;
+            white-space: nowrap;
+        }
+    </style>
+    <style>
         .pcr-button {
             border: 1px solid black !important;
             width: 100% !important;
@@ -235,7 +264,7 @@
             <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px" id="tools-bar">
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
                     title="Upload your Gedcom file">
-                    <button {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="modal"
+                    <button id="uploadGedcomBtn" {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="modal"
                         data-bs-target="#uploadFile" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-upload fs-4"></i></button>

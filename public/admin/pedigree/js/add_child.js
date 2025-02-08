@@ -1,6 +1,7 @@
 
 function add_child() {
     var personInfo = selectedPerson;
+
     var formAddChild = document.querySelector('#formAddChild');
     formAddChild.querySelector('.person_id').value = personInfo.personId
     formAddChild.querySelector('.person_type').value = personInfo.type

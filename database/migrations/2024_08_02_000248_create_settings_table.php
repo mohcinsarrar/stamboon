@@ -19,10 +19,10 @@ return new class extends Migration
             ->onDelete('cascade');
             // box color settings
             $table->string('box_color')->default("gender");
-            $table->string('male_color')->default("#00CED1");
-            $table->string('female_color')->default("#FF69B4");
-            $table->string('blood_color')->default("#C33131");
-            $table->string('notblood_color')->default("#55CF5E");
+            $table->string('male_color')->default("#C08219");
+            $table->string('female_color')->default("#E0C17E");
+            $table->string('blood_color')->default("#C08219");
+            $table->string('notblood_color')->default("#E0C17E");
 
             // text color settings
             $table->string('text_color')->default("#000000");
@@ -40,8 +40,16 @@ return new class extends Migration
 
             $table->string('default_male_image')->nullable()->default("man1");
             $table->string('default_female_image')->nullable()->default("female1");
+
+            $table->string('note_type')->default('1');
+            $table->string('note_text_color')->default('#000000');
+            
+            $table->string('default_filter')->nullable()->default("none");
+            $table->string('photos_type')->default("round");
             
             $table->string('default_date')->default("YYYY-MM-DD");
+
+
 
             $table->timestamps();
         });

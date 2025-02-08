@@ -14,6 +14,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body pt-2">
+                <div class="row" id="suggested_size">
+                    <div class="col">
+                        <div class="alert alert-info msg" role="alert"></div>
+                    </div>
+                </div>
                 <div class="mb-4">
                     <div class="col-md p-6">
                         <div class="form-check form-check-inline mt-4">

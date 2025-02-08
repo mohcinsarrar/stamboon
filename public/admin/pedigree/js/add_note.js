@@ -1,11 +1,12 @@
 // inti params
 const padding = 10;
 const maxWidth = 250;
-const maxHeight = 200;
+const maxHeight = 250;
 const textSize = "18px";  // Text size
 const fontFamily = "Arial"; // Font family
 const rectWidth = maxWidth + padding * 2;
 const lineHeight = 20; // Height of each line of text
+const maxChars = 250;
 let note_id_draggable;
 // inti the drag behavior for note
 const drag = d3.drag()
@@ -40,7 +41,7 @@ function change_position(note_id, xpos, ypos) {
     });
 
     $.ajax({
-        url: "/fantree/editnoteposition",
+        url: "/pedigree/editnoteposition",
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -77,7 +78,7 @@ function get_notes() {
     });
 
     $.ajax({
-        url: "/fantree/getnotes",
+        url: "/pedigree/getnotes",
         type: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -152,9 +153,9 @@ function draw_note(text, xPos, yPos, note_id) {
             const text_style =
                 `
                 font-family:'Charm';
-                font-weight:400;
+                font-weight:200;
                 font-style:normal;
-                font-size:16px;
+                font-size:14px;
                 text-align: justify;
                 text-justify: distribute;
                 color:${treeConfiguration.note_text_color};
@@ -198,7 +199,7 @@ function delete_note(note_id) {
     });
 
     $.ajax({
-        url: "/fantree/deletenote",
+        url: "/pedigree/deletenote",
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -243,7 +244,7 @@ function edit_note_modal(note_id) {
 
     const textArea = document.querySelector('#editNoteModal #note');
     const charCounter = document.querySelector("#editNoteModal #charCounter");
-    const maxChars = 156;
+    
     charCounter.textContent = `${textArea.value.length} / ${maxChars}`;
 
     textArea.addEventListener("input", () => {
@@ -265,8 +266,8 @@ function edit_note_modal(note_id) {
     // Handle the edit button click in the modal
     document.querySelector('#editNoteModal #editNoteBtn').onclick = function () {
         const newText = document.querySelector('#editNoteModal #note').value;
-        if(newText.length > 156){
-            show_toast('warning', 'warning', 'note text max lenght is 156')
+        if(newText.length > 250){
+            show_toast('warning', 'warning', `note text max lenght is ${maxChars}`)
             return;
         } 
         change_text(note_id, newText)
@@ -286,7 +287,7 @@ function change_text(note_id, text) {
     });
 
     $.ajax({
-        url: "/fantree/editnotetext",
+        url: "/pedigree/editnotetext",
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -331,7 +332,7 @@ $(document).on("click", "#addNote", function () {
 
     const textArea = document.querySelector('#addNoteModal #note');
     const charCounter = document.querySelector("#addNoteModal #charCounter");
-    const maxChars = 156;
+
     charCounter.textContent = `${textArea.value.length} / ${maxChars}`;
 
     textArea.addEventListener("input", () => {
@@ -365,7 +366,10 @@ $(document).on("input", "#addNoteModal #note", function () {
 // add note when user click on add note butto on modal #addNoteModal
 $(document).on("click", "#addNoteBtn", function () {
     var text = document.querySelector('#addNoteModal #note').value;
-    
+    if(text.length > 250){
+        show_toast('warning', 'warning', `note text max lenght is ${maxChars}`)
+        return;
+    } 
     const xPos = 100; // X position on the chart
     const yPos = 50;  // Y position on the chart
     add_note(text, xPos, yPos);
@@ -386,7 +390,7 @@ function add_note(text, xPos, yPos) {
     });
 
     $.ajax({
-        url: "/fantree/savenote",
+        url: "/pedigree/savenote",
         type: 'POST',
         data: {
             'content': text,

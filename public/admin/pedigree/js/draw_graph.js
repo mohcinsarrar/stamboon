@@ -11,6 +11,7 @@ function renderChart() {
         .data(data)
         .svgWidth(width)
         .svgHeight(height)
+        .imageName('Pedigree')
         .initialExpandLevel(5)
         .layout('top')
         .onNodeClick((nodeId) => nodeClicked(nodeId))
@@ -401,7 +402,8 @@ function getPersonNodeContent(personData, personType) {
         } else {
             return '';
         }
-        person.personName = personData.spouseName;
+        person.firstName = personData.spouseFirstName;
+        person.lastName = personData.spouseLastName;
         person.gender = personData.spouseGender;
         person.status = personData.spouseStatus;
         person.birth = personData.spouseBirth;
@@ -409,13 +411,17 @@ function getPersonNodeContent(personData, personType) {
         person.photo = personData.spousePhoto;
     } else {
         person.personId = personData.personId;
-        person.personName = personData.name;
+        person.firstName = personData.firstName;
+        person.lastName = personData.lastName;
         person.gender = personData.gender;
         person.status = personData.status;
         person.birth = personData.birth;
         person.death = personData.death;
         person.photo = personData.photo;
     }
+
+    
+
 
     let personCssClass, personIcon, textColor, bandColor;
 
@@ -657,6 +663,21 @@ function getPersonNodeContent(personData, personType) {
                         /* mb-1 */
                         margin-bottom: .25rem !important;
                         /* fw-bold */
+                        font-weight: 400 !important;
+                        /* style */
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    ">${person.firstName}</p>
+                    <p class="" 
+                    style="
+                        box-sizing: border-box;
+                        margin-top: 0;
+                        /* mb-1 */
+                        margin-bottom: .25rem !important;
+                        /* fw-bold */
                         font-weight: 700 !important;
                         /* style */
                         display: -webkit-box;
@@ -664,7 +685,7 @@ function getPersonNodeContent(personData, personType) {
                         -webkit-box-orient: vertical;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                    ">${person.personName}</p>
+                    ">${person.lastName}</p>
                     <p class="" 
                     style="
                         box-sizing: border-box;
@@ -719,8 +740,8 @@ function getPersonNodeContent(personData, personType) {
                 /* overflow-hidden */
                 overflow: hidden !important;
                 /* py-3 */
-                padding-bottom: 1rem !important;
-                padding-top: 1rem !important;
+                padding-bottom: .5rem !important;
+                padding-top: .5rem !important;
                 /* px-2 */
                 padding-left: .5rem !important;
                 padding-right: .5rem !important;
@@ -731,7 +752,7 @@ function getPersonNodeContent(personData, personType) {
                 position: relative;
             "
             >
-                <div class="" style="margin-bottom: 1rem !important; box-sizing: border-box;"> 
+                <div class="" style="margin-bottom: 0.5rem !important; box-sizing: border-box;"> 
                 <img src="${personIcon}" alt="${person.personName}" class="" 
                 style="
                     filter: ${filter};
@@ -750,13 +771,24 @@ function getPersonNodeContent(personData, personType) {
                     <p class=""
                     style="
                         /* fw-bold */
+                        font-weight: 400 !important;
+                        /* mb-2 */
+                        margin-bottom: .5rem !important;
+                        margin-top: 0;
+                        box-sizing: border-box;
+                    "
+                    >${truncateText(person.firstName, 20)}
+                    </p> 
+                    <p class=""
+                    style="
+                        /* fw-bold */
                         font-weight: 700 !important;
                         /* mb-2 */
                         margin-bottom: .5rem !important;
                         margin-top: 0;
                         box-sizing: border-box;
                     "
-                    >${truncateText(person.personName, 20)}
+                    >${truncateText(person.lastName, 20)}
                     </p> 
                     <small style="font-size: .8125rem;">${getFullDate(person.birth, person.death)}</small>
                 </div>
@@ -835,13 +867,16 @@ function getPersonNodeContent(personData, personType) {
                     /* text-center */
                     text-align: center !important;
                     /* style */
-                    font-size: 20px;
+                    font-size: 14px;
                     margin-top: 55px;
                     box-sizing: border-box;
                 "
                 >
-                    <p style="margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
-                    ${truncateText(person.personName, 15)}
+                    <p style="font-weight: 400 !important; margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
+                    ${truncateText(person.firstName, 15)}
+                    </p>
+                    <p style="font-weight: 600 !important; margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
+                    ${truncateText(person.lastName, 15)}
                     </p>
                     <p 
                     style="
@@ -979,13 +1014,25 @@ function getPersonNodeContent(personData, personType) {
                                     ${textColor}; 
                                     margin-bottom: auto !important; 
                                     font-size: .7rem;
-                                    font-weight: 500;
+                                    font-weight: 400;
                                     line-height: 1rem;
                                     margin-top: 0;
                                     box-sizing: border-box;
                                 "
                                 >
-                                ${person.personName}</h6>
+                                ${person.firstName}</h6>
+                                <h6 class="" 
+                                style="
+                                    ${textColor}; 
+                                    margin-bottom: auto !important; 
+                                    font-size: .7rem;
+                                    font-weight: 700;
+                                    line-height: 1rem;
+                                    margin-top: 0;
+                                    box-sizing: border-box;
+                                "
+                                >
+                                ${person.lastName}</h6>
                                 <p class="" 
                                 style="
                                     ${textColor};
@@ -1010,6 +1057,9 @@ function getPersonNodeContent(personData, personType) {
 
 
 function truncateText(text, maxLength) {
+    if(text == undefined){
+        return '';
+    }
     if (text.length <= maxLength) {
         return text;
     }
@@ -1150,6 +1200,8 @@ function nodeClicked(d) {
     var personInfo = {}
     if (person.length > 0) {
         personInfo.personId = person[0].personId
+        personInfo.firstName = person[0].firstName
+        personInfo.lastName = person[0].lastName
         personInfo.name = person[0].name
         personInfo.sex = person[0].gender
         personInfo.photo = person[0].photo
@@ -1163,6 +1215,8 @@ function nodeClicked(d) {
 
         const spouse = familyData.filter((p) => p.spouseId === window.personClicked);
         personInfo.personId = spouse[0].spouseId
+        personInfo.firstName = spouse[0].spouseFirstName
+        personInfo.lastName = spouse[0].spouseLastName
         personInfo.name = spouse[0].spouseName
         personInfo.sex = spouse[0].spouseGender
         personInfo.status = spouse[0].spouseStatus
@@ -1184,7 +1238,7 @@ function nodeClicked(d) {
     
 
     if(selectedPerson.spouseIds != undefined && selectedPerson.spouseIds.length >=1){
-        console.log(selectedPerson.spouseIds.length)
+
         modalBody.querySelector('#nodeOrderSpouseItem').style.display = 'block';
     }
     else{

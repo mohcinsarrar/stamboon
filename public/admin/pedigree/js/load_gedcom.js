@@ -16,14 +16,28 @@ function draw_tree() {
             if(r.status == 404){
                 throw new Error(`HTTP error! Status: ${r.status}`);
             }
+
+            if (r.headers.get('content-type').includes("text/html")) {
+                throw {
+                    message: 'Empty response received',
+                    status: "Empty",
+                };
+            }
             return r.arrayBuffer()
         })
         .then(Gedcom.readGedcom)
         .catch(error => {
-            //console.log(error)
-            if(document.getElementById("add-first-person-container") != null){
-                document.getElementById("add-first-person-container").classList.remove('d-none');
+            if (typeof error === "object") {
+                if(error.status == "Empty"){
+                    if(document.getElementById("add-first-person-container") != null){
+                        document.getElementById("add-first-person-container").classList.remove('d-none');
+                    }
+                    enable_load_gedcom()
+                    return false;
+                }
             }
+            
+            show_toast('danger', 'error', error)
             return false;
         });
 
@@ -227,12 +241,50 @@ function get_birth_date(individual) {
 
 // get name from individual object
 function get_name(individual) {
+
+    
+
     var name = individual.getName();
+    
     if (name.length > 0) {
-        return name[0].value.replace(/\//g, " ").trimEnd()
+
+        
+
+        let fullName = name[0].value;
+        let separator = "/";
+        let indexes = [...fullName.matchAll(new RegExp(separator, "g"))].map(match => match.index);
+
+        // more than 2 '/'
+        if(indexes.length != 2){
+            return {
+                'firstname': '',
+                'lastname': '',
+                'name':''
+            }
+        }
+
+        let lastName = '';
+        let firstName = '';
+
+        // if there is no substring between 2 '/'
+        lastName = fullName.slice(indexes[0]+1, indexes[1]);
+        firstName = fullName.slice(0, indexes[0]);
+
+        lastName = lastName.trim()
+        firstName = firstName.trim()
+        
+        return {
+            'firstname': firstName,
+            'lastname': lastName,
+            'name':firstName+' '+lastName
+        }
     }
     else {
-        return ''
+        return {
+            'firstname': '',
+            'lastname': '',
+            'name':''
+        }
     }
 }
 
@@ -352,10 +404,13 @@ function get_couples(families, individualRecords) {
                     spousePhoto = spouse.getNote()[0].value;
                 }
 
+
                 parentPerson = {
                     id: parent[0].pointer + '-' + spouse[0].pointer,
                     personId: parent[0].pointer,
-                    name: get_name(parent),
+                    firstName: get_name(parent).firstname,
+                    lastName: get_name(parent).lastname,
+                    name: get_name(parent).name,
                     gender: get_sex(parent),
                     status: get_status(parent),
                     birth: get_birth_date(parent),
@@ -366,7 +421,9 @@ function get_couples(families, individualRecords) {
                     childOrder: undefined,
                     spouseIds: [],
                     spouseId: spouse[0].pointer,
-                    spouseName: get_name(spouse),
+                    spouseFirstName: get_name(spouse).firstname,
+                    spouseLastName: get_name(spouse).lastname,
+                    spouseName: get_name(spouse).name,
                     spouseGender: get_sex(spouse),
                     spouseStatus: get_status(spouse),
                     spouseBirth: get_birth_date(spouse),
@@ -388,7 +445,9 @@ function get_couples(families, individualRecords) {
                 parentPerson = {
                     id: parent[0].pointer,
                     personId: parent[0].pointer,
-                    name: get_name(parent),
+                    firstName: get_name(parent).firstname,
+                    lastName: get_name(parent).lastname,
+                    name: get_name(parent).name,
                     gender: get_sex(parent),
                     status: get_status(parent),
                     birth: get_birth_date(parent),
@@ -399,7 +458,9 @@ function get_couples(families, individualRecords) {
                     childOrder: undefined,
                     spouseIds: [],
                     spouseId: undefined,
-                    spouseName: undefined,
+                    spouseFirstName: undefined,
+                    spouseLastName: undefined,
+                    spouseName:undefined,
                     spouseGender: undefined,
                     spouseStatus: undefined,
                     spouseBirth: undefined,
@@ -424,7 +485,9 @@ function get_couples(families, individualRecords) {
                 parentPerson = {
                     id: spouse[0].pointer,
                     personId: spouse[0].pointer,
-                    name: get_name(spouse),
+                    firstName: get_name(spouse).firstname,
+                    lastName: get_name(spouse).lastname,
+                    name: get_name(spouse).name,
                     gender: get_sex(spouse),
                     status: get_status(spouse),
                     birth: get_birth_date(spouse),
@@ -435,6 +498,8 @@ function get_couples(families, individualRecords) {
                     childOrder: undefined,
                     spouseIds: [],
                     spouseId: undefined,
+                    spouseFirstName: undefined,
+                    spouseLastName: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
                     spouseOrder: undefined,
@@ -576,10 +641,13 @@ function get_children(families, individualRecords) {
             }
             // if child not exist as couple add it to individualRecords
             else {
+               
                 const childPerson = {
                     id: child[0].pointer,
                     personId: child[0].pointer,
-                    name: get_name(child),
+                    firstName: get_name(child).firstname,
+                    lastName: get_name(child).lastname,
+                    name: get_name(child).name,
                     gender: get_sex(child),
                     status: get_status(child),
                     birth: get_birth_date(child),
@@ -592,6 +660,8 @@ function get_children(families, individualRecords) {
                     childOrder: undefined,
                     spouseIds: [],
                     spouseId: undefined,
+                    spouseFirstName: undefined,
+                    spouseLastName: undefined,
                     spouseName: undefined,
                     spouseGender: undefined,
                     spouseOrder: undefined,
@@ -627,7 +697,9 @@ function transformGedcom(gedcom) {
         let indiPerson = {
             id: indi[0].pointer,
             personId: indi[0].pointer,
-            name: get_name(indi),
+            firstName: get_name(indi).firstname,
+            lastName: get_name(indi).lastname,
+            name: get_name(indi).name,
             gender: get_sex(indi),
             status: get_status(indi),
             birth: get_birth_date(indi),
@@ -638,6 +710,8 @@ function transformGedcom(gedcom) {
             childOrder: undefined,
             spouseIds: [],
             spouseId: undefined,
+            spouseFirstName: undefined,
+            spouseLastName: undefined,
             spouseName: undefined,
             spouseGender: undefined,
             spouseOrder: undefined,

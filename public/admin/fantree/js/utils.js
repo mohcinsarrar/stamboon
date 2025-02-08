@@ -133,7 +133,7 @@ function person_parent_length(personInfo){
 // set graph background from settings
 
 function set_background() {
-
+    
     if(treeConfiguration.bg_template != '0'){
         const imageUrl = "/admin/images/Parchment_small" + treeConfiguration.bg_template + ".png";
         convertImageToBase64(imageUrl, function (base64String) {
@@ -368,7 +368,7 @@ function test_all_max_nodes() {
 
     const nodes_count = nodes.filter(obj => !obj.data || obj.data.id != undefined).length;
 
-    if (nodes_count >= treeConfiguration.max_nodes) {
+    if (nodes_count > treeConfiguration.max_nodes) {
         document.querySelector('#max-node-alert').style.display = "block";
         document.querySelector('#max-node-alert div.alert').innerHTML = "You have reached the max nodes available (" + treeConfiguration.max_nodes + ")";
         return false;
@@ -412,6 +412,11 @@ function enable_tools_bar() {
 
 }
 
+function enable_load_gedcom(){
+    
+    document.querySelector("#uploadGedcomBtn").disabled = false;
+}
+
 
 function test_max_generation() {
     if (chart == undefined) {
@@ -425,7 +430,7 @@ function test_max_generation() {
 
     const maxDepth = Math.max(...nodes.map(item => item.depth));
 
-    if(maxDepth+1 >= treeConfiguration.max_generation){
+    if(maxDepth+1 > treeConfiguration.max_generation){
         document.querySelector('#max-generations-alert').style.display = "block";
         document.querySelector('#max-generations-alert div.alert').innerHTML = "You have reached the max generations available (" + treeConfiguration.max_generation + ")";
     }

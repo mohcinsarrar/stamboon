@@ -17,6 +17,44 @@ $(document).on("click", "#export", function () {
       document.querySelector('#exportModal #formatContainer').style.display = "block";
     }
   }
+
+  // suggested_size
+
+  const chartElement = d3.select('.chart').node();
+  let width = chartElement.getBoundingClientRect().width;
+  let height = chartElement.getBoundingClientRect().height;
+
+  const transformAttr = chartElement.getAttribute('transform');
+  const scaleMatch = transformAttr.match(/scale\(([\d\.]+)\)/);
+  const scale = scaleMatch ? parseFloat(scaleMatch[1]) : null;
+
+  width = width / scale;
+  height = height / scale;
+
+  let best_size;  
+  if(width<=1344){
+    best_size = '1344 x 839 px';
+  }
+
+  if(width>1344 && width<= 2688){
+    best_size = '2688 x 1678 px';
+  }
+
+  if(width>2688 && width<= 4032){
+    best_size = '4032 x 2517 px';
+  }
+
+  if(width>4032 && width<= 5376){
+    best_size = '5376 x 3356 px';
+  }
+
+  if(width>5376){
+    best_size = '6720 x 4195 px';
+  }
+
+
+
+  document.querySelector('#suggested_size .msg').innerHTML = `For best printing quality choose a size above ${best_size}`
   
   d3.selectAll(".toolbar").remove();
   d3.selectAll(".node-button-g").attr('display','none');
@@ -178,7 +216,7 @@ async function exportGraph(format,include_note,include_weapon) {
 
   
   
-  chart.exportImg({ full: true, scale: format ,onLoad: (base64) => {
+  chart.exportImg({ full: false, scale: format ,onLoad: (base64) => {
     d3.selectAll(".node-button-g").attr('display','block');
     if (ignores != []) {
       ignores.forEach(ignore => {
@@ -243,7 +281,7 @@ async function downloadPdf(format, orientation,include_note,include_weapon) {
 
   chart.exportImg({
     save: false,
-    full: true,
+    full: false,
     onLoad: (base64) => {
 
       
@@ -286,7 +324,7 @@ async function downloadPdf(format, orientation,include_note,include_weapon) {
           drawWidth - 5,
           drawHeight - 5
         );
-        pdf.save('chart.pdf');
+        pdf.save('Pedigree.pdf');
 
         d3.selectAll(".node-button-g").attr('display','block');
 

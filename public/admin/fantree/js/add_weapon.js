@@ -198,7 +198,7 @@ function draw_weapon(weapon) {
     const maxHeight = 250;
 
     const xPos = svg.attr("width") - maxWidth;
-    const yPos = svg.attr("height") - maxHeight;
+    const yPos = 0 ;
 
 
     const rectGroup = d3.select("#graph svg")

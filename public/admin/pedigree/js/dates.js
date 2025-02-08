@@ -24,7 +24,7 @@ function parseDateGlobal(dateStr,target_format, target_date_style = 'string', ta
     // if source and traget date style are string
     if(date_style == 'string' && target_date_style == 'string'){
         if(target_format == 'YYYY-MM-DD'){
-            console.log(dateStr)
+
             return year + target_separator + month + target_separator + day;
         }
         else if(target_format == 'MM-DD-YYYY'){

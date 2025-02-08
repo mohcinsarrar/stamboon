@@ -38,9 +38,9 @@ function edit_person() {
     formUpdatePerson.querySelector('.person_id').value = personInfo.personId
 
     // split name to first and last name
-    names_array = personInfo.name.split(' ')
-    formUpdatePerson.querySelector('.firstname').value = names_array.slice(0, -1).join(' ')
-    formUpdatePerson.querySelector('.lastname').value = names_array[names_array.length - 1]
+
+    formUpdatePerson.querySelector('.firstname').value = personInfo.firstName
+    formUpdatePerson.querySelector('.lastname').value = personInfo.lastName
 
     // check living or deceased radioButton
     if (personInfo.status == 'Deceased') {

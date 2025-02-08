@@ -197,7 +197,7 @@
             <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px" id="tools-bar">
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Upload your Gedcom file">
-                    <button {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="modal"
+                    <button id="uploadGedcomBtn" {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="modal"
                         data-bs-target="#uploadFile" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-upload fs-4"></i></button>

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('generation')->default(0);
             $table->integer('print_number')->default(0);
             $table->json('chart_status')->nullable()->default(null);
+            $table->string('weapon')->nullable();
             $table->timestamps();
         });
     }

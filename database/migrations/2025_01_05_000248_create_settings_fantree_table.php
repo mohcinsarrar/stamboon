@@ -18,8 +18,8 @@ return new class extends Migration
             ->onUpdate('cascade')
             ->onDelete('cascade');
             // box color settings
-            $table->string('male_color')->default("#00CED1");
-            $table->string('female_color')->default("#FF69B4");
+            $table->string('male_color')->default("#C08219");
+            $table->string('female_color')->default("#E0C17E");
 
             // text color settings
             $table->string('text_color')->default("#000000");
@@ -40,6 +40,9 @@ return new class extends Migration
 
             $table->string('photos_type')->default("round");
             $table->string('photos_direction')->default("vertical");
+
+            $table->string('note_type')->default('1');
+            $table->string('note_text_color')->default('#000000');
 
             $table->timestamps();
         });

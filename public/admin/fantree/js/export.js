@@ -15,6 +15,46 @@ $(document).on("click", "#export", function () {
       document.querySelector('#exportModal #formatContainer').style.display = "block";
     }
   }
+
+   // suggested_size
+
+   const chartElement = d3.select('#chartGroup').node();
+   let width = chartElement.getBoundingClientRect().width;
+   let height = chartElement.getBoundingClientRect().height;
+ 
+   const transformAttr = chartElement.getAttribute('transform');
+   const scaleMatch = transformAttr.match(/scale\(([\d\.]+)\)/);
+   const scale = scaleMatch ? parseFloat(scaleMatch[1]) : null;
+ 
+   width = width / scale + 1000;
+   height = height / scale;
+
+ 
+   let best_size;  
+   if(width<=1344){
+     best_size = '1344 x 839 px';
+   }
+ 
+   if(width>1344 && width<= 2688){
+     best_size = '2688 x 1678 px';
+   }
+ 
+   if(width>2688 && width<= 4032){
+     best_size = '4032 x 2517 px';
+   }
+ 
+   if(width>4032 && width<= 5376){
+     best_size = '5376 x 3356 px';
+   }
+ 
+   if(width>5376){
+     best_size = '6720 x 4195 px';
+   }
+ 
+ 
+ 
+   document.querySelector('#suggested_size .msg').innerHTML = `For best printing quality choose a size above ${best_size}`
+   
   
   d3.selectAll(".toolbar").remove();
   d3.selectAll(".node-button-g").attr('display','none');
@@ -130,7 +170,7 @@ function exportGraph(scale,include_note,include_weapon) {
     ignores.push('.weapon')
   }
 
-  d3_to_png('#graph svg', 'familytree', {
+  d3_to_png('#graph svg', 'Fanchart', {
       scale: scale ,
       format: 'png',
       quality: 1,
@@ -168,7 +208,7 @@ function downloadPdf(formatpdf, orientation,include_note,include_weapon) {
     ignores.push('.weapon')
   }
 
-  d3_to_png('#graph svg', 'familytree', {
+  d3_to_png('#graph svg', 'Fanchart', {
       scale: 3 ,
       format: 'png',
       quality: 1,

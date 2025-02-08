@@ -16,21 +16,35 @@ function draw_tree() {
             if (r.status == 404) {
                 throw new Error(`HTTP error! Status: ${r.status}`);
             }
+            
+            if (r.headers.get('content-type').includes("text/html")) {
+                throw {
+                    message: 'Empty response received',
+                    status: "Empty",
+                };
+            }
+            
             return r.arrayBuffer()
         })
         .then(Gedcom.readGedcom)
         .catch(error => {
-            console.log(error)
-            if (document.getElementById("add-first-person-container") != null) {
-                document.getElementById("add-first-person-container").classList.remove('d-none');
+
+            if (typeof error === "object") {
+                if(error.status == "Empty"){
+                    if(document.getElementById("add-first-person-container") != null){
+                        document.getElementById("add-first-person-container").classList.remove('d-none');
+                    }
+                    enable_load_gedcom()
+                    return false;
+                }
             }
-
             
-
+            show_toast('danger', 'error', error)
             return false;
         });
 
     promise.then(gedcom => {
+        
         // transform readGedcom structure to a structure accepted from d3-org-chart
         if (!gedcom) return;
 
@@ -39,7 +53,7 @@ function draw_tree() {
         try {
             treeData = transformGedcom(gedcom);
         } catch (error) {
-            console.log(error)
+            show_toast('danger', 'error', error)
             return;
         }
         
@@ -146,30 +160,53 @@ function get_birth_date(individual) {
 
 // get name from individual object
 function get_name(individual) {
+
+    
+
     var name = individual.getName();
-    var codedName;
-    var firstname, lastname
+    
     if (name.length > 0) {
-        codedName = name[0].value.replace(/\//g, " ").trimEnd()
+
+        
+
+        let fullName = name[0].value;
+        let separator = "/";
+        let indexes = [...fullName.matchAll(new RegExp(separator, "g"))].map(match => match.index);
+
+        // more than 2 '/'
+        if(indexes.length != 2){
+            return {
+                'firstname': '',
+                'lastname': '',
+                'name':''
+            }
+        }
+
+        let lastName = '';
+        let firstName = '';
+
+        // if there is no substring between 2 '/'
+        lastName = fullName.slice(indexes[0]+1, indexes[1]);
+        firstName = fullName.slice(0, indexes[0]);
+
+        lastName = lastName.trim()
+        firstName = firstName.trim()
+        
+        return {
+            'firstname': firstName,
+            'lastname': lastName,
+            'name':firstName+' '+lastName
+        }
     }
     else {
         return {
             'firstname': '',
-            'lastname': ''
+            'lastname': '',
+            'name':''
         }
     }
-
-    codedName = codedName.replace(/\s+/g, ' ');
-
-    splitName = codedName.split(" ")
-    firstname = splitName[0]
-    lastname = splitName.slice(1).join(" ")
-
-    return {
-        'firstname': firstname,
-        'lastname': lastname
-    }
 }
+
 
 // get sex from individual object
 function get_sex(individual) {
