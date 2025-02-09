@@ -113,7 +113,6 @@ function convertImageToBase64(imageUrl, callback) {
 function editChartStatus() {
 
     const nodes = chart.getChartState().allNodes;
-    const generation = Math.max(...nodes.map(obj => obj.depth));
     const lastTransform = chart.getChartState().lastTransform
 
     const nodeStatuses = nodes.map(node => ({
@@ -139,7 +138,6 @@ function editChartStatus() {
         type: 'POST',
         data: {
             'chart_status': chart_status,
-            'generation' : generation
         },
         dataType: 'json',
         success: function (data) {
@@ -424,4 +422,56 @@ function test_max_generation() {
     }
 
     return maxDepth
+}
+
+
+function update_count(){
+
+    const nodes = chart.getChartState().allNodes;
+    let keys_indis = []
+    nodes.forEach(person => {
+        if(person.id != 'hidden_root'){
+
+            if(person.id.includes('-')){
+                let persons = person.id.split('-')
+                keys_indis.push(persons[0])
+                keys_indis.push(persons[1])
+            }
+            else{
+                keys_indis.push(person.id)
+            }
+        }
+    });
+
+    const count_indis = [...new Set(keys_indis)];
+
+    const maxDepth = Math.max(...nodes.map(item => item.depth));
+
+
+    let stats = {
+        'generation' : maxDepth,
+        'indis' : count_indis.length
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/pedigree/updatecount",
+        type: 'POST',
+        data: {
+            'stats': stats
+        },
+        dataType: 'json',
+        success: function (data) {
+
+
+        },
+        error: function (xhr, status, error) {
+            show_toast('danger', 'error', error)
+            return null;
+        }
+    });
 }

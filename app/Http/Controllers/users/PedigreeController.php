@@ -1067,5 +1067,20 @@ class PedigreeController extends Controller
     }
 
 
+    public function updatecount(Request $request){
+        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        if($pedigree == null){
+            return response()->json(['error'=>true,'msg' => 'error']);
+        }
+
+        $stats = $request->input('stats');
+        $pedigree->stats = $stats;
+
+        $pedigree->save();
+        return response()->json(['error'=>false,'msg' => 'error']);
+
+
+    }
+
 
 }

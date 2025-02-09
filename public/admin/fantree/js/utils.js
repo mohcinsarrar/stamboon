@@ -181,9 +181,6 @@ function convertImageToBase64(imageUrl, callback) {
 
 function editChartStatus() {
 
-
-    const generation = Math.max(...chart.selectAll(".node").data().map(obj => obj.depth));
-
     const transformString = chart.select('#chartGroup').attr('transform')
 
     // Regular expressions to match the translate and scale values
@@ -220,8 +217,7 @@ function editChartStatus() {
             url: "/fantree/editchartstatus",
             type: 'POST',
             data: {
-                'chart_status': chart_status,
-                'generation' : generation
+                'chart_status': chart_status
             },
             dataType: 'json',
             success: function (data) {
@@ -442,4 +438,35 @@ function test_max_generation() {
     }
 
     return maxDepth
+}
+
+
+function update_count(indis,generation){
+
+    let stats = {
+        'generation' : generation,
+        'indis' : indis
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/fantree/updatecount",
+        type: 'POST',
+        data: {
+            'stats': stats
+        },
+        dataType: 'json',
+        success: function (data) {
+
+
+        },
+        error: function (xhr, status, error) {
+            show_toast('danger', 'error', error)
+            return null;
+        }
+    });
 }

@@ -262,45 +262,45 @@
         <div class="card-body position-relative tools p-2" style="min-height: 600px;">
 
             <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px" id="tools-bar">
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Upload your Gedcom file">
                     <button id="uploadGedcomBtn" {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="modal"
                         data-bs-target="#uploadFile" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-upload fs-4"></i></button>
                 </div>
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Download your pedigree as Gedcom">
                     <button type="button" id="downloadButton"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-download fs-4"></i></button>
                 </div>
 
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Add Family weapon">
                     <button id="addWeapon" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-shield-chevron fs-4"></i></button>
                 </div>
 
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Add notes">
                     <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-note fs-4"></i></button>
                 </div>
 
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Print your pedigree">
                     <button {{ $has_payment == false ? 'disabled' : '' }} id="export" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-printer fs-4"></i></button>
                 </div>
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Save state">
                     <button {{ $has_payment == false ? 'disabled' : '' }} id="save" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-device-floppy fs-4"></i></button>
                 </div>
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Settings">
                     <button {{ $has_payment == false ? 'disabled' : '' }} id="open_settings" type="button"
                         class="btn text-white border-0 p-2 col-auto rounded-circle"><i
@@ -308,7 +308,7 @@
                 </div>
 
                 <hr class="border-1 text-white my-2 ">
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Project asset" style="visibility: hidden; height:0">
                     <div class="btn-group dropend col-auto">
                         <button type="button" class="btn text-white border-0 p-2  rounded-circle"
@@ -323,17 +323,17 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Center your familytree">
                     <button id="fit" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-arrows-minimize fs-4"></i></button>
                 </div>
-                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Zoom In">
                     <button id="zoomIn" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-zoom-in fs-4"></i></button>
                 </div>
-                <div class="row  justify-content-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                <div class="row  justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Zoom Out">
                     <button id="zoomOut" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-zoom-out fs-4"></i></button>

@@ -989,7 +989,6 @@ class FantreeController extends Controller
 
     public function editChartStatus(Request $request){
         $chart_status = $request->input('chart_status');
-        $generation = $request->input('generation');
 
         $fantree = Fantree::where('user_id',Auth::user()->id)->first();
         if($fantree == null){
@@ -997,7 +996,6 @@ class FantreeController extends Controller
         }
         
         $fantree->chart_status = $chart_status;
-        $fantree->generation = $generation;
         $fantree->save();
         return response()->json(['error'=>false,'msg' => 'error']);
     }
@@ -1009,5 +1007,20 @@ class FantreeController extends Controller
         }
         $chart_status = $fantree->chart_status;
         return response()->json(['error'=>false,'chart_status' => $chart_status]);
+    }
+
+    public function updatecount(Request $request){
+        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        if($fantree == null){
+            return response()->json(['error'=>true,'msg' => 'error']);
+        }
+
+        $stats = $request->input('stats');
+        $fantree->stats = $stats;
+
+        $fantree->save();
+        return response()->json(['error'=>false,'msg' => 'error']);
+
+
     }
 }

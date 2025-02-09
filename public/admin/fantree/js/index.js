@@ -723,6 +723,7 @@ function foreignObjectHtml(d){
         }
       }
 
+
       let boxColor;
       if (d.data.gender === 'M') {
         boxColor = treeConfiguration.male_color

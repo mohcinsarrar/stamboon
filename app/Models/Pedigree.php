@@ -24,6 +24,7 @@ class Pedigree extends Model
 
     protected $casts = [
         'chart_status' => 'array',
+        'stats' => 'array'
     ];
 
     public function user(): BelongsTo
@@ -37,19 +38,12 @@ class Pedigree extends Model
     }
 
     public function person_count() {
-        if($this->gedcom_file == null){
-            return 0;
-        }
-        // Ensure the GEDCOM file exists
-        if (!Storage::disk('local')->exists($this->gedcom_file)) {
-            return 0;
-        }
-    
-        $gedcom_file = $this->gedcom_file;
-        $parser = new GedcomParser();
-        $gedcom = $parser->parse('storage/'.$gedcom_file);
+        return $this->stats['indis'];
+    }
 
-        return(count($gedcom->getIndi()));
+
+    public function generation() {
+        return $this->stats['generation'];
     }
 
     function get_generations() {

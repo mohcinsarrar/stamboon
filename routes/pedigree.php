@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/pedigree/deleteweapon', [NoteController::class,'deleteweapon'])->name('fantree.deleteweapon');
         Route::get('/pedigree/loadweapon', [NoteController::class,'loadweapon'])->name('fantree.loadweapon');
 
-
+        Route::post('/pedigree/updatecount', [PedigreeController::class,'updatecount'])->name('pedigree.updatecount');
 
     
 

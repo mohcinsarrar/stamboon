@@ -50,6 +50,9 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/fantree/deleteweapon', [NoteFantreeController::class,'deleteweapon'])->name('fantree.deleteweapon');
         Route::get('/fantree/loadweapon', [NoteFantreeController::class,'loadweapon'])->name('fantree.loadweapon');
 
+        Route::post('/fantree/updatecount', [FantreeController::class,'updatecount'])->name('fantree.updatecount');
+
+
 
         
 

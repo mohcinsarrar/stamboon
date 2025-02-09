@@ -360,7 +360,15 @@ function transformGedcom(gedcom) {
 
         // 63 families and 127 individus
 
+
+        const count_indis = Object.keys(individualRecords).filter(item => item !== 'null').length;
+        let generations = calculateGenerations(childToParents,potentialRoots[0]);
+        let maxGeneration = Math.max(...Object.values(generations));
         
+        update_count(count_indis,maxGeneration)
+
+
+
         // Build trees for each root
         const familyTrees = potentialRoots.map(root => buildFamilyTree(individualRecords,childToParents,root));
 

@@ -740,7 +740,7 @@ function transformGedcom(gedcom) {
         parentId: null
     };
     individualRecords[hiddenRootNode.id] = hiddenRootNode;
-
+    
     // check if a person without parentId and assign the hidden_route as parent
     let data = Object.values(individualRecords)
     data.forEach(member => {
@@ -769,7 +769,12 @@ function transformGedcom(gedcom) {
     // Swap the two objects
     [data[index1], data[index2]] = [data[index2], data[index1]];
     */
+    // 48
 
+    
+
+
+    
     return (data)
 
 }

@@ -279,7 +279,7 @@ function renderChart() {
 
     
     
-
+    update_count()
 
     // set background from settings
     set_background()

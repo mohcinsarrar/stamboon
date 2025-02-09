@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('gedcom_file')->nullable()->default(null);
             $table->string('excel_file')->nullable()->default(null);
             $table->string('status')->default('pending');
-            $table->integer('generation')->default(0);
+            $table->json('stats')->nullable()->default(null);
             $table->integer('print_number')->default(0);
             $table->json('chart_status')->nullable()->default(null);
             $table->string('weapon')->nullable();
