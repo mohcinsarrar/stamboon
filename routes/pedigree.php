@@ -7,22 +7,33 @@ use App\Http\Controllers\users\ProfileController;
 use App\Http\Controllers\users\NoteController;
 
 
-
-
-
 Route::middleware(['auth:sanctum','verified','active','role:user','product_type:pedigree','payment_reminder'])
+    ->name('users.')
+    ->group( function(){
+        Route::get('/pedigree', [PedigreeController::class,'index'])->name('pedigree.index');
+        Route::get('/pedigree/settings', [PedigreeController::class,'settings'])->name('pedigree.settings');
+        Route::get('/pedigree/getTree', [PedigreeController::class,'getTree'])->name('pedigree.getTree');
+        Route::post('/pedigree/download', [PedigreeController::class,'download'])->name('pedigree.download');
+        Route::post('/pedigree/editchartstatus', [PedigreeController::class,'editChartStatus'])->name('pedigree.editchartstatus');
+        Route::get('/pedigree/getchartstatus', [PedigreeController::class,'getChartStatus'])->name('pedigree.getchartstatus');
+        Route::get('/pedigree/getnotes', [NoteController::class,'index'])->name('pedigree.getnotes');
+        Route::get('/pedigree/loadweapon', [NoteController::class,'loadweapon'])->name('fantree.loadweapon');
+
+        Route::post('/pedigree/updatecount', [PedigreeController::class,'updatecount'])->name('pedigree.updatecount');
+    });
+
+
+Route::middleware(['auth:sanctum','verified','active','role:user','product_type:pedigree','payment_reminder','payment_end'])
     ->name('users.')
     ->group( function(){
 
         Route::post('/pedigree/saveimage', [PedigreeController::class,'saveimage'])->name('pedigree.saveimage');
-        Route::get('/pedigree', [PedigreeController::class,'index'])->name('pedigree.index');
-        Route::get('/pedigree/settings', [PedigreeController::class,'settings'])->name('pedigree.settings');
+        
         Route::post('/pedigree/settings', [PedigreeController::class,'settings'])->name('pedigree.settings');
-        Route::post('/pedigree/download', [PedigreeController::class,'download'])->name('pedigree.download');
-        Route::get('/pedigree/getTree', [PedigreeController::class,'getTree'])->name('pedigree.getTree');
+        
+        
         Route::post('/pedigree/importgedcom', [PedigreeController::class,'importgedcom'])->name('pedigree.importgedcom');
-        Route::post('/pedigree/editchartstatus', [PedigreeController::class,'editChartStatus'])->name('pedigree.editchartstatus');
-        Route::get('/pedigree/getchartstatus', [PedigreeController::class,'getChartStatus'])->name('pedigree.getchartstatus');
+        
 
 
 
@@ -41,14 +52,12 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/pedigree/editnoteposition', [NoteController::class,'edit_position'])->name('pedigree.editnoteposition');
         Route::post('/pedigree/editnotetext', [NoteController::class,'edit_text'])->name('pedigree.editnotetext');
         Route::post('/pedigree/deletenote', [NoteController::class,'delete'])->name('pedigree.deletenote');
-        Route::get('/pedigree/getnotes', [NoteController::class,'index'])->name('pedigree.getnotes');
+        
         
         // add weapon inside NotereeController  
         Route::post('/pedigree/addweapon', [NoteController::class,'addweapon'])->name('fantree.addweapon');
         Route::post('/pedigree/deleteweapon', [NoteController::class,'deleteweapon'])->name('fantree.deleteweapon');
-        Route::get('/pedigree/loadweapon', [NoteController::class,'loadweapon'])->name('fantree.loadweapon');
-
-        Route::post('/pedigree/updatecount', [PedigreeController::class,'updatecount'])->name('pedigree.updatecount');
+        
 
     
 

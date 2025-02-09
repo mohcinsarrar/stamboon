@@ -378,22 +378,36 @@ function disable_tools_bar() {
 
 function enable_tools_bar() {
     const div = document.querySelector('#tools-bar');
+    
 
-    // enable all buttons inside the div
-    div.querySelectorAll('button').forEach(button => {
-        button.disabled = false;
-    });
+    if(div.classList.contains('end')){
+        // enable all buttons inside the div
+        div.querySelectorAll('button').forEach(button => {
+            if(button.id == "downloadButton"){
+                button.disabled = false;
+            }
+        });
+    }
+    else{
+        // enable all buttons inside the div
+        div.querySelectorAll('button').forEach(button => {
+            button.disabled = false;
+        });
 
-    div.querySelectorAll('a').forEach(anchor => {
-        
-        anchor.removeEventListener('click', (e) => e.preventDefault()); // Prevent the default action
-        anchor.style.pointerEvents = 'auto'; // Disable click
-        anchor.style.color = '#5d596c'; // Change appearance to indicate disabled
-        if (anchor.querySelector('i') != null) {
-            anchor.querySelector('i').style.color = "#5d596c"
-        }
-        
-    });
+        div.querySelectorAll('a').forEach(anchor => {
+            
+            anchor.removeEventListener('click', (e) => e.preventDefault()); // Prevent the default action
+            anchor.style.pointerEvents = 'auto'; // Disable click
+            anchor.style.color = '#5d596c'; // Change appearance to indicate disabled
+            if (anchor.querySelector('i') != null) {
+                anchor.querySelector('i').style.color = "#5d596c"
+            }
+            
+        });
+    }
+
+
+    
 
 }
 

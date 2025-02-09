@@ -401,10 +401,22 @@ function disable_tools_bar() {
 function enable_tools_bar() {
     const div = document.querySelector('#tools-bar');
 
-    // Disable all buttons inside the div
-    div.querySelectorAll('button').forEach(button => {
-        button.disabled = false;
-    });
+    if(div.classList.contains('end')){
+        // enable all buttons inside the div
+        div.querySelectorAll('button').forEach(button => {
+            if(button.id == "downloadButton"){
+                button.disabled = false;
+            }
+        });
+    }
+    else{
+        // enable all buttons inside the div
+        div.querySelectorAll('button').forEach(button => {
+            button.disabled = false;
+        });
+    }
+
+    
 
 }
 

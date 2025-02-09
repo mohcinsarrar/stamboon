@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
 </head>
 
@@ -45,7 +45,7 @@
             <div class="row justify-content-between align-items-center">
                 <div class="col">
                     <nav class="navbar navbar-expand-lg">
-                        <a class="navbar-brand" href="{{route('webshop.index')}}">
+                        <a class="navbar-brand" href="{{ route('webshop.index') }}">
                             <img src="{{ asset('storage/' . $data['colors']['logo']) }}" alt="Logo" width="200"
                                 height="75" style="object-fit: contain" />
                         </a>
@@ -212,8 +212,8 @@
                             <div class="button">
                                 <a href="{{ route('register') }}"
                                     class="btn primary-btn">{{ $data['hero']['buttonTitle'] }}</a>
-                                <a href="{{ $data['hero']['videoUrl'] }}"
-                                    class="glightbox video-button">
+                                <a href="{{ $data['hero']['videoUrl'] }}" class="glightbox video-button"
+                                    data-gallery="gallery1">
                                     <span class="btn icon-btn rounded-full">
                                         <i class="lni lni-play"></i>
                                     </span>
@@ -224,7 +224,10 @@
                     </div>
                     <div class="col-lg-6 col-md-12 col-12">
                         <div class="header-image">
-                            <img src="{{ asset('storage/' . $data['hero']['image']) }}" alt="#" />
+                            <a href="{{ asset('storage/' . $data['hero']['image']) }}" class="glightbox"
+                                data-gallery="gallery2">
+                                <img src="{{ asset('storage/' . $data['hero']['image']) }}" alt="image" />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -323,7 +326,11 @@
                                 <circle cx="60.333" cy="132" r="1.66667" fill="#DADADA" />
                                 <circle cx="104" cy="132" r="1.66667" fill="#DADADA" />
                             </svg>
-                            <img src="{{ asset('storage/' . $data['aboutus']['image']) }}" alt="about" />
+                            <a href="{{ asset('storage/' . $data['aboutus']['image']) }}" class="glightbox"
+                                data-gallery="gallery3">
+                                <img src="{{ asset('storage/' . $data['aboutus']['image']) }}" alt="about" />
+                            </a>
+
                         </div>
                     </div>
                     <div class="col-lg-6 col-12">
@@ -424,9 +431,15 @@
                                 class="bg-white h-100 pricing-style-fourteen {{ $loop->index == 1 ? 'middle' : '' }}">
                                 <div class="table-head">
                                     <h6 class="title">{{ $product->name }}</h4>
-                                        <div class="mb-4 d-flex align-items-center justify-content-center" style="min-height: 250px">
-                                            @if($product->image != null)
-                                            <img src="{{asset('/storage/'.$product->image)}}" class="img-fluid" style="width:200px; height:250x; object-fit:contain">
+                                        <div class="mb-4 d-flex align-items-center justify-content-center"
+                                            style="min-height: 250px">
+                                            @if ($product->image != null)
+                                                <a href="{{ asset('storage/' . $product->image) }}" class="glightbox"
+                                                    data-gallery="gallery4">
+                                                    <img src="{{ asset('storage/' . $product->image) }}"
+                                                        class="img-fluid"
+                                                        style="width:200px; height:250x; object-fit:contain">
+                                                </a>
                                             @endif
                                         </div>
                                         <p style="font-size: 1.3em; font-weight:500;">{{ $product->description }}</p>
@@ -689,16 +702,17 @@
                                 </script>
                             </span> The Stamboom,</span>
                     </div>
-                    
+
                 </div>
                 <div class="col-lg-8 col-12">
                     <ul class="nav justify-content-lg-end justify-content-center pages">
-                        @foreach($pages as $page)
-                        <li class="nav-item"><a href="{{ route('webshop.pages',$page['slug']) }}" class="nav-link px-2">{{ $page['title'] }}</a></li>
+                        @foreach ($pages as $page)
+                            <li class="nav-item"><a href="{{ route('webshop.pages', $page['slug']) }}"
+                                    class="nav-link px-2">{{ $page['title'] }}</a></li>
                         @endforeach
                     </ul>
                 </div>
-                
+
             </div>
         </div>
 
@@ -755,12 +769,25 @@
         });
         let video = @json($data['hero']['videoUrl']);
         //========= glightbox
-        GLightbox({
-            'href': 'https://www.youtube.com/watch?v='+video,
+        const lightbox1 = GLightbox({
+            selector: '.glightbox[data-gallery="gallery1"]',
+            'href': 'https://www.youtube.com/watch?v=' + video,
             'type': 'video',
             'source': 'youtube', //vimeo, youtube or local
             'width': 900,
             'autoplayVideos': true,
+        });
+
+        const lightbox2 = GLightbox({
+            selector: '.glightbox[data-gallery="gallery2"]'
+        });
+
+        const lightbox3 = GLightbox({
+            selector: '.glightbox[data-gallery="gallery3"]'
+        });
+
+        const lightbox4 = GLightbox({
+            selector: '.glightbox[data-gallery="gallery4"]'
         });
     </script>
 </body>

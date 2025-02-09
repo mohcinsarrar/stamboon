@@ -72,5 +72,6 @@ class Kernel extends HttpKernel
     'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
     'product_type' => \App\Http\Middleware\ProductType::class,
     'payment_reminder' => \App\Http\Middleware\PaymentReminder::class,
+    'payment_end' => \App\Http\Middleware\PaymentEnd::class,
   ];
 }

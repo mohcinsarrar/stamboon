@@ -181,7 +181,32 @@
                 aria-valuemin="0" aria-valuemax="100">0%</div>
         </div>
     </div>
+    @php
+        $end = false;
+    @endphp
     <!-- main graph -->
+    @if (Auth::user()->has_payment() == false)
+        @if (Auth::user()->last_payment() != false)
+            @php
+                $end = true;
+            @endphp
+            <a href="{{ route('users.subscription.index') }}">
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <span class="alert-icon text-secondary me-2">
+                        <i class="ti ti-alert-triangle ti-xs"></i>
+                    </span>
+                    You subscription expired, Order new to extend your account !!
+                </div>
+            </a>
+        @else
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <span class="alert-icon text-secondary me-2">
+                    <i class="ti ti-alert-triangle ti-xs"></i>
+                </span>
+                You don't have any subscription plan, Order one now !!
+            </div>
+        @endif
+    @endif
     <div class="card" id="main_graph">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
@@ -194,7 +219,8 @@
         </div>
         <div class="card-body position-relative tools p-2" style="min-height: 600px;">
 
-            <div class="border position-absolute p-2 bg-gray rounded" style="top:10px;left:10px" id="tools-bar">
+            <div class="border position-absolute p-2 bg-gray rounded {{ $end == true ? 'end' : '' }}"
+                style="top:10px;left:10px" id="tools-bar">
                 <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
                     title="Upload your Gedcom file">
                     <button id="uploadGedcomBtn" {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="modal"

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class WebshopController extends Controller
 {
@@ -47,6 +48,17 @@ class WebshopController extends Controller
 
     $data = $this->load_data();
 
+    $inputs = $request->except('_token');
+    
+    Validator::make($inputs, [
+      'image' => 'nullable|image|max:2048',
+      'title' => 'required|string',
+      'buttonTitle' => 'required|string',
+      'videoTitle' => 'required|string',
+      'videoUrl' => 'required|string|url',
+    ])->validate();
+
+    
     // update image if loaded
     if($request->hasFile('image') && $request->file('image')->isValid()) {
       
@@ -55,10 +67,11 @@ class WebshopController extends Controller
         Storage::delete($data['hero']['image']);
       }
       // store the new image
+
       $data['hero']['image'] = $request->file('image')->store('images');
     }
 
-
+    
     $data['hero']['title'] = $request->title;
     $data['hero']['subTitle'] = $request->subTitle;
     $data['hero']['buttonTitle'] = $request->buttonTitle;
@@ -93,6 +106,18 @@ class WebshopController extends Controller
   public function aboutus_update(Request $request){
 
     $data = $this->load_data();
+
+    $inputs = $request->except('_token');
+    
+    Validator::make($inputs, [
+      'image' => 'nullable|image|max:2048',
+      'title' => 'required|string',
+      'subTitle' => 'required|string',
+      'paragraphs' => ['required', 'array', 'min:1'],
+      'paragraphs.*.title' => ['required', 'string'], 
+      'paragraphs.*.content' => ['required', 'string'], 
+    ])->validate();
+    
 
     // update image if loaded
     if($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -139,6 +164,16 @@ class WebshopController extends Controller
 
     $data = $this->load_data();
 
+    $inputs = $request->except('_token');
+
+    Validator::make($inputs, [
+      'title' => 'required|string',
+      'subTitle' => 'required|string',
+      'features' => ['required', 'array', 'min:1'],
+      'features.*.title' => ['required', 'string'], 
+      'features.*.description' => ['required', 'string'], 
+    ])->validate();
+    
 
     $data['features']['title'] = $request->title;
     $data['features']['subTitle'] = $request->subTitle;
@@ -173,6 +208,12 @@ class WebshopController extends Controller
 
     $data = $this->load_data();
 
+    $inputs = $request->except('_token');
+
+    Validator::make($inputs, [
+      'title' => 'required|string',
+      'subTitle' => 'required|string',
+    ])->validate();
 
     $data['pricing']['title'] = $request->title;
     $data['pricing']['subTitle'] = $request->subTitle;
@@ -207,6 +248,14 @@ class WebshopController extends Controller
     $data = $this->load_data();
 
 
+    $inputs = $request->except('_token');
+
+    Validator::make($inputs, [
+      'title' => 'required|string',
+      'subTitle' => 'required|string',
+      'buttonTitle' => 'required|string',
+    ])->validate();
+
     $data['cta']['title'] = $request->title;
     $data['cta']['subTitle'] = $request->subTitle;
     $data['cta']['buttonTitle'] = $request->buttonTitle;
@@ -240,6 +289,15 @@ class WebshopController extends Controller
 
     $data = $this->load_data();
 
+    $inputs = $request->except('_token');
+
+    Validator::make($inputs, [
+      'title' => 'required|string',
+      'questions' => ['required', 'array', 'min:1'],
+      'questions.*.question' => ['required', 'string'], 
+      'questions.*.response' => ['required', 'string'], 
+    ])->validate();
+    
 
     $data['faq']['title'] = $request->title;
     $data['faq']['subTitle'] = $request->subTitle;
@@ -273,7 +331,14 @@ class WebshopController extends Controller
       
       $data = $this->load_data();
   
-  
+      
+      $inputs = $request->except('_token');
+
+      Validator::make($inputs, [
+        'title' => 'required|string',
+        'subTitle' => 'required|string',
+      ])->validate();
+
       $data['contact']['title'] = $request->title;
       $data['contact']['subTitle'] = $request->subTitle;
 
@@ -299,6 +364,15 @@ class WebshopController extends Controller
 
     public function colors_update(Request $request){
       $data = $this->load_data();
+
+      $inputs = $request->except('_token');
+
+      Validator::make($inputs, [
+        'primary_color' => 'required|string',
+        'secondary_color' => 'required|string',
+        'font' => 'required|string',
+        'logo' => 'nullable|image|max:2048',
+      ])->validate();
 
       // update logo if loaded
       if($request->hasFile('logo') && $request->file('logo')->isValid()) {
@@ -339,7 +413,9 @@ class WebshopController extends Controller
     private function update_footer_pages($data){
   
       $path = resource_path('views/website/footer_pages.json');
-  
+      
+      
+
       $newJson = json_encode($data, JSON_PRETTY_PRINT);
   
       File::put($path, $newJson);
@@ -355,6 +431,15 @@ class WebshopController extends Controller
     public function footer_pages_update(Request $request){
 
       $data = $this->load_footer_pages();
+
+      $inputs = $request->except('_token');
+
+      Validator::make($inputs, [
+        'pages' => ['required', 'array', 'min:1'],
+        'pages.*.title' => ['required', 'string'], 
+        'pages.*.content' => ['required', 'string'], 
+      ])->validate();
+
       
       $pages = $request->pages;
       foreach ($pages as &$page) {
