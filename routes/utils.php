@@ -6,6 +6,42 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/invoice', function () {
+    $path = resource_path('views/website/website.json');
+    $json = File::get($path);
+    $data = json_decode($json, true);
+
+    $logo_path = $data['colors']['logo'];
+    $logo_file = Storage::get($logo_path);
+
+
+    $base64Logo = base64_encode($logo_file);
+    $mimeTypeLogo = Storage::mimeType($logo_path);
+    $logo = 'data:' . $mimeTypeLogo . ';base64,' . $base64Logo;
+    return view("users.subscription.invoice",compact('logo'));
+});
+
+Route::get('/invoice/pdf', function () {
+    $path = resource_path('views/website/website.json');
+    $json = File::get($path);
+    $data = json_decode($json, true);
+
+    $logo_path = $data['colors']['logo'];
+    $logo_file = Storage::get($logo_path);
+
+
+    $base64Logo = base64_encode($logo_file);
+    $mimeTypeLogo = Storage::mimeType($logo_path);
+    $logo = 'data:' . $mimeTypeLogo . ';base64,' . $base64Logo;
+
+    $pdf = PDF::loadView('users.subscription.invoice',compact('logo'));
+    return $pdf->download('invoice.pdf');
+});
+
 
 Route::get('/roles/create', function () {
     $role = Role::create(['name' => 'admin']);

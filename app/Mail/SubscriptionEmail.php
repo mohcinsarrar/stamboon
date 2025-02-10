@@ -15,7 +15,7 @@ class SubscriptionEmail extends Mailable
 {
     use Queueable, SerializesModels;
     
-    public $website_url, $logo, $title, $user_fullname, $content, $company_name, $current_year, $contact_email, $footer_color;
+    public $website_url, $logo, $title, $user_fullname, $content, $invoice, $company_name, $current_year, $contact_email, $footer_color;
     
     /**
      * Create a new message instance.
@@ -36,7 +36,7 @@ class SubscriptionEmail extends Mailable
         return $data;
       }
 
-    public function __construct($title, $user_fullname, $content)
+    public function __construct($title, $user_fullname, $content, $invoice)
     {
         $data = $this->load_data();
         $logo = $data['colors']['logo'];
@@ -58,6 +58,7 @@ class SubscriptionEmail extends Mailable
         $this->title = $title;
         $this->user_fullname = $user_fullname;
         $this->content = $content;
+        $this->invoice = $invoice;
         $this->company_name = "thestamboom";
         $this->current_year = Carbon::now()->year;
         $this->contact_email = "admin@thestamboom.com";
@@ -72,6 +73,11 @@ class SubscriptionEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.subscription')->subject('subscription');
+        return $this->view('emails.subscription')
+        ->subject('subscription')
+        ->attach($this->invoice, [
+            'as' => 'invoice_thestamboom.pdf',
+            'mime' => 'application/pdf',
+        ]);;
     }
 }

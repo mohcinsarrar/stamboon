@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('currency');
             $table->string('payment_status');
             $table->string('payment_method');
+            $table->string('invoice')->nullable();
             $table->boolean('expired')->default(0);
             $table->float('price')->nullable();
             $table->boolean('month')->default(false);

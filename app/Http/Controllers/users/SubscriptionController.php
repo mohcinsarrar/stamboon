@@ -15,8 +15,9 @@ use App\Mail\SubscriptionEmail;
 use LaravelCountries;
 use Laravel\Cashier\Events\OrderInvoiceAvailable;
 use Illuminate\Support\Facades\Http;
-
-
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class SubscriptionController extends Controller
@@ -56,7 +57,13 @@ class SubscriptionController extends Controller
             throw new \Exception("API request failed");
         } 
 
-        return $vatResponse->json()['price_incl_vat'];
+        $returned = [
+            'price_incl_vat' => $vatResponse->json()['price_incl_vat'],
+            'vat_rate' => $vatResponse->json()['vat_rate']
+        ];
+        return $returned;
+        
+        $vatResponse->json()['price_incl_vat'];
 
     } catch (\Exception $e) {
         return null;
@@ -89,15 +96,93 @@ class SubscriptionController extends Controller
   }
 
 
-  private function getObjectById($array, $id) {
-    $result = array_filter($array, function($object) use ($id) {
-        return $object->id == $id;
-    });
+    private function getObjectById($array, $id) {
+        $result = array_filter($array, function($object) use ($id) {
+            return $object->id == $id;
+        });
 
-    // Return the first match (or null if not found)
-    return $result ? array_values($result)[0] : null;
+        // Return the first match (or null if not found)
+        return $result ? array_values($result)[0] : null;
     }
 
+    private function getObjectByCurrency($array, $currency) {
+        $result = array_filter($array, function($object) use ($currency) {
+            return $object->currency == $currency;
+        });
+
+        // Return the first match (or null if not found)
+        return $result ? array_values($result)[0] : null;
+    }
+
+    private function get_logo(){
+        $path = resource_path('views/website/website.json');
+        $json = File::get($path);
+        $data = json_decode($json, true);
+
+        $logo_path = $data['colors']['logo'];
+        $logo_file = Storage::get($logo_path);
+
+
+        $base64Logo = base64_encode($logo_file);
+        $mimeTypeLogo = Storage::mimeType($logo_path);
+        $logo_base64 = 'data:' . $mimeTypeLogo . ';base64,' . $base64Logo;
+
+        return $logo_base64;
+    }
+
+    private function generateInvoice($user, $payment, $product_name, $vat_rate)
+    {
+
+        $countries = LaravelCountries::getCountries()->getData();
+
+        $logo = $this->get_logo();
+
+        $paidAtDate = Carbon::parse($payment->paidAt)->format('F d, Y');
+        $subtotal_vat = $payment->amount->value; // amount paid with vat
+        $subtotal = ($subtotal_vat*100) / (100+$vat_rate); // amount paid witout vat
+        $totalvat = $subtotal_vat - $subtotal; // vat amount
+        $currency = $payment->amount->currency;
+
+        $used_ccurrency = $this->getObjectByCurrency($countries, $currency);
+        $currency_symbol = $used_ccurrency->currency_symbol;
+
+        $product = (object) [
+            'date' => $paidAtDate,
+            'payment_id' => $payment->id,
+            'name' => $product_name,
+            'price' => $currency_symbol .''.number_format($subtotal, 2),
+            'vat' => $vat_rate.'%',
+            'subtotal' => $currency_symbol .''.number_format($subtotal,2),
+            'subtotal_vat' => $currency_symbol .''.number_format($subtotal_vat,2),
+            'totalnet' => $currency_symbol .''.number_format($subtotal,2),
+            'totalvat' => $currency_symbol .''.number_format($totalvat,2),
+            'total' => $currency_symbol .''.number_format($subtotal_vat,2),
+
+        ];
+
+        // get user country 
+        
+        $user_country = $this->getObjectById($countries, $user->country);
+
+        $user_data = (object) [
+            'fullname' => $user->firstname . ' ' . $user->lastname,
+            'email' => $user->email,
+            'adresse' => $user->address,
+            'city' => $user->city,
+            'country' => $user_country->name,
+        ];
+
+
+        $pdf = PDF::loadView('users.subscription.invoice',compact('logo','product','user_data'));
+
+        $pdfPath = storage_path('app/invoices/invoice_' . $payment->id . '.pdf');
+
+        // Save PDF to storage
+        $pdf->save($pdfPath);
+
+        return $pdfPath;
+
+    }
     
 
 
@@ -123,16 +208,22 @@ class SubscriptionController extends Controller
         // get user country 
         $countries = LaravelCountries::getCountries()->getData();
         //dd($user->country);
-        $user_country = $this->getObjectById($countries, 75);
+        $user_country = $this->getObjectById($countries, $user->country);
 
         $user_country_code = $user_country->iso2;
         $user_currency = $user_country->currency;
 
         // get price include vat_rate
-        $price_incl_vat = $this->get_vat($user_country_code, $amount);
+        $price_incl_vat = $amount;
+
+        $vat = $this->get_vat($user_country_code, $amount);
+        $price_incl_vat = $vat['price_incl_vat'];
+        $vat_rate = $vat['vat_rate'];
+
         if($price_incl_vat == null){
             return redirect()->route('users.subscription.index')->with('error','your payment has not been completed, please try again');
         }
+            
 
         // get currency exchange if user has a supported currency
 
@@ -141,12 +232,14 @@ class SubscriptionController extends Controller
         }
 
         $currency_rate = 0;
+        
         if($user_currency != $this->default_currency){
             $currency_rate = $this->get_currency($user_currency);
             if($currency_rate == null){
                 return redirect()->route('users.subscription.index')->with('error','your payment has not been completed, please try again');
             }
         }
+            
         
         // calculate the final price with vat and currency exchange
         
@@ -230,8 +323,10 @@ class SubscriptionController extends Controller
         ]);
         */
         //session()->put('orderId', $order->id);
+        
         session()->put('paymentId', $payment->id);
         session()->put('productId', $product->id);
+        session()->put('vat_rate', $vat_rate);
     
         // redirect customer to Mollie checkout page
         
@@ -245,6 +340,7 @@ class SubscriptionController extends Controller
         //$orderId = session()->get('orderId');
         $paymentId = session()->get('paymentId');
         $productId = session()->get('productId');
+        $vat_rate = session()->get('vat_rate');
 
         $product = Product::findOrFail($productId);
 
@@ -256,7 +352,11 @@ class SubscriptionController extends Controller
         if($payment->isPaid())
         //if ($order->isPaid() || $order->isAuthorized()) 
         {
+
+            
             $user = Auth::user();
+
+            
             $upgrade = false;
 
             if($user->has_payment()){
@@ -274,6 +374,8 @@ class SubscriptionController extends Controller
                 Payment::where('id',$current_payment->id)->update(['expired' => 1]);
             }
 
+            $invoice = $this->generateInvoice($user, $payment, $product->name, $vat_rate);
+
             $paymentObj = new Payment();
             $paymentObj->payment_id = $paymentId;
             //$paymentObj->payment_id = $orderId;
@@ -285,10 +387,15 @@ class SubscriptionController extends Controller
             $paymentObj->payment_status = "Completed";
             //$paymentObj->payment_method = $order->method;
             $paymentObj->payment_method = $payment->method;
+            $paymentObj->invoice = $invoice;
             $paymentObj->created_at = Carbon::now();
             $paymentObj->save();
         
+            // generate invoice
+            
+            
 
+            session()->forget('vat_rate');
             session()->forget('orderId');
             session()->forget('productId');
 
@@ -298,8 +405,8 @@ class SubscriptionController extends Controller
             // send email for user, with info regarding his subscription
             $title = "Your subscription to plan ".$product->name." paid with success";
             $user_fullname = $user->firstname. " " . $user->lastname;
-            $content = "Thank you for signing up. We're excited to have you on board! <br> your subscription active until ". $paymentObj->active_until();
-            Mail::to($user->email)->send(new SubscriptionEmail($title, $user_fullname, $content));
+            $content = "Thank you for signing up. We're excited to have you on board! <br> your subscription active until ". $paymentObj->active_until() ."<br> Thank you for your payment. Please find your invoice attached";
+            Mail::to($user->email)->send(new SubscriptionEmail($title, $user_fullname, $content, $invoice));
 
             // reset pedigree features
             $pedigree = Pedigree::where('user_id',$user->id)->first();
