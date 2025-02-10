@@ -1,3 +1,6 @@
 *
 !public/
+!documentations/
+!fantree_gedcoms/
+!fantree_gedcoms/
 !.gitignore
