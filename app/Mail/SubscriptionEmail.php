@@ -36,7 +36,7 @@ class SubscriptionEmail extends Mailable
         return $data;
       }
 
-    public function __construct($title, $user_fullname, $content, $invoice)
+    public function __construct($title, $user_fullname, $content, $invoice = null)
     {
         $data = $this->load_data();
         $logo = $data['colors']['logo'];
@@ -73,11 +73,17 @@ class SubscriptionEmail extends Mailable
      */
     public function build()
     {
+        if($this->invoice != null){
+            return $this->view('emails.subscription')
+            ->subject('subscription')
+            ->attach($this->invoice, [
+                'as' => 'invoice_thestamboom.pdf',
+                'mime' => 'application/pdf',
+            ]);
+        }
+
         return $this->view('emails.subscription')
-        ->subject('subscription')
-        ->attach($this->invoice, [
-            'as' => 'invoice_thestamboom.pdf',
-            'mime' => 'application/pdf',
-        ]);;
+        ->subject('subscription');
+        
     }
 }

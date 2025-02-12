@@ -352,6 +352,11 @@ function test_all_max_nodes() {
             return;
         }
     });
+    if(result == true){
+        document.querySelector('#max-node-alert').style.display = "none";
+        document.querySelector('#max-node-alert div.alert').innerHTML = ""
+    }
+    
 
     return result
 }

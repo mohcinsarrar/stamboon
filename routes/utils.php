@@ -54,8 +54,8 @@ Route::get('/roles/create', function () {
 Route::get('/admin/create', function () {
     $user = User::create([
         'name' => "admin",
-        'email' => 'admin@admin.com',
-        'password' => Hash::make("rootroot"),
+        'email' => 'ron@thestamboom.com',
+        'password' => Hash::make("ron@thestamboom"),
         'email_verified_at' => Carbon::now(),
         'verification_code' => str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT)
     ]);
@@ -115,7 +115,7 @@ Route::get('/products/createseed', function () {
         'fantree' => 1,
         'pedigree' => 1,
         'duration' => 12,
-        'print_number' => 0,
+        'print_number' => 200,
         'price' => 49.95,
         'fantree_max_generation' => 7,
         'pedigree_max_generation' => 25,

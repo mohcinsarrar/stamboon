@@ -90,17 +90,22 @@ function inlineStyles(source, target) {
   
     img.setAttribute(
       'src',
-      'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
+      'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData)
     );
 
     
     return new Promise(resolve => {
+      
       img.onload = () => {
+        
         ctxt.drawImage(img, 0, 0);
+        
         // Log the base64 data URL after the image is drawn on the canvas
         const base64Data = canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : format}`, quality);
         resolve(base64Data);
+        
       };
+
     
     });
   }
@@ -124,7 +129,7 @@ function inlineStyles(source, target) {
       download = true,
       ignores = null,
       cssinline = 1,
-      background = null,
+      background = false,
       fonts = null
     } = {}
   ) {
@@ -147,18 +152,20 @@ function inlineStyles(source, target) {
      if(fonts != null){
       await loadFonts(fonts,target)
     }
-    const backgroundImage = target.style.backgroundImage
 
+    
     // Set all the css styles inline on the target element based on the styles
     // of the source element
     if (cssinline === 1) {
       inlineStyles(source, target);
     }
 
-    if (background != null) {
-      target.style.background = background;
+    
+    if (background == false) {
+      target.style.background = 'white';
     }
-  
+    
+
     //Remove unwanted elements
     if (ignores != []) {
       ignores.forEach(ignore => {
@@ -169,7 +176,7 @@ function inlineStyles(source, target) {
     }
 
     await embedImages(target); // Embed images in the SVG
-
+    
    
 
 
@@ -183,11 +190,12 @@ function inlineStyles(source, target) {
       quality
     });
 
-
+    
   
     if (download) {
       downloadImage({ file, name, format });
     }
+    
 
     return file;
   };

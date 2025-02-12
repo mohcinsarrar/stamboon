@@ -79,7 +79,7 @@ document.querySelector('#open_settings').addEventListener('click', function (eve
       if (this.checked) {
         document.querySelectorAll('.customimagescheckboxbg').forEach((cb) => {
           if (cb !== this) {
-            console.log(cb)
+
             cb.checked = false;
             cb.parentElement.classList.remove("checked")
           }
@@ -140,7 +140,7 @@ document.querySelector('#settings form').addEventListener('submit', (event) => {
 
     },
     error: function (xhr, status, error) {
-      console.log(error)
+
       show_toast('danger', 'error', "can't edit settings, please try again !")
       return null;
     }

@@ -904,7 +904,7 @@ class FantreeController extends Controller
             return redirect()->route('users.dashboard.index');
         }
         $product = Product::where('id',$current_payment->product_id)->first();
-        
+
         // limit reached
         if($fantree->print_number >= $product->print_number){
             return response()->json(['error'=>true,'msg' => 'limit reached']);

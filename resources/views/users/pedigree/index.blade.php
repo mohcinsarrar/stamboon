@@ -207,7 +207,7 @@
             </div>
         @endif
     @endif
-    <div class="card" id="main_graph">
+    <div class="card  h-100" id="main_graph">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
                 <button {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="offcanvas"

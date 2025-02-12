@@ -4,8 +4,15 @@ function renderChart() {
     d3.select(treeConfiguration.chartContainer).selectAll("*").remove();
     chart = undefined
     var data = familyData;
-    const width = 1344;
-    const height = 839;
+
+
+    const mainGraphDiv = d3.select("div#main_graph");
+    
+    const width = parseInt(mainGraphDiv.style("width")) - 16;
+    const height = parseInt(mainGraphDiv.style("height"));
+  
+
+
     chart = new d3.OrgChart()
         .container(treeConfiguration.chartContainer)
         .data(data)

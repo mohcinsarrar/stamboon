@@ -371,12 +371,12 @@ function renderChart() {
   const mainGraphDiv = d3.select("div#main_graph");
   const spaceDepth = 220
   // Get the width and height of div#graph
-  /*
+  
   const width = parseInt(mainGraphDiv.style("width")) - 16;
   const height = parseInt(mainGraphDiv.style("height"));
-  */
-  const width = 1344;
-  const height = 839;
+  
+  //const width = 1344;
+  //const height = 839;
   const radius = Math.min(width, height) / 2 - 20;
   const arcSpan = Math.PI * (spaceDepth / 180); // 200-degree span in radians
 
@@ -409,7 +409,7 @@ function renderChart() {
   const levelSpacing = 120; // Set the desired spacing between levels
 
   root.descendants().forEach(d => {
-    d.y = (d.depth * levelSpacing) - (d.depth * (5*d.depth)); // Adjust spacing between levels
+    d.y = (d.depth * levelSpacing) - (d.depth * (4.5*d.depth)); // Adjust spacing between levels
   });
 
 
@@ -516,6 +516,7 @@ chartGroup.append("g")
     .attr("x", -50) // Center the HTML block
     .attr("y", -50) // Adjust y offset to position the HTML block
     .style("cursor", "pointer")
+    .style("overflow", "visible")
     .html(d => {
 
       if (d.data.id == undefined) {
@@ -640,7 +641,7 @@ chartGroup.append("g")
 
   $(document).on("click", "#fit", function () {
 
-    const center = d3.zoomIdentity.translate(width / 2, height - 250)
+    const center = d3.zoomIdentity.translate(width / 2, height / 2 + (height / 4))
     svg.call(zoom.transform, center)
   });
 
@@ -748,13 +749,13 @@ function foreignObjectHtml(d){
 
 
       return `
-       <div data-personId="${d.data.id}" data-depth="${d.depth}" data-order="${d.data.order}" style="text-align: center; font-family: Arial; font-size: 12px;">
+       <div data-personId="${d.data.id}" data-depth="${d.depth}" data-order="${d.data.order}" style="text-align: center; font-family: Arial; font-size: 12px">
            <img id="img-${d.data.id.replaceAll('@', '')}" src="${personIcon}" alt="Photo" style="filter: ${filter}; object-fit: cover;width: ${imgSize.width}; height: ${imgSize.height}; border-radius: 50%; border: 2px solid ${treeConfiguration.band_color};transform: rotate(${imgRotation}deg)">
  
          <div class="" style="${style}">
            <svg id="arc-svg" width="100" height="55" viewBox="-100 -80 200 200" xmlns="http://www.w3.org/2000/svg">
              <path id="curved-rectangle" 
-             transform="translate(-170,-55)"
+             transform="translate(-170,-50)"
                d="${arc}" 
                fill="${boxColor}" 
                stroke="${boxColor}" 

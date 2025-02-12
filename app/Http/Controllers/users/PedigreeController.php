@@ -193,7 +193,6 @@ class PedigreeController extends Controller
 
     public function editChartStatus(Request $request){
         $chart_status = $request->input('chart_status');
-        $generation = $request->input('generation');
 
         $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
         if($pedigree == null){
@@ -201,7 +200,6 @@ class PedigreeController extends Controller
         }
         
         $pedigree->chart_status = $chart_status;
-        $pedigree->generation = $generation;
         $pedigree->save();
         return response()->json(['error'=>false,'msg' => 'error']);
     }

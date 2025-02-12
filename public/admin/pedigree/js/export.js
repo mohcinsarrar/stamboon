@@ -6,27 +6,37 @@ $(document).on("click", "#export", function () {
 }
   var type = document.querySelector('#exportModal #type').value;
   if (type == "pdf") {
-    document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
+    //document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
     document.querySelector('#exportModal #orientationContainer').style.display = "block";
-    document.querySelector('#exportModal #formatContainer').style.display = "none";
+    //document.querySelector('#exportModal #formatContainer').style.display = "none";
   }
   else {
     if (type == "png") {
-      document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
+      //document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
       document.querySelector('#exportModal #orientationContainer').style.display = "none";
-      document.querySelector('#exportModal #formatContainer').style.display = "block";
+      //document.querySelector('#exportModal #formatContainer').style.display = "block";
     }
   }
 
   // suggested_size
-
+  /*
   const chartElement = d3.select('.chart').node();
   let width = chartElement.getBoundingClientRect().width;
   let height = chartElement.getBoundingClientRect().height;
 
   const transformAttr = chartElement.getAttribute('transform');
-  const scaleMatch = transformAttr.match(/scale\(([\d\.]+)\)/);
-  const scale = scaleMatch ? parseFloat(scaleMatch[1]) : null;
+  let scaleMatch;
+  let scale;
+  if(transformAttr != null){
+    scaleMatch = transformAttr.match(/scale\(([\d\.]+)\)/);
+    scale = scaleMatch ? parseFloat(scaleMatch[1]) : null;
+  }
+  else{
+
+    scale = 1;
+  }
+
+  
 
   width = width / scale;
   height = height / scale;
@@ -55,7 +65,8 @@ $(document).on("click", "#export", function () {
 
 
   document.querySelector('#suggested_size .msg').innerHTML = `For best printing quality choose a size above ${best_size}`
-  
+  */
+ document.querySelector('#suggested_size .msg').innerHTML = `The print process take time, please wait for your tree to be downloaded`
   d3.selectAll(".toolbar").remove();
   d3.selectAll(".node-button-g").attr('display','none');
   if(chart == undefined){
@@ -72,15 +83,15 @@ $(document).on("click", "#export", function () {
 $(document).on("change", "#exportModal #type", function () {
   var type = document.querySelector('#exportModal #type').value;
   if (type == "pdf") {
-    document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
+    //document.querySelector('#exportModal #formatPdfContainer').style.display = "block";
     document.querySelector('#exportModal #orientationContainer').style.display = "block";
-    document.querySelector('#exportModal #formatContainer').style.display = "none";
+    //document.querySelector('#exportModal #formatContainer').style.display = "none";
   }
   else {
     if (type == "png") {
-      document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
+      //document.querySelector('#exportModal #formatPdfContainer').style.display = "none";
       document.querySelector('#exportModal #orientationContainer').style.display = "none";
-      document.querySelector('#exportModal #formatContainer').style.display = "block";
+      //document.querySelector('#exportModal #formatContainer').style.display = "block";
     }
   }
 
@@ -110,14 +121,16 @@ $(document).on("click", "#exportBtn", function () {
       success: function(data) {
           if (data.error == false) {
             if (type == "png") {
-              var format = document.querySelector('#exportModal #format').value;
+              //var format = document.querySelector('#exportModal #format').value;
+              var format = 2;
               exportGraph(format,include_note,include_weapon)
               document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
                 document.querySelector('#exportModal #exportModalSpinner').classList.add('d-none')
             }
             else {
               if (type == "pdf") {
-                var format = document.querySelector('#exportModal #formatPdf').value;
+                //var format = document.querySelector('#exportModal #formatPdf').value;
+                var format = 'a3';
                 var orientation = document.querySelector('#exportModal #orientation').value;
                 downloadPdf(format, orientation,include_note,include_weapon)
                 document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
@@ -216,7 +229,7 @@ async function exportGraph(format,include_note,include_weapon) {
 
   
   
-  chart.exportImg({ full: false, scale: format ,onLoad: (base64) => {
+  chart.exportImg({ full: true, scale: format ,onLoad: (base64) => {
     d3.selectAll(".node-button-g").attr('display','block');
     if (ignores != []) {
       ignores.forEach(ignore => {
@@ -280,8 +293,9 @@ async function downloadPdf(format, orientation,include_note,include_weapon) {
 
 
   chart.exportImg({
+    scale:3,
     save: false,
-    full: false,
+    full: true,
     onLoad: (base64) => {
 
       

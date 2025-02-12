@@ -16,10 +16,11 @@ class Fantree extends Model
 
     protected $fillable = [
         'user_id',
-        'status',
         'excel_file',
         'gedcom_file',
-        'template',
+        'status',
+        'stats',
+        'print_number',
         'chart_status',
         'weapon'
     ];
@@ -74,13 +75,19 @@ class Fantree extends Model
     }
 
     public function person_count() {
-
-        return $this->stats['indis'];
+        if($this->stats != null){
+            return $this->stats['indis'];
+        }
+        return 0;
+        
     }
 
     public function generation() {
-
-        return $this->stats['generation'];
+        if($this->stats != null){
+            return $this->stats['generation'];
+        }
+        return 0;
+        
     }
 
     private function getRoot($childToParents) {

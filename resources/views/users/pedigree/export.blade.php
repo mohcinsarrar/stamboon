@@ -39,6 +39,7 @@
                         @endforeach
                     </select>
                 </div>
+                {{-- 
                 <div class="mb-4" id="formatContainer">
                     <label for="format" class="form-label">Format</label>
                     <select id="format" class="form-select">
@@ -47,6 +48,8 @@
                         @endforeach
                     </select>
                 </div>
+                --}}
+                {{-- 
                 <div class="mb-4" style="display: none;" id="formatPdfContainer">
                     <label for="formatPdf" class="form-label">Format</label>
                     <select id="formatPdf" class="form-select">
@@ -55,6 +58,7 @@
                         @endforeach
                     </select>
                 </div>
+                --}}
                 <div class="mb-4" style="display: none;" id="orientationContainer">
                     <label for="orientation" class="form-label">Orientation</label>
                     <select id="orientation" class="form-select">
