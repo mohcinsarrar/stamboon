@@ -117,6 +117,7 @@ function renderChart() {
 
 
     // change connections link to straight
+    
     chart.linkGroupArc(function linkValue({ source, target }) {
         const linkGenerationFunc = d3.link(d3.curveLinear)
             .x((d) => d.x)
@@ -152,7 +153,7 @@ function renderChart() {
 
         y += offsets.sy;
 
-        let rdef = 0;
+        let rdef = 35;
         let r = Math.abs(ex - x) / 2 < rdef ? Math.abs(ex - x) / 2 : rdef;
 
         r = Math.abs(ey - y) / 2 < r ? Math.abs(ey - y) / 2 : r;
