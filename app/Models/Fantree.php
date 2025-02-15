@@ -22,7 +22,9 @@ class Fantree extends Model
         'stats',
         'print_number',
         'chart_status',
-        'weapon'
+        'weapon',
+        'weapon_xpos',
+        'weapon_ypos'
     ];
 
     protected $casts = [

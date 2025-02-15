@@ -240,7 +240,8 @@
                             class="ti ti-shield-chevron fs-4"></i></button>
                 </div>
 
-                <div class="row  mb-2 justify-content-center">
+                <div class="row  mb-2 justify-content-center" data-bs-toggle="tooltip" data-bs-placement="left"
+                    title="Add notes">
                     <button id="addNote" type="button" class="btn text-white border-0 p-2 col-auto rounded-circle"><i
                             class="ti ti-note fs-4"></i></button>
                 </div>

@@ -781,14 +781,16 @@
         const lightbox2 = GLightbox({
             selector: '.glightbox[data-gallery="gallery2"]'
         });
+        console.log(lightbox2);
 
         const lightbox3 = GLightbox({
             selector: '.glightbox[data-gallery="gallery3"]'
         });
-
-        const lightbox4 = GLightbox({
-            selector: '.glightbox[data-gallery="gallery4"]'
-        });
+        if (document.querySelector('.glightbox[data-gallery="gallery4"]')) {
+            const lightbox4 = GLightbox({
+                selector: '.glightbox[data-gallery="gallery4"]'
+            });
+        }
     </script>
 </body>
 

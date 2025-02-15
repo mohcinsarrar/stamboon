@@ -36,8 +36,8 @@ class NoteController extends Controller
         
         Validator::make($inputs, [
                 'content' => ['required','string'],
-                'xpos' => ['required','integer'],
-                'ypos' => ['required','integer'],
+                'xpos' => ['required','string'],
+                'ypos' => ['required','string'],
             ])->validate();
         
 
@@ -61,8 +61,8 @@ class NoteController extends Controller
         
         Validator::make($inputs, [
                 'note_id' => ['required','exists:notes,id'],
-                'xpos' => ['required','integer'],
-                'ypos' => ['required','integer'],
+                'xpos' => ['required','string'],
+                'ypos' => ['required','string'],
             ])->validate();
 
             $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
@@ -116,7 +116,7 @@ class NoteController extends Controller
         $inputs = $request->all();
 
         Validator::validate($inputs, [
-            'file' => 'required|image|mimes:png|max:2048',
+            'file' => 'required|image|max:2048',
         ]);
 
         $pedigree = pedigree::where('user_id',Auth::user()->id)->first();
@@ -173,9 +173,34 @@ class NoteController extends Controller
             }
 
 
+        return response()->json(['error'=>false,
+        'weapon' => $pedigree->weapon, 
+        'xpos' =>  $pedigree->weapon_xpos,
+        'ypos' =>  $pedigree->weapon_ypos
+    ]);
 
-        return response()->json(['error'=>false,'weapon' => $pedigree->weapon]);
+    }
 
+    public function editweaponposition(Request $request){
+        $inputs = $request->all();
+        
+        Validator::make($inputs, [
+                'xpos' => ['required','string'],
+                'ypos' => ['required','string'],
+            ])->validate();
+
+            $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            if($pedigree == null){
+                return response()->json(['error'=>true,'msg' => 'error']);
+            }
+
+            // update note
+            Pedigree::where('user_id',Auth::user()->id)->update([
+                'weapon_xpos' => $inputs['xpos'],
+                'weapon_ypos' => $inputs['ypos']
+            ]);
+
+            return response()->json(['error'=>false,'msg' => 'error']);
     }
 
 

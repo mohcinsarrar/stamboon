@@ -30,6 +30,7 @@ class RedirectIfAuthenticated
                     return redirect()->route('users.dashboard.index');
                 }
 
+
                 return redirect('/');
 
                 

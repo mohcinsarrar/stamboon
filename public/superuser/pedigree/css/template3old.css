@@ -1,0 +1,79 @@
+
+.template-3 .person-member { 
+    display: flex;
+    flex-wrap: wrap;
+    height: 140px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.template-3 .person-member .card {
+    height: 140px !important;
+    position: relative;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+}
+
+.template-3 .card img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border: 4px solid #eee;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+}
+
+.template-3 .diagonal-text {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    transform: translateX(-172%) translateY(-40%) rotate(-45deg);
+    transform-origin: center;
+    z-index: 1;
+}
+
+.template-3 .diagonal-text::before {
+    content: "";
+    display: block;
+    height: 0;
+    padding-top: 75%;
+    overflow: hidden;
+}
+
+.template-3 .diagonal-text>span {
+    display: inline-block;
+    background: #000000;
+    padding: 6px 40px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    text-align: center;
+    color: white;
+    white-space: nowrap;
+}
+
+
+
+.template-3 div.line {
+    margin-top: 69px;
+    width: 2px;
+    border-style: solid;
+    border-width: 2px 0 0;
+    cursor: auto;
+  }
+
+.template-3 .info {
+    font-size: 20px;
+    margin-top: 55px;
+}
+
+.template-3 .job {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+

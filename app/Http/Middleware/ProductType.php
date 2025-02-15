@@ -27,6 +27,7 @@ class ProductType
                 if(auth()->user()->hasRole('user')){
                     return redirect()->route('users.dashboard.index');
                 }
+
             }
 
         }

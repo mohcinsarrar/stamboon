@@ -7,10 +7,12 @@ use App\Http\Controllers\users\ProfileController;
 use App\Http\Controllers\users\NoteFantreeController;
 
 
-
 Route::middleware(['auth:sanctum','verified','active','role:user','product_type:fantree','payment_reminder'])
     ->name('users.')
     ->group( function(){
+
+
+        
         Route::get('/fantree', [FantreeController::class,'index'])->name('fantree.index');
         Route::get('/fantree/getTree', [FantreeController::class,'getTree'])->name('fantree.getTree');
         Route::post('/fantree/editchartstatus', [FantreeController::class,'editChartStatus'])->name('fantree.editchartstatus');
@@ -24,6 +26,9 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::get('/fantree/getnotes', [NoteFantreeController::class,'index'])->name('fantree.getnotes');
 
         Route::get('/fantree/loadweapon', [NoteFantreeController::class,'loadweapon'])->name('fantree.loadweapon');
+
+        
+
     });
 
 
@@ -66,7 +71,7 @@ Route::middleware(['auth:sanctum','verified','active','role:user','product_type:
         Route::post('/fantree/addweapon', [NoteFantreeController::class,'addweapon'])->name('fantree.addweapon');
         Route::post('/fantree/deleteweapon', [NoteFantreeController::class,'deleteweapon'])->name('fantree.deleteweapon');
         
-
+        Route::post('/fantree/editweaponposition', [NoteFantreeController::class,'editweaponposition'])->name('fantree.editweaponposition');
         
 
 });

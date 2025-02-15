@@ -37,7 +37,6 @@ Route::middleware(['auth:sanctum','verified','active','role:user','payment_remin
     Route::get('/profile/notifications/load', [ProfileController::class,'notifications_load'])->name('profile.notifications.load');
     Route::get('/profile/session_delete/{id}', [ProfileController::class, 'session_delete'])->name('profile.session_delete');
 
-
-
+    
 
 });

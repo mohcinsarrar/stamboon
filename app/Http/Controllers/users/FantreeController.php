@@ -48,6 +48,8 @@ use App\Services\GedcomService;
 use ZipArchive;
 
 
+use App\DataTables\FantreesDataTable;
+
 class FantreeController extends Controller
 {
 
@@ -68,12 +70,42 @@ class FantreeController extends Controller
 
         return "$day $monthName $year";
     }
+
+
     
+    
+    private function get_user(){
+        $user_id = session()->get('user_id');
+        
+        if($user_id == null){
+            return Auth::user();
+        }
+        else{
+            return User::find($user_id);
+        }
+
+    }
+
+    private function get_fantree(){
+        $user_id = session()->get('user_id');
+        
+        if($user_id == null){
+            $user = Auth::user();
+        }
+        else{
+            $user = User::find($user_id);
+        }
+
+        $fantree = Fantree::where('user_id',$user->id)->first();
+
+        return $fantree;
+
+    }
 
     public function index(Request $request){
 
-        $user = Auth::user();
 
+        $user = Auth::user();
 
         // get product features
         $has_payment = $user->has_payment();

@@ -21,6 +21,8 @@ class Pedigree extends Model
         'print_number',
         'chart_status',
         'weapon',
+        'weapon_xpos',
+        'weapon_ypos'
         
     ];
 

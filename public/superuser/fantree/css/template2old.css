@@ -1,0 +1,60 @@
+
+.template-2 .person-member { 
+    display: flex;
+    flex-wrap: wrap;
+    height: 180px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.template-2 .person-member .card {
+    height: 180px !important;
+    position: relative;
+}
+
+.template-2 .card img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+}
+
+.template-2 .diagonal-text {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    transform: translateX(-172%) translateY(-40%) rotate(-45deg);
+    transform-origin: center;
+    z-index: 1;
+}
+
+.template-2 .diagonal-text::before {
+    content: "";
+    display: block;
+    height: 0;
+    padding-top: 75%;
+    overflow: hidden;
+}
+
+.template-2 .diagonal-text>span {
+    display: inline-block;
+    background: #000000;
+    padding: 6px 40px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    text-align: center;
+    color: white;
+    white-space: nowrap;
+}
+
+
+
+.template-2 div.line {
+    margin-top: 89px;
+    width: 2px;
+    border-style: solid;
+    border-width: 2px 0 0;
+    cursor: auto;
+  }
+

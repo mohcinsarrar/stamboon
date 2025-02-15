@@ -35,6 +35,7 @@ class MenuServiceProvider extends ServiceProvider
             $menu = $this->get_menu('user');
         }
 
+
         
 
         $view->with([

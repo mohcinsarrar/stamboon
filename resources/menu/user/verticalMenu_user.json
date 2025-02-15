@@ -36,5 +36,13 @@
       "name": "Documentations",
       "slug": "users.documentations"
     }
+    ,
+    {
+      "url": "/superuser/fantree/list",
+      "icon": "menu-icon tf-icons ti ti-chart-arcs-3",
+      "name": "All Fanchart",
+      "slug": ["superuser.fantree.list","superuser.fantree.index"],
+      "role": "superuser"
+    }
   ]
 }

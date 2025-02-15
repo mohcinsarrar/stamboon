@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum','verified','role:admin'])
     Route::resource('webshop/products', ProductController::class)->names('webshop.products');
     
     Route::post('users/toggle_active/{id}', [UserController::class, 'toggle_active'])->name('users.toggle_active');
+    Route::post('users/toggle_role/{id}', [UserController::class, 'toggle_role'])->name('users.toggle_role');
     Route::resource('users', UserController::class)->names('users');
 
     Route::get('webshop/hero', [WebshopController::class, 'hero'])->name('webshop.hero');

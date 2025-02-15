@@ -107,7 +107,7 @@ function get_notes() {
 function draw_note(text, xPos, yPos, note_id) {
     // draw the note in the graph
     const textContent = text;
-    const imageUrl = `assets/img/notesbg/note${treeConfiguration.note_type}.png`
+    const imageUrl = `/assets/img/notesbg/note${treeConfiguration.note_type}.png`
 
     const rectGroup = d3.select("#graph svg")
         .append("g")

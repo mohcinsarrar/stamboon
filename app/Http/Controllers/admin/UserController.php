@@ -228,4 +228,22 @@ class UserController extends Controller
 
         
     }
+
+    public function toggle_role(Request $request,string $id)
+    {
+        $user = User::findOrFail($id);
+
+        if($user->hasRole('superuser') == true){
+            $user->removeRole('superuser');
+            $user->save();
+            return redirect()->back()->with('success','User role changed to user with success');
+        }
+        else{
+            $user->assignRole('superuser');
+            $user->save();
+            return redirect()->back()->with('success','User role changed to superuser with success');
+        }
+
+        
+    }
 }

@@ -155,6 +155,9 @@
                                 @role('admin')
                                     <small class="text-muted">Admin</small>
                                 @endrole
+                                @role('superuser')
+                                    <small class="text-muted">Super User</small>
+                                @endrole
                             </div>
                         </div>
                     </a>

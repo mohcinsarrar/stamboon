@@ -1,0 +1,35 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#6620
+    [34mall[39m: [
+      [34;4mApp\Models\Fantree[39;24m {#6622
+        [34mid[39m: [35m3[39m,
+        [34muser_id[39m: [35m4[39m,
+        [34mgedcom_file[39m: "[32mfantree_gedcoms/ce804e76-4f88-46e3-bed9-116fa7f708d1.ged[39m",
+        [34mexcel_file[39m: [36mnull[39m,
+        [34mstatus[39m: "[32mpending[39m",
+        [34mstats[39m: "[32m{"indis": "7", "generation": "3"}[39m",
+        [34mprint_number[39m: [35m8[39m,
+        [34mchart_status[39m: "[32m{"scale": "1", "translateX": "1115", "translateY": "293"}[39m",
+        [34mweapon[39m: "[32mfantree_weapons/RC3bFt35qK9QIL0rZOlkta7NuOD0u8kb5ERKYEJm.png[39m",
+        [34mcreated_at[39m: "[32m2025-02-12 14:10:19[39m",
+        [34mupdated_at[39m: "[32m2025-02-15 17:55:04[39m",
+        [34mweapon_xpos[39m: [35m1182[39m,
+        [34mweapon_ypos[39m: [35m29[39m,
+      },
+      [34;4mApp\Models\Fantree[39;24m {#6623
+        [34mid[39m: [35m4[39m,
+        [34muser_id[39m: [35m5[39m,
+        [34mgedcom_file[39m: "[32mfantree_gedcoms/6446b911-0282-49a9-95fa-144f7897ed26.ged[39m",
+        [34mexcel_file[39m: [36mnull[39m,
+        [34mstatus[39m: "[32mpending[39m",
+        [34mstats[39m: "[32m{"indis": "7", "generation": "3"}[39m",
+        [34mprint_number[39m: [35m0[39m,
+        [34mchart_status[39m: "[32m{"scale": "1", "translateX": "714", "translateY": "301"}[39m",
+        [34mweapon[39m: "[32mfantree_weapons/AwP3BDUMUvZb5teEtvy9WZqeemrjk3vJVK29jcGH.png[39m",
+        [34mcreated_at[39m: "[32m2025-02-12 15:40:45[39m",
+        [34mupdated_at[39m: "[32m2025-02-15 18:24:27[39m",
+        [34mweapon_xpos[39m: [36mnull[39m,
+        [34mweapon_ypos[39m: [36mnull[39m,
+      },
+    ],
+  }
+

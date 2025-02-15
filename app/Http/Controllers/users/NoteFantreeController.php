@@ -35,8 +35,8 @@ class NoteFantreeController extends Controller
         
         Validator::make($inputs, [
                 'content' => ['required','string'],
-                'xpos' => ['required','integer'],
-                'ypos' => ['required','integer'],
+                'xpos' => ['required','string'],
+                'ypos' => ['required','string'],
             ])->validate();
         
 
@@ -60,8 +60,8 @@ class NoteFantreeController extends Controller
         
         Validator::make($inputs, [
                 'note_id' => ['required','exists:notesfantree,id'],
-                'xpos' => ['required','integer'],
-                'ypos' => ['required','integer'],
+                'xpos' => ['required','string'],
+                'ypos' => ['required','string'],
             ])->validate();
 
             $fantree = Fantree::where('user_id',Auth::user()->id)->first();
@@ -115,7 +115,7 @@ class NoteFantreeController extends Controller
         $inputs = $request->all();
 
         Validator::validate($inputs, [
-            'file' => 'required|image|mimes:png|max:2048',
+            'file' => 'required|image|max:2048',
         ]);
 
         $fantree = Fantree::where('user_id',Auth::user()->id)->first();
@@ -173,8 +173,34 @@ class NoteFantreeController extends Controller
 
 
 
-        return response()->json(['error'=>false,'weapon' => $fantree->weapon]);
+        return response()->json(['error'=>false,
+        'weapon' => $fantree->weapon, 
+        'xpos' =>  $fantree->weapon_xpos,
+        'ypos' =>  $fantree->weapon_ypos
+    ]);
 
+    }
+
+    public function editweaponposition(Request $request){
+        $inputs = $request->all();
+        
+        Validator::make($inputs, [
+                'xpos' => ['required','string'],
+                'ypos' => ['required','string'],
+            ])->validate();
+
+            $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+            if($fantree == null){
+                return response()->json(['error'=>true,'msg' => 'error']);
+            }
+
+            // update note
+            Fantree::where('user_id',Auth::user()->id)->update([
+                'weapon_xpos' => $inputs['xpos'],
+                'weapon_ypos' => $inputs['ypos']
+            ]);
+
+            return response()->json(['error'=>false,'msg' => 'error']);
     }
 
 

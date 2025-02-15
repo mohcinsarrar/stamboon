@@ -47,6 +47,7 @@ Route::get('/roles/create', function () {
     $role = Role::create(['name' => 'admin']);
     $role = Role::create(['name' => 'user']);
     $role = Role::create(['name' => 'superadmin']);
+    $role = Role::create(['name' => 'superuser']);
     return "routes created";
 })->name('roles.create');
 

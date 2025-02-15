@@ -38,7 +38,7 @@ function draw_tree() {
                     return false;
                 }
             }
-            
+            enable_load_gedcom()
             show_toast('danger', 'error', error)
             return false;
         });

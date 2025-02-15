@@ -26,6 +26,18 @@ class UsersDataTable extends DataTable
             ->addColumn('actions', 'admin.users.actions')
             ->editColumn('name', 'admin.users.name')
             ->editColumn('status', 'admin.users.status')
+            ->editColumn('role', function(User $model) {
+
+                $payment = $model->has_payment();
+
+
+                if($model->hasRole('superuser') == true){
+                    return "superUser";
+                }
+                
+                return 'User';
+
+            })
             ->editColumn('plan', function(User $model) {
 
                 $payment = $model->has_payment();
@@ -101,7 +113,7 @@ class UsersDataTable extends DataTable
                 }
 
             })
-            ->rawColumns(['actions','name','status','plan', 'billing_date', 'expired_date'])
+            ->rawColumns(['actions','name','status','role','plan', 'billing_date', 'expired_date'])
             ->setRowId('id');
     }
 
@@ -152,6 +164,7 @@ class UsersDataTable extends DataTable
             Column::make('name'),
             Column::make('email'),
             Column::make('status'),
+            Column::computed('role')->title('Role'),
             Column::computed('plan')->title('Plan'),
             Column::computed('price')->title('Price'),
             Column::computed('billing_date')->title('Billing at'),
