@@ -71,6 +71,54 @@ function inlineStyles(source, target) {
 
     await Promise.all(imagePromises);
   }
+
+  function downloadSVG({ source, target, scale, format, quality }) {
+    let svgData = new XMLSerializer().serializeToString(target);
+
+    // Create a Blob object for the SVG
+    let blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    let url = URL.createObjectURL(blob);
+    console.log(url)
+
+    // Create a download link
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = "images.svg";
+
+    // Simulate a click to trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up the object URL
+    URL.revokeObjectURL(url);
+
+    // Return a promise resolving to the blob URL (optional)
+    return Promise.resolve(url);
+}
+
+  async function copyToCanvas2({ source, target, scale, format, quality }) {
+    let canvas = document.createElement("canvas");
+    let svgSize = source.getBoundingClientRect();
+    const resolution = 4; // Increase for higher clarity
+
+    canvas.width = svgSize.width * scale * resolution;
+    canvas.height = svgSize.height * scale * resolution;
+    canvas.style.width = svgSize.width + "px";
+    canvas.style.height = svgSize.height + "px";
+
+    let ctxt = canvas.getContext("2d");
+    ctxt.scale(scale * resolution, scale * resolution);
+
+    let svgData = new XMLSerializer().serializeToString(target);
+
+    // Use Canvg to properly render the SVG onto the canvas
+    const canvgInstance = await Canvg.Canvg.from(ctxt, svgData);
+    await canvgInstance.render();
+
+    return canvas.toDataURL(`image/${format === "jpg" ? "jpeg" : format}`, quality);
+  }
+
   
   function copyToCanvas({ source, target, scale, format, quality }) {
     let svgData = new XMLSerializer().serializeToString(target);
@@ -191,7 +239,7 @@ function inlineStyles(source, target) {
     });
 
     
-  
+    
     if (download) {
       downloadImage({ file, name, format });
     }

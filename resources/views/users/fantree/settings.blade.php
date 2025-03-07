@@ -62,27 +62,29 @@
                                         <h6>Photos type</h6>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="photos_type"
-                                                id="photos_type1" value="round">
-                                            <label class="form-check-label" for="photos_type1">Round</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="photos_type"
                                                 id="photos_type2" value="oval">
                                             <label class="form-check-label" for="photos_type2">Oval</label>
                                         </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_type"
+                                                id="photos_type1" value="round">
+                                            <label class="form-check-label" for="photos_type1">Round</label>
+                                        </div>
+
                                     </div>
                                     <div class="col-md-6 col-12 mb-4">
                                         <h6>Photos direction</h6>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="photos_direction"
-                                                id="photos_direction1" value="vertical">
-                                            <label class="form-check-label" for="photos_direction1">Vertical</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="photos_direction"
                                                 id="photos_direction2" value="radial">
                                             <label class="form-check-label" for="photos_direction2">Radial</label>
                                         </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="photos_direction"
+                                                id="photos_direction1" value="vertical">
+                                            <label class="form-check-label" for="photos_direction1">Vertical</label>
+                                        </div>
+
                                     </div>
 
                                 </div>

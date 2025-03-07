@@ -770,7 +770,7 @@ function foreignObjectHtml(d){
                stroke-width="2"/>
              <text font-size="20" fill="${treeConfiguration.text_color}" text-anchor="middle">
                <textPath href="#curve1-${d.data.id}" startOffset="50%" font-weight="bold">
-                 ${d.data.firstname}
+                 ${d.data.firstname.toUpperCase()}
                </textPath>
              </text>
              </g>
@@ -784,7 +784,7 @@ function foreignObjectHtml(d){
                stroke-width="2"/>
              <text font-size="20" fill="${treeConfiguration.text_color}" text-anchor="middle">
                <textPath href="#curve2-${d.data.id}" startOffset="50%">
-                 ${d.data.lastname}
+                 ${d.data.lastname.toUpperCase()}
                </textPath>
              </text>
              </g>

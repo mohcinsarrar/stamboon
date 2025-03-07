@@ -28,6 +28,8 @@ document.getElementById('formUpdatePerson').querySelector('.lastname').addEventL
 
 
 function edit_person() {
+    document.getElementById('formUpdatePerson').querySelector('#lastname_feedback').innerHTML=""
+    document.getElementById('formUpdatePerson').querySelector('#firstname_feedback').innerHTML=""
     // clear update form
     var personInfo = selectedPerson
     clearForm("formUpdatePerson")

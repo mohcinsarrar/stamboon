@@ -1,4 +1,37 @@
+
+document.getElementById('formAddParents').querySelector('.firstname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var firstname = document.getElementById('formAddParents').querySelector('.firstname').value
+    
+    if(firstname.length > maxLength){
+        document.getElementById('formAddParents').querySelector('#firstname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddParents').querySelector('#firstname_feedback').innerHTML=""
+    }
+});
+
+document.getElementById('formAddParents').querySelector('.lastname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var lastname = document.getElementById('formAddParents').querySelector('.lastname').value
+    
+    if(lastname.length > maxLength){
+        document.getElementById('formAddParents').querySelector('#lastname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddParents').querySelector('#lastname_feedback').innerHTML=""
+    }
+});
+
 function add_parents(){
+
+    document.getElementById('formAddParents').querySelector('#lastname_feedback').innerHTML=""
+    document.getElementById('formAddParents').querySelector('#firstname_feedback').innerHTML=""
+
     var personInfo = selectedPerson;
 
     var formAddParents = document.querySelector('#formAddParents');
@@ -9,6 +42,8 @@ function add_parents(){
 
     formAddParents.querySelector('.person_id').value = personInfo.id
     formAddParents.querySelector('.deceased').checked = true;
+    formAddParents.querySelector('.lastname').value = '';
+    formAddParents.querySelector('.firstname').value = '';
     formAddParents.querySelector('.death-container').classList.remove("d-none");
 
     formAddParents.querySelector('#date-msg span').innerHTML = "Date format : "+treeConfiguration.default_date+" or YYYY"

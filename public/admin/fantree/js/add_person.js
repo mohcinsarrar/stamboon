@@ -1,16 +1,52 @@
 
 
+document.getElementById('formAddPerson').querySelector('.firstname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var firstname = document.getElementById('formAddPerson').querySelector('.firstname').value
+    
+    if(firstname.length > maxLength){
+        document.getElementById('formAddPerson').querySelector('#firstname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddPerson').querySelector('#firstname_feedback').innerHTML=""
+    }
+});
+
+document.getElementById('formAddPerson').querySelector('.lastname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var lastname = document.getElementById('formAddPerson').querySelector('.lastname').value
+    
+    if(lastname.length > maxLength){
+        document.getElementById('formAddPerson').querySelector('#lastname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddPerson').querySelector('#lastname_feedback').innerHTML=""
+    }
+});
+
 document.getElementById('add-first-person').addEventListener('click', (event) => {
     add_person()
   });
 
 
+
+
+
 function add_person(){
+    
+    document.getElementById('formAddPerson').querySelector('#lastname_feedback').innerHTML=""
+    document.getElementById('formAddPerson').querySelector('#firstname_feedback').innerHTML=""
 
     var formAddPerson = document.querySelector('#formAddPerson');
 
     formAddPerson.querySelector('#date-msg span').innerHTML = "Date format : "+treeConfiguration.default_date+" or YYYY"
     formAddPerson.querySelector('.living').checked = true;
+    formAddPerson.querySelector('.lastname').value = '';
+    formAddPerson.querySelector('.firstname').value = '';
     formAddPerson.querySelector('.death-container').classList.add("d-none");
 
     formAddPerson.querySelector('.deceased').addEventListener('change', (event) => {

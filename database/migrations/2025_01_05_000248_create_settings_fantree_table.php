@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('mother_link_color')->default('#000000');
 
             // portrait band color
-            $table->string('band_color')->default("#ffffff");
+            $table->string('band_color')->default("#EFBF04");
             
             $table->string('bg_template')->default("0");
 
@@ -38,8 +38,8 @@ return new class extends Migration
             $table->string('default_female_image')->nullable()->default("female1");
             $table->string('default_filter')->nullable()->default("none");
 
-            $table->string('photos_type')->default("round");
-            $table->string('photos_direction')->default("vertical");
+            $table->string('photos_type')->default("oval");
+            $table->string('photos_direction')->default("radial");
 
             $table->string('note_type')->default('1');
             $table->string('note_text_color')->default('#000000');

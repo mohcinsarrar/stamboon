@@ -23,7 +23,7 @@ class UserController extends Controller
     public function index(UsersDataTable $dataTable)
     {
 
-        
+        dd($dataTable);
         $total_users = User::role('user')->count();
         $new_users = User::role('user')->get()->filter(
             function ($user) {

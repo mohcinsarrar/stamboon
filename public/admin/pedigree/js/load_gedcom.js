@@ -808,9 +808,19 @@ function parseDateToSort(dateStr) {
         return new Date(parts[0], 0, 1); // Use January 1st of that year
     } else {
         // Full date is given
-        const [day, month, year] = parts;
-        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const monthIndex = monthNames.indexOf(month) + 1;
-        return new Date(year, monthIndex, day);
+        if(parts.length <= 3){
+            const [day, month, year] = parts;
+            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const monthIndex = monthNames.indexOf(month) + 1;
+            return new Date(year, monthIndex, day);
+        }
+        else{
+            
+            const [about,day, month, year] = parts;
+            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const monthIndex = monthNames.indexOf(month) + 1;
+            return new Date(year, monthIndex, day);
+        }
+        
     }
 }

@@ -678,7 +678,7 @@ function getPersonNodeContent(personData, personType) {
                         -webkit-box-orient: vertical;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                    ">${person.firstName}</p>
+                    ">${person.firstName?.toUpperCase()}</p>
                     <p class="" 
                     style="
                         box-sizing: border-box;
@@ -693,7 +693,7 @@ function getPersonNodeContent(personData, personType) {
                         -webkit-box-orient: vertical;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                    ">${person.lastName}</p>
+                    ">${person.lastName?.toUpperCase()}</p>
                     <p class="" 
                     style="
                         box-sizing: border-box;
@@ -785,7 +785,7 @@ function getPersonNodeContent(personData, personType) {
                         margin-top: 0;
                         box-sizing: border-box;
                     "
-                    >${truncateText(person.firstName, 20)}
+                    >${truncateText(person.firstName?.toUpperCase(), 20)}
                     </p> 
                     <p class=""
                     style="
@@ -796,7 +796,7 @@ function getPersonNodeContent(personData, personType) {
                         margin-top: 0;
                         box-sizing: border-box;
                     "
-                    >${truncateText(person.lastName, 20)}
+                    >${truncateText(person.lastName?.toUpperCase(), 20)}
                     </p> 
                     <small style="font-size: .8125rem;">${getFullDate(person.birth, person.death)}</small>
                 </div>
@@ -881,10 +881,10 @@ function getPersonNodeContent(personData, personType) {
                 "
                 >
                     <p style="font-weight: 400 !important; margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
-                    ${truncateText(person.firstName, 15)}
+                    ${truncateText(person.firstName?.toUpperCase(), 15)}
                     </p>
                     <p style="font-weight: 600 !important; margin-bottom: .5rem !important; margin-top: 0; box-sizing: border-box;">
-                    ${truncateText(person.lastName, 15)}
+                    ${truncateText(person.lastName?.toUpperCase(), 15)}
                     </p>
                     <p 
                     style="
@@ -1028,7 +1028,7 @@ function getPersonNodeContent(personData, personType) {
                                     box-sizing: border-box;
                                 "
                                 >
-                                ${person.firstName}</h6>
+                                ${person.firstName?.toUpperCase()}</h6>
                                 <h6 class="" 
                                 style="
                                     ${textColor}; 
@@ -1040,7 +1040,7 @@ function getPersonNodeContent(personData, personType) {
                                     box-sizing: border-box;
                                 "
                                 >
-                                ${person.lastName}</h6>
+                                ${person.lastName?.toUpperCase()}</h6>
                                 <p class="" 
                                 style="
                                     ${textColor};
@@ -1097,6 +1097,12 @@ function is_death(status, template) {
 function parseDate(dateStr) {
 
     const parts = dateStr.split(' ');
+    if(parts.length>3){
+        day = null
+        month = null
+        year = null
+        return { day, month, year };
+    }
     var day, month, year;
 
     if (parts.length === 1) {
@@ -1107,13 +1113,26 @@ function parseDate(dateStr) {
         year = parts[0]
 
     } else {
+
+        if(parts.length<=3){
+            const [dayName, monthName, yearName] = parts;
+            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const monthIndex = monthNames.indexOf(monthName) + 1;
+            day = dayName
+            month = monthIndex < 10 ? "0" + monthIndex.toString() : monthIndex.toString()
+            year = yearName
+        }
+        else{
+            const [about, dayName, monthName, yearName] = parts;
+            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const monthIndex = monthNames.indexOf(monthName) + 1;
+            day = dayName
+            month = monthIndex < 10 ? "0" + monthIndex.toString() : monthIndex.toString()
+            year = yearName
+        }
+
         // Full date is given
-        const [dayName, monthName, yearName] = parts;
-        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const monthIndex = monthNames.indexOf(monthName) + 1;
-        day = dayName
-        month = monthIndex < 10 ? "0" + monthIndex.toString() : monthIndex.toString()
-        year = yearName
+        
     }
 
     return { day, month, year };
@@ -1182,7 +1201,9 @@ function getFullDate(birth, death) {
     if(deathDate == undefined){
         deathDate = '';
     }
-
+    if((`${birthDate}-${deathDate}`).includes('OCT')){
+        console.log(birth)
+    }
     return `${birthDate}-${deathDate}`
 
 
@@ -1261,7 +1282,7 @@ function nodeClicked(d) {
         modalBody.querySelector('#nodeOrderSpouseItem').style.display = 'none';
     }
 
-    modalBody.querySelector('.name').innerHTML = personInfo.name;
+    modalBody.querySelector('.name').innerHTML = personInfo.name.toUpperCase();
     modalBody.querySelector('.birth').innerHTML = parseDateGlobal(personInfo.birth,target_format=date_format, target_date_style = 'string', target_separator = " ",  date_style = 'string', separator = ' ');
     modalBody.querySelector('.death').innerHTML = parseDateGlobal(personInfo.death,target_format=date_format, target_date_style = 'string', target_separator = " ",  date_style = 'string', separator = ' ')
     if (personInfo.photo != undefined) {

@@ -1,10 +1,43 @@
 
+document.getElementById('formAddChild').querySelector('.firstname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var firstname = document.getElementById('formAddChild').querySelector('.firstname').value
+    
+    if(firstname.length > maxLength){
+        document.getElementById('formAddChild').querySelector('#firstname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddChild').querySelector('#firstname_feedback').innerHTML=""
+    }
+});
+
+document.getElementById('formAddChild').querySelector('.lastname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var lastname = document.getElementById('formAddChild').querySelector('.lastname').value
+    
+    if(lastname.length > maxLength){
+        document.getElementById('formAddChild').querySelector('#lastname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddChild').querySelector('#lastname_feedback').innerHTML=""
+    }
+});
+
+
 function add_child() {
+    document.getElementById('formAddChild').querySelector('#lastname_feedback').innerHTML=""
+    document.getElementById('formAddChild').querySelector('#firstname_feedback').innerHTML=""
     var personInfo = selectedPerson;
 
     var formAddChild = document.querySelector('#formAddChild');
     formAddChild.querySelector('.person_id').value = personInfo.personId
     formAddChild.querySelector('.person_type').value = personInfo.type
+    formAddChild.querySelector('.lastname').value = ""
+    formAddChild.querySelector('.firstname').value = ""
     formAddChild.querySelector('.living').checked = true;
     formAddChild.querySelector('.death-container').classList.add("d-none");
 

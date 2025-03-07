@@ -1,5 +1,37 @@
 
+document.getElementById('formAddSpouse').querySelector('.firstname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var firstname = document.getElementById('formAddSpouse').querySelector('.firstname').value
+    
+    if(firstname.length > maxLength){
+        document.getElementById('formAddSpouse').querySelector('#firstname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddSpouse').querySelector('#firstname_feedback').innerHTML=""
+    }
+});
+
+document.getElementById('formAddSpouse').querySelector('.lastname').addEventListener('input', function (event) { 
+    
+    var maxLength = 20;
+    var lastname = document.getElementById('formAddSpouse').querySelector('.lastname').value
+    
+    if(lastname.length > maxLength){
+        document.getElementById('formAddSpouse').querySelector('#lastname_feedback').innerHTML="your name is too long, try to short your name "
+        this.value = this.value.slice(0, maxLength);
+    }
+    else{
+        document.getElementById('formAddSpouse').querySelector('#lastname_feedback').innerHTML=""
+    }
+});
+
+
 function add_spouse() {
+
+    document.getElementById('formAddSpouse').querySelector('#lastname_feedback').innerHTML=""
+    document.getElementById('formAddSpouse').querySelector('#firstname_feedback').innerHTML=""
     var personInfo = selectedPerson;
 
     if(personInfo.spouseIds == undefined){
@@ -13,6 +45,8 @@ function add_spouse() {
     var formAddSpouse = document.querySelector('#formAddSpouse');
     formAddSpouse.querySelector('.person_id').value = personInfo.personId
     formAddSpouse.querySelector('.living').checked = true;
+    formAddSpouse.querySelector('.lastname').value = ""
+    formAddSpouse.querySelector('.firstname').value = ""
     formAddSpouse.querySelector('.death-container').classList.add("d-none");
 
     // change date msg

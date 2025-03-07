@@ -16,7 +16,7 @@ function nodeClicked(d) {
     const modalBody = document.getElementById('nodeModalBody');
   
   
-    modalBody.querySelector('.name').innerHTML = personInfo.firstname + ' ' + personInfo.lastname;
+    modalBody.querySelector('.name').innerHTML = personInfo.firstname.toUpperCase() + ' ' + personInfo.lastname.toUpperCase();
   
     modalBody.querySelector('.birth').innerHTML = parseDateGlobal(personInfo.birth, target_format = treeConfiguration.default_date, target_date_style = 'string', target_separator = " ", date_style = 'string', separator = ' ');
     modalBody.querySelector('.death').innerHTML = parseDateGlobal(personInfo.death, target_format = treeConfiguration.default_date, target_date_style = 'string', target_separator = " ", date_style = 'string', separator = ' ')
