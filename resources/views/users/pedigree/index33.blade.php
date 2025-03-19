@@ -66,8 +66,7 @@
 
 @section('vendor-script')
     <script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}">
-    </script>
+    <script src="{{ asset('assets/vendor/libs/filerobot-image-editor/filerobot-image-editor.min.js') }}"></script>
 
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
@@ -129,14 +128,14 @@
                     if (d.data.parentId == 'hidden_root') {
                         d3.select(this).style('visibility', 'hidden');
                     }
-                    
+
 
                 })
                 .nodeUpdate(function(d, i, arr) {
                     if (d.data.id == 'hidden_root') {
                         d3.select(this).style('visibility', 'hidden');
                     }
-                   
+
 
                 })
                 .nodeContent(function(d, i, arr, state) {
@@ -229,7 +228,7 @@
                 person.name = personData.spouseName;
                 person.gender = personData.spouseGender;
             } else {
-                if(personData.hidden == true){
+                if (personData.hidden == true) {
                     return '';
                 }
                 person.id = personData.id;
@@ -402,14 +401,13 @@
                                 birth: get_birth_date(spouse),
                                 death: get_death_date(spouse),
                             };
-                        }
-                        else{
+                        } else {
                             return;
                         }
 
                     }
 
-                   
+
 
                     // parent dont already exist
                     if (!(parentPerson.id in individualRecords)) {
@@ -599,7 +597,7 @@
                 </div>
                 <div class="row mx-0 mb-2">
                     <button id="collpaseView" data-collpase="false" type="button"
-                        class="btn btn-outline-dark waves-effect text-white border-0 px-1">Collpase</button>
+                        class="btn btn-outline-dark waves-effect text-white border-0 px-1">Collapse</button>
                 </div>
                 <div class="row mx-0 mb-2">
                     <div class="btn-group dropend">

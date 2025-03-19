@@ -366,7 +366,7 @@ function renderChart() {
   d3.select("div#graph").selectAll("*").remove();
   chart = undefined
   const data = familyData
-
+  
   // select the main container to get width and height
   const mainGraphDiv = d3.select("div#main_graph");
   const spaceDepth = 220
@@ -392,18 +392,19 @@ function renderChart() {
   // append to global chart variable
   chart = svg
 
-
+  
   
 
   const tree = d3.tree() // define tree layout
     .size([arcSpan, radius]) // size of the  Radial layout
     .separation((a, b) => (a.parent === b.parent ? 1 : 1)); // spacing between nodes
-
+    
   // convert data to hierarchy and pass wich field (parents) conatins child nodes
   const root = d3.hierarchy(data, d => d.parents);
+
   tree(root);
-
-
+  console.log(JSON.stringify(data))
+  
 
 
   const levelSpacing = 120; // Set the desired spacing between levels
@@ -426,7 +427,7 @@ function renderChart() {
   const chartGroup = svg.append("g") // append a g element to scg
   .attr('id', 'chartGroup')
   .attr("transform", `translate(${translateGroupX}, ${translateGroupY})`); // center the group in the bottom of the svg
-
+  
 
   chartGroup.append('circle').attr('id', 'refCircle')
     .attr('cx', 0)      // x position of the center of the circle
@@ -477,18 +478,19 @@ chartGroup.append("g")
 */
 
 
-
   const nodes = chartGroup.selectAll(".node")
     .data(root.descendants())
     .join("g")
     .attr('id', d => {
+
       if (d.data.id != undefined) {
         return `node-${d.data.id.replaceAll("@", '')}`
+        
       }
       else {
         return '';
       }
-
+  
     })
     .attr("class", "node")
     .attr("transform", d => `translate(${d.x}, ${d.y}) scale(${1 - (0.11 * d.depth)})`)
@@ -498,11 +500,11 @@ chartGroup.append("g")
 
 
 
-
  
 
 
   nodes.append("foreignObject")
+  
     .attr("width", d => { 
       let foreignObjectWidth = 100 - (2 * d.depth)
       return foreignObjectWidth

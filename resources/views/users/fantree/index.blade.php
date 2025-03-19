@@ -114,7 +114,6 @@
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/pickr/pickr.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/jspdf/jspdf.umd.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.0/lib/umd.js"></script>
 
 
 
@@ -326,7 +325,7 @@
                         <ul class="dropdown-menu" style="">
                             <li><a id="compactView" class="dropdown-item" href="javascript:void(0);">Compact</a></li>
                             <li><a id="expandView" class="dropdown-item" href="javascript:void(0);">Expand All</a></li>
-                            <li><a id="collpaseView" class="dropdown-item" href="javascript:void(0);">Collpase All</a>
+                            <li><a id="collpaseView" class="dropdown-item" href="javascript:void(0);">Collapse All</a>
                             </li>
                         </ul>
                     </div>

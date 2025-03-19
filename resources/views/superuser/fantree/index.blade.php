@@ -309,7 +309,7 @@
                         <ul class="dropdown-menu" style="">
                             <li><a id="compactView" class="dropdown-item" href="javascript:void(0);">Compact</a></li>
                             <li><a id="expandView" class="dropdown-item" href="javascript:void(0);">Expand All</a></li>
-                            <li><a id="collpaseView" class="dropdown-item" href="javascript:void(0);">Collpase All</a>
+                            <li><a id="collpaseView" class="dropdown-item" href="javascript:void(0);">Collapse All</a>
                             </li>
                         </ul>
                     </div>
