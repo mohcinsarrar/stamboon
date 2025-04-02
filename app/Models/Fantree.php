@@ -15,6 +15,7 @@ class Fantree extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'user_id',
         'excel_file',
         'gedcom_file',
@@ -35,6 +36,11 @@ class Fantree extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function setting_fantree(): HasOne
+    {
+        return $this->hasOne(SettingFantree::class);
     }
 
     public function notes(): HasMany

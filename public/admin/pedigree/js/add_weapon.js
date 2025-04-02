@@ -9,9 +9,9 @@ document.querySelector('#addWeapon').onclick = function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/loadweapon",
+        url: "/pedigree/loadweapon/"+pedigree_id,
         type: 'GET',
         encode: true,
         dataType: 'json',
@@ -62,9 +62,9 @@ if (deleteWeaponBtn) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        let pedigree_id = get_pedigree_id();
         $.ajax({
-            url: "/pedigree/deleteweapon",
+            url: "/pedigree/deleteweapon/"+pedigree_id,
             type: 'POST',
             data: {},
             encode: true,
@@ -122,9 +122,9 @@ document.querySelector('#addWeaponModal #import-weapon').onclick = function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/addweapon",
+        url: "/pedigree/addweapon/"+pedigree_id,
         type: 'POST',
         data: formData,
         encode: true,
@@ -165,9 +165,9 @@ function get_weapon() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/loadweapon",
+        url: "/pedigree/loadweapon/"+pedigree_id,
         type: 'GET',
         encode: true,
         dataType: 'json',
@@ -228,9 +228,9 @@ const dragWeapon = d3.drag()
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
+        let pedigree_id = get_pedigree_id();
         $.ajax({
-            url: "/pedigree/editweaponposition",
+            url: "/pedigree/editweaponposition/"+pedigree_id,
             type: 'POST',
             data: {
                 'xpos': xpos,

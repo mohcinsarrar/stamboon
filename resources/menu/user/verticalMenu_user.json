@@ -4,45 +4,53 @@
       "url": "/dashboard",
       "name": "Dashboard",
       "icon": "menu-icon tf-icons ti ti-smart-home",
-      "slug": "users.dashboard.index"
+      "slug": ["users.dashboard.index"]
     },
     {
       "url": "/profile",
       "icon": "menu-icon tf-icons ti ti-id",
       "name": "Profile",
-      "slug": "users.profile.index"
+      "slug": ["users.profile.index"]
     },
     {
-      "url": "/fantree",
+      "url": "/fantree/list",
       "icon": "menu-icon tf-icons ti ti-chart-arcs-3",
       "name": "Fanchart",
-      "slug": "users.fantree.index"
+      "slug": ["users.fantree.list","users.fantree.index"]
     },
     {
-      "url": "/pedigree",
+      "url": "/pedigree/list",
       "icon": "menu-icon tf-icons ti ti-growth",
       "name": "Pedigree",
-      "slug": "users.pedigree.index"
+      "slug": ["users.pedigree.list","users.pedigree.index"]
     },
     {
       "url": "/subscription",
       "icon": "menu-icon tf-icons ti ti-credit-card",
       "name": "Subscription",
-      "slug": "users.subscription.index"
+      "slug": ["users.subscription.index"]
     },
     {
       "url": "/documentations",
       "icon": "menu-icon tf-icons ti ti-file-description",
       "name": "Documentations",
-      "slug": "users.documentations"
+      "slug": ["users.documentations"]
     }
     ,
     {
-      "url": "/superuser/fantree/list",
+      "url": "/fantree/all",
       "icon": "menu-icon tf-icons ti ti-chart-arcs-3",
       "name": "All Fanchart",
-      "slug": ["superuser.fantree.list","superuser.fantree.index"],
-      "role": "superuser"
+      "slug": ["users.fantree.all"],
+      "role": "superadmin"
+    }
+    ,
+    {
+      "url": "/pedigree/all",
+      "icon": "menu-icon tf-icons ti ti-growth",
+      "name": "All Pedigree",
+      "slug": ["users.pedigree.all"],
+      "role": "superadmin"
     }
   ]
 }

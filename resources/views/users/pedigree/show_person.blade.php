@@ -32,10 +32,13 @@
                             class="ti ti-camera me-2"></i> Edit photo</a></li>
                 <li><a id="nodeDelete" class="dropdown-item waves-effect" href="javascript:void(0);"><i
                             class="ti ti-trash me-2"></i> Delete</a></li>
-                <form id="formDeletePerson" action="{{ route('users.pedigree.delete') }}" method="POST">
+                <form id="formDeletePerson" action="{{ route('users.pedigree.delete', $pedigree_id) }}" method="POST">
                     @csrf
                     <input type="hidden" name="person_id" class="person_id">
                 </form>
+                <li><a id="addAncestor" class="dropdown-item waves-effect" href="javascript:void(0);"><i
+                            class="ti ti-user-plus me-2"></i> Add ancestor</a>
+                </li>
                 <li><a id="addSpouse" class="dropdown-item waves-effect" href="javascript:void(0);"><i
                             class="ti ti-user-plus me-2"></i> Add spouse</a>
                 </li>

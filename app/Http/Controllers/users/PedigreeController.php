@@ -48,6 +48,9 @@ use App\Services\GedcomService;
 use ZipArchive;
 
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\DataTables\users\PedigreesDataTable;
+
 class PedigreeController extends Controller
 {
 
@@ -70,7 +73,25 @@ class PedigreeController extends Controller
         return "$day $monthName $year";
     }
 
-    public function addperson(Request $request){
+
+    private function get_pedigree($pedigree_id){
+
+
+        try {
+            $pedigree = Pedigree::findOrFail($pedigree_id);
+            if(Auth::user()->id != $pedigree->user->id){
+                abort(404, 'Pedigree not found');
+            }
+            return $pedigree;
+        } catch (ModelNotFoundException $e) {
+            abort(404, 'Pedigree not found');
+        }
+
+
+    }
+
+
+    public function addperson(Request $request, $pedigree_id){
 
 
         $inputs = $request->except(['_token']);
@@ -150,9 +171,9 @@ class PedigreeController extends Controller
         Storage::put($uniqueFilename, StorageFile::get($tempFilePath));
 
         // store filename to pedigree
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
         $pedigree->gedcom_file = $uniqueFilename;
-        $pedigree->save();
+        $pedigree->save();  
 
         // Optionally delete the temporary file
         StorageFile::delete($tempFilePath);
@@ -161,8 +182,8 @@ class PedigreeController extends Controller
         
     }
 
-    public function getChartStatus(Request $request){
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+    public function getChartStatus(Request $request, $pedigree_id){
+        $pedigree = $this->get_pedigree($pedigree_id);
         if($pedigree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }
@@ -170,9 +191,9 @@ class PedigreeController extends Controller
         return response()->json(['error'=>false,'chart_status' => $chart_status]);
     }
 
-    public function print(Request $request){
+    public function print(Request $request, $pedigree_id){
         $user = Auth::user();
-        $pedigree = Pedigree::where('user_id',$user->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
         $current_payment = $user->has_payment();
         if($current_payment == false){
             return redirect()->route('users.dashboard');
@@ -191,10 +212,10 @@ class PedigreeController extends Controller
         
     }
 
-    public function editChartStatus(Request $request){
+    public function editChartStatus(Request $request, $pedigree_id){
         $chart_status = $request->input('chart_status');
 
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
         if($pedigree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }
@@ -204,13 +225,13 @@ class PedigreeController extends Controller
         return response()->json(['error'=>false,'msg' => 'error']);
     }
 
-    public function saveimage(Request $request){
+    public function saveimage(Request $request, $pedigree_id){
 
 
         $gedcomService = new GedcomService();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -309,11 +330,11 @@ class PedigreeController extends Controller
     }
 
 
-    public function download(Request $request){
+    public function download(Request $request, $pedigree_id){
         
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if($gedcom_file == null){
             return back()-with('error',"can't download your familytree, please try again");
         }
@@ -378,11 +399,11 @@ class PedigreeController extends Controller
 
     }
 
-    public function orderspouses(Request $request){
+    public function orderspouses(Request $request, $pedigree_id){
         
         $gedcomService = new GedcomService();
 
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return response()->json(['error'=>true,'msg' => "cant order spouses, please try again !"]);
         }
@@ -434,10 +455,10 @@ class PedigreeController extends Controller
         return $reorderedArray;
     }
 
-    public function getpersons(Request $request){
+    public function getpersons(Request $request, $pedigree_id){
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return response()->json(['error'=>true,'persons' => null]);
         } 
@@ -483,18 +504,25 @@ class PedigreeController extends Controller
 
     }
 
-    public function settings(Request $request){
+    public function settings(Request $request, $pedigree_id){
         
         
         // load settings
         if($request->isMethod('get')){
-            $user = Auth::user();
-            $settings = Setting::where('user_id',$user->id)->first()->toArray();
-            $pedigree = Pedigree::where('user_id',$user->id)->first();
-            if($pedigree == null){
-                return response()->json(['error'=>true,'msg' => 'error']);
+
+            $pedigree = $this->get_pedigree($pedigree_id);
+
+            // if no settings created it
+            if(Setting::where('pedigree_id',$pedigree->id)->first() == null){
+                Setting::create(['pedigree_id' => $pedigree->id]);
             }
+
+            $settings = Setting::where('pedigree_id',$pedigree->id)->first()->toArray();
+            
+
             // get product features
+
+            $user = Auth::user();
             $current_payment = $user->last_payment();
             if($current_payment == false){
                 return redirect()->route('users.dashboard.index');
@@ -541,17 +569,155 @@ class PedigreeController extends Controller
                 $inputs['bg_template'] = '0';
             }
 
-            Setting::where('user_id',Auth::user()->id)->update($inputs);
+            $pedigree = $this->get_pedigree($pedigree_id);
+            Setting::where('pedigree_id',$pedigree->id)->update($inputs);
 
             return redirect()->back()->with('success','settings updated with success');
         }
     }
 
+    private function get_gedcom_file_for_delete($pedigree){
+    
+        
+        if($pedigree == null){
+            return null;
+        }
+        if($pedigree->gedcom_file == null){
+          return null;
+        }
+    
+        if (!Storage::disk('local')->exists($pedigree->gedcom_file)) {
+            return null;
+        } 
+        
+        $file = Storage::disk('local')->get($pedigree->gedcom_file);
+    
+        return $pedigree->gedcom_file;
+    
+    }
 
-    public function index(Request $request){
+    public function delete_pedigree(Request $request, $id){
 
         $user = Auth::user();
-        $pedigree = Pedigree::where('user_id',$user->id)->first();
+        if(!$user->hasRole('superuser')){
+            abort(404, 'Pedigree not found');
+        }
+        
+        $pedigree = Pedigree::findOrFail($id);
+        
+
+        // delete all user data pedigree
+
+        /// get gedcom file
+        $gedcom_file = $this->get_gedcom_file_for_delete($pedigree);
+        if($gedcom_file != null){
+            /// get gedcom object
+            $gedcom = $this->get_gedcom($gedcom_file);
+            /// get all indis
+            $indis = $gedcom->getIndi();
+            /// iterate over all indis and delete photo if exist
+            foreach($indis as $indi){
+                  $note = $indi->getNote();
+      
+                  $photo = null;
+                  if($note != null and $note != []){
+                      $photo = $note[0]->getNote();
+                  }
+      
+                  if($photo != null){
+                    if (Storage::exists('portraits/'.$photo)) {
+                        Storage::delete('portraits/'.$photo);
+                    }
+                  }
+            }
+      
+            /// delete gedcom file
+            if (Storage::exists('gedcoms/'.$gedcom_file)) {
+              Storage::delete('gedcoms/'.$gedcom_file);
+            }
+          }
+
+        $pedigree->delete();
+
+        return redirect()->route('users.pedigree.list')->with('success', 'Pedigree deleted with success');
+    }
+
+
+    public function edit_pedigree(Request $request,$id){
+
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            abort(404, 'Pedigree not found');
+        }
+
+        $inputs = $request->except(['_token','_method']);
+        
+        Validator::make($inputs, [
+            'name' => ['required','string','unique:pedigrees,name,'.$id],
+
+        ])->validate();
+
+        // create pedigree
+
+        Pedigree::where('id',$id)->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('users.pedigree.list')->with('success', 'Pedigree updated with success');
+    }
+
+
+    public function store_pedigree(Request $request){
+
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            abort(404, 'Pedigree not found');
+        }
+        
+        $inputs = $request->except(['_token']);
+        
+        Validator::make($inputs, [
+            'name' => ['required','string','unique:pedigrees,name'],
+
+        ])->validate();
+
+        // create pedigree
+        $user = Auth::user();
+
+        Pedigree::create([
+            'name' => $request->name,
+            'user_id' => $user->id
+        ]);
+
+        return redirect()->route('users.pedigree.list')->with('success', 'Pedigree created with success');
+    }
+
+    public function list(PedigreesDataTable $dataTable){
+
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            $pedigree = Pedigree::where('user_id',$user->id)->first();
+            return redirect()->route('users.pedigree.index',$pedigree->id);
+        }
+        return $dataTable->render('users.pedigree.list');
+    }
+
+
+    public function all(PedigreesDataTable $dataTable){
+
+        $user = Auth::user();
+        if(!$user->hasRole('superadmin')){
+            abort(404, 'Pedigree not found');
+        }
+
+        return $dataTable->render('users.pedigree.list');
+    }
+
+
+    public function index(Request $request, $pedigree_id){
+
+        $user = Auth::user();
+        $pedigree = $this->get_pedigree($pedigree_id);
         $gedcom_file = $pedigree->gedcom_file;
 
         // get product features
@@ -597,12 +763,12 @@ class PedigreeController extends Controller
         $selected_output_pdf = array_slice($max_output_pdf, str_replace('a', '', $pedigree_max_output_pdf), 5,true);
 
 
-        return view('users.pedigree.index',compact('gedcom_file','print_types','selected_output_png','selected_output_pdf','has_payment'));
+        return view('users.pedigree.index',compact('pedigree_id','gedcom_file','print_types','selected_output_png','selected_output_pdf','has_payment'));
     }
 
 
     // import a new gedcom file
-    public function importgedcom(Request $request){
+    public function importgedcom(Request $request, $pedigree_id){
 
         $input = $request->all();
 
@@ -614,7 +780,7 @@ class PedigreeController extends Controller
                 ],
             ]);
 
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
         // delete file if exist
         if($pedigree->gedcom_file != null){
             if (Storage::exists($pedigree->gedcom_file)) {
@@ -641,8 +807,8 @@ class PedigreeController extends Controller
     }
 
     // load the gedcom file for the current auth user
-    public function getTree(Request $request){
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+    public function getTree(Request $request, $pedigree_id){
+        $pedigree = $this->get_pedigree($pedigree_id);
 
         if($pedigree->gedcom_file == null){
             return response(null, 200);
@@ -687,7 +853,7 @@ class PedigreeController extends Controller
         return null;
     }
     // update person
-    public function update(Request $request){
+    public function update(Request $request, $pedigree_id){
 
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
@@ -700,7 +866,7 @@ class PedigreeController extends Controller
         ])->validate();
         
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -740,7 +906,7 @@ class PedigreeController extends Controller
     }
 
     // add spouse
-    public function addspouse(Request $request){
+    public function addspouse(Request $request, $pedigree_id){
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
 
@@ -752,7 +918,7 @@ class PedigreeController extends Controller
         ])->validate();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -814,11 +980,103 @@ class PedigreeController extends Controller
         
     }
 
+    private function new_family_id($gedcom){
+        // generate new Family id
+        $families = array_keys($gedcom->getFam());
+        if($families != []){
+            $maxFamId = max(array_map([$this, 'extractNumber'], $families));
+            $newFamId = 'F' . ($maxFamId + 1);
+        }
+        else{
+            $newFamId = 'F1';
+        }
+
+        return $newFamId;
+    }
+
+
+    public function addancestor(Request $request, $pedigree_id){
+        $inputs = $request->except(['_token']);
+        $gedcomService = new GedcomService();
+
+        Validator::make($inputs, [
+            'person_id' => ['required','string'],
+            'firstname' => ['required','string'],
+            'lastname' => ['required','string'],
+            'sex' => ['required','string'],
+            'status' => ['required','string'],
+        ])->validate();
+
+        // get gedcom file
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
+        if ($gedcom_file == null) {
+            return redirect()->back()->with('error','cant load your family tree');
+        } 
+
+        // get gedcom object
+        $gedcom = $this->get_gedcom($gedcom_file);
+
+        // get person
+        $person_id = str_replace('@','',$request->person_id);
+        $child = $this->get_person($gedcom,$person_id);
+        if($child == null){
+            return redirect()->back()->with('error','cant find person');
+        }
+
+        // create new indi as ancestor
+        $ancestor = $this->create_indi($gedcom, $request->firstname, $request->lastname, $request->sex, $request->status, $request->birth_date, $request->death_date);
+
+        // add ancestor to gedcom
+        $gedcom->addIndi($ancestor);
+
+        
+        // create new family and add the child to it (it the person)
+        $new_family = new Fam();
+        $newFamId = $this->new_family_id($gedcom);
+        $new_family->setId($newFamId);
+
+        // add child
+        $children = $new_family->getChil();
+        array_push($children,$child->getId());
+        $new_family->setChil($children);
+
+        // add parent
+        if($request->sex == 'M'){
+            // father
+            $new_family->setHusb($ancestor->getId());
+        }
+        else{
+            // mother
+            $new_family->setWife($ancestor->getId());
+        }
+
+        $gedcom->addFam($new_family);
+
+
+        // add new_family as famc to child
+        /// create FAMC for child
+        $famc = new IndiFamc();
+        $famc->setFamc($newFamId);
+        /// add FAMC to child
+        $child->addFamc($famc);
+
+        
+        // add new_family as fams to parent
+        $fams = new IndiFams();
+        $fams->setFams($newFamId);
+        $ancestor->addFams($fams);
+
+        $gedcomService->writer($gedcom,$gedcom_file);
+
+        return redirect()->back()->with('success','parent added with success');
+
+    }
+
     private function extractNumber($item) {
         return intval(substr($item, 1));
     }
 
-    public function addChild(Request $request){
+    public function addChild(Request $request, $pedigree_id){
 
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
@@ -835,7 +1093,7 @@ class PedigreeController extends Controller
         ])->validate();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -894,7 +1152,7 @@ class PedigreeController extends Controller
         return redirect()->back()->with('success','child added with success');
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request, $pedigree_id){
 
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
@@ -904,7 +1162,7 @@ class PedigreeController extends Controller
         ])->validate();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($pedigree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -955,9 +1213,9 @@ class PedigreeController extends Controller
     }
 
 
-    private function get_gedcom_file(){
+    private function get_gedcom_file($pedigree_id){
 
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
         if($pedigree == null){
             return null;
         }
@@ -1065,8 +1323,8 @@ class PedigreeController extends Controller
     }
 
 
-    public function updatecount(Request $request){
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+    public function updatecount(Request $request, $pedigree_id){
+        $pedigree = $this->get_pedigree($pedigree_id);
         if($pedigree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }

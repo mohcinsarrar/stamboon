@@ -11,7 +11,8 @@ function draw_tree() {
     disable_tools_bar()
 
     // load gedcom file from api for the current user
-    const promise = fetch('/pedigree/getTree')
+    let pedigree_id = get_pedigree_id();
+    const promise = fetch('/pedigree/getTree/'+pedigree_id)
         .then(r => {
             if(r.status == 404){
                 throw new Error(`HTTP error! Status: ${r.status}`);
@@ -53,9 +54,9 @@ function draw_tree() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        let pedigree_id = get_pedigree_id();
         $.ajax({
-            url: "/pedigree/settings",
+            url: "/pedigree/settings/"+pedigree_id,
             type: 'GET',
             dataType: 'json',
             success: function (data) {

@@ -9,9 +9,9 @@ function order_spouse() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/getpersons",
+        url: "/pedigree/getpersons/"+pedigree_id,
         type: 'POST',
         data: {'ids':personInfo.spouseIds},
         encode: true,
@@ -113,9 +113,9 @@ document.querySelector("#saveOrderSpouses").addEventListener('click', function (
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/orderspouses",
+        url: "/pedigree/orderspouses/"+pedigree_id,
         type: 'POST',
         data: {'spouses':new_order},
         encode: true,

@@ -73,15 +73,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-    public function setting(): HasOne
-    {
-        return $this->hasOne(Setting::class);
-    }
+    
 
-    public function setting_fantree(): HasOne
-    {
-        return $this->hasOne(SettingFantree::class);
-    }
+    
 
     public function pedigree(): HasOne
     {

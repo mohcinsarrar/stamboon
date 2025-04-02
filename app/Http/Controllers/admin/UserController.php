@@ -23,7 +23,6 @@ class UserController extends Controller
     public function index(UsersDataTable $dataTable)
     {
 
-        dd($dataTable);
         $total_users = User::role('user')->count();
         $new_users = User::role('user')->get()->filter(
             function ($user) {
@@ -230,19 +229,29 @@ class UserController extends Controller
     }
 
     public function toggle_role(Request $request,string $id)
-    {
+    {   
         $user = User::findOrFail($id);
 
-        if($user->hasRole('superuser') == true){
+        if($request->role == 'user'){
+            $user->assignRole('user');
             $user->removeRole('superuser');
-            $user->save();
-            return redirect()->back()->with('success','User role changed to user with success');
+            $user->removeRole('superadmin');
         }
-        else{
+        if($request->role == 'superuser'){
+            $user->assignRole('user');
             $user->assignRole('superuser');
-            $user->save();
-            return redirect()->back()->with('success','User role changed to superuser with success');
+            $user->removeRole('superadmin');
         }
+
+        if($request->role == 'superadmin'){
+            $user->assignRole('user');
+            $user->removeRole('superuser');
+            $user->assignRole('superadmin');
+        }
+
+        $user->save();
+        return redirect()->back()->with('success','User role changed with success');
+
 
         
     }

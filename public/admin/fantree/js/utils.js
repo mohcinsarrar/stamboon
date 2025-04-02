@@ -1,3 +1,8 @@
+function get_fantree_id(){
+    let fantree_id = document.getElementById('main_graph').dataset.fantreeid;
+    return(fantree_id);
+}
+
 // clear forms
 function clearForm(formId) {
     const form = document.getElementById(formId);
@@ -30,9 +35,9 @@ function load_settings(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/settings",
+        url: "/fantree/settings/"+fantree_id,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -212,9 +217,9 @@ function editChartStatus() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
+        let fantree_id = get_fantree_id()
         $.ajax({
-            url: "/fantree/editchartstatus",
+            url: "/fantree/editchartstatus/"+fantree_id,
             type: 'POST',
             data: {
                 'chart_status': chart_status
@@ -251,9 +256,9 @@ function applyChartStatus() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: '/fantree/getchartstatus',
+        url: '/fantree/getchartstatus/'+fantree_id,
         method: 'GET',
         success: function (data) {
             if (data.error == false) {
@@ -464,9 +469,9 @@ function update_count(indis,generation){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/updatecount",
+        url: "/fantree/updatecount/"+fantree_id,
         type: 'POST',
         data: {
             'stats': stats

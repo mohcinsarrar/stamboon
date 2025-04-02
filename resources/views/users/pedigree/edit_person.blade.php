@@ -9,7 +9,7 @@
         <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
 
             <form class="add-new-user pt-0" id="formUpdatePerson" method="POST"
-                action="{{ route('users.pedigree.update') }}">
+                action="{{ route('users.pedigree.update', $pedigree_id) }}">
                 @csrf
                 <input type="hidden" name="person_id" class="person_id">
                 <div class="mb-3">
@@ -41,15 +41,13 @@
 
                 <div class="mb-3">
                     <label class="form-label">Date of Birth</label>
-                    <input type="text" name="birth_date" class="form-control date-input birth_date"
-                        >
+                    <input type="text" name="birth_date" class="form-control date-input birth_date">
                 </div>
 
                 <div class="death-container">
                     <div class="mb-3">
                         <label class="form-label">Date of Death</label>
-                        <input type="text" name="death_date" class="form-control date-input death_date"
-                            >
+                        <input type="text" name="death_date" class="form-control date-input death_date">
                     </div>
                 </div>
 

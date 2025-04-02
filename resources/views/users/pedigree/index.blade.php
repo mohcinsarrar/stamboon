@@ -80,6 +80,7 @@
     <script src="{{ asset('admin/pedigree/js/add_person.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/add_child.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/add_spouse.js') }}?{{ time() }}"></script>
+    <script src="{{ asset('admin/pedigree/js/add_ancestor.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/delete_person.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/edit_image.js') }}?{{ time() }}"></script>
     <script src="{{ asset('admin/pedigree/js/order_spouse.js') }}?{{ time() }}"></script>
@@ -112,6 +113,8 @@
     @include('users.pedigree.add_child')
 
     @include('users.pedigree.add_spouse')
+
+    @include('users.pedigree.add_ancestor')
 
     @include('users.pedigree.show_person')
 
@@ -207,7 +210,7 @@
             </div>
         @endif
     @endif
-    <div class="card  h-100" id="main_graph">
+    <div class="card  h-100" id="main_graph" data-pedigreeid="{{ $pedigree_id }}">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
                 <button {{ $has_payment == false ? 'disabled' : '' }} data-bs-toggle="offcanvas"

@@ -102,9 +102,9 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
-  
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-      url: "/pedigree/settings",
+      url: "/pedigree/settings/"+pedigree_id,
       type: 'GET',
       dataType: 'json',
       success: function (data) {

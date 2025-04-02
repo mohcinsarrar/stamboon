@@ -383,6 +383,7 @@ function renderChart() {
   const svg = d3.select("div#graph") // select the graph container
     .append("svg")  // append a svg element
     .attr('id', 'svg-container')
+    .attr('xmlns','http://www.w3.org/2000/svg')
     .attr("width", width) // change width and height of th svg
     .attr("height", height);
 
@@ -403,7 +404,6 @@ function renderChart() {
   const root = d3.hierarchy(data, d => d.parents);
 
   tree(root);
-  console.log(JSON.stringify(data))
   
 
 
@@ -667,6 +667,8 @@ chartGroup.append("g")
 
   enable_tools_bar()
 
+  //document.getElementById('fit').click();
+
 }
 
 
@@ -751,10 +753,10 @@ function foreignObjectHtml(d){
 
 
       return `
-       <div data-personId="${d.data.id}" data-depth="${d.depth}" data-order="${d.data.order}" style="text-align: center; font-family: Arial; font-size: 12px">
-           <img id="img-${d.data.id.replaceAll('@', '')}" src="${personIcon}" alt="Photo" style="filter: ${filter}; object-fit: cover;width: ${imgSize.width}; height: ${imgSize.height}; border-radius: 50%; border: 2px solid ${treeConfiguration.band_color};transform: rotate(${imgRotation}deg)">
+       <div xmlns="http://www.w3.org/1999/xhtml" data-personId="${d.data.id}" data-depth="${d.depth}" data-order="${d.data.order}" style="text-align: center; font-family: Arial; font-size: 12px">
+           <img xmlns="http://www.w3.org/1999/xhtml" id="img-${d.data.id.replaceAll('@', '')}" src="${personIcon}" alt="Photo" style="filter: ${filter}; object-fit: cover;width: ${imgSize.width}; height: ${imgSize.height}; border-radius: 50%; border: 2px solid ${treeConfiguration.band_color};transform: rotate(${imgRotation}deg)" />
  
-         <div class="" style="${style}">
+         <div xmlns="http://www.w3.org/1999/xhtml" class="" style="${style}">
            <svg id="arc-svg" width="100" height="55" viewBox="-100 -80 200 200" xmlns="http://www.w3.org/2000/svg">
              <path id="curved-rectangle" 
              transform="translate(-170,-50)"
@@ -769,7 +771,7 @@ function foreignObjectHtml(d){
                d="${path}" 
                fill="transparent" 
                stroke="transparent" 
-               stroke-width="2"/>
+               stroke-width="2" />
              <text font-size="20" fill="${treeConfiguration.text_color}" text-anchor="middle">
                <textPath href="#curve1-${d.data.id}" startOffset="50%" font-weight="bold">
                  ${d.data.firstname.toUpperCase()}

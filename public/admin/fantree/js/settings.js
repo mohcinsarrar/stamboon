@@ -119,9 +119,9 @@ document.querySelector('#settings form').addEventListener('submit', (event) => {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-
+  let fantree_id = get_fantree_id()
   result = $.ajax({
-    url: "/fantree/settings",
+    url: "/fantree/settings/"+fantree_id,
     type: 'POST',
     data: data,
     encode: true,

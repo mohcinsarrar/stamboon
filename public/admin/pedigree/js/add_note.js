@@ -39,9 +39,9 @@ function change_position(note_id, xpos, ypos) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/editnoteposition",
+        url: "/pedigree/editnoteposition/"+pedigree_id,
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -76,9 +76,9 @@ function get_notes() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/getnotes",
+        url: "/pedigree/getnotes/"+pedigree_id,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -197,7 +197,7 @@ function delete_note(note_id) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
         url: "/pedigree/deletenote",
         type: 'POST',
@@ -285,9 +285,9 @@ function change_text(note_id, text) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/editnotetext",
+        url: "/pedigree/editnotetext/"+pedigree_id,
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -388,9 +388,9 @@ function add_note(text, xPos, yPos) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/savenote",
+        url: "/pedigree/savenote/"+pedigree_id,
         type: 'POST',
         data: {
             'content': text,

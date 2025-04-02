@@ -13,7 +13,7 @@ class SettingFantree extends Model
     protected $table = 'settings_fantree';
 
     protected $fillable = [
-        'user_id',
+        'fantree_id',
         'text_color',
         'band_color',
         'father_link_color',
@@ -31,8 +31,8 @@ class SettingFantree extends Model
         'note_text_color'
     ];
 
-    public function user(): BelongsTo
+    public function fantree(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Fantree::class);
     }
 }

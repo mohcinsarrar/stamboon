@@ -47,8 +47,8 @@ use Gedcom\Record\Fam as Fam;
 use App\Services\GedcomService;
 use ZipArchive;
 
-
-use App\DataTables\FantreesDataTable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\DataTables\users\FantreesDataTable;
 
 class FantreeController extends Controller
 {
@@ -72,37 +72,164 @@ class FantreeController extends Controller
     }
 
 
-    
-    
-    private function get_user(){
-        $user_id = session()->get('user_id');
-        
-        if($user_id == null){
-            return Auth::user();
-        }
-        else{
-            return User::find($user_id);
-        }
+    private function get_fantree($fantree_id){
 
-    }
 
-    private function get_fantree(){
-        $user_id = session()->get('user_id');
-        
-        if($user_id == null){
+        try {
             $user = Auth::user();
-        }
-        else{
-            $user = User::find($user_id);
+            $fantree = Fantree::findOrFail($fantree_id);
+            if($user->hasRole('superadmin')){
+                return $fantree;
+            }
+            if($user->hasRole('superuser')){
+                if(Auth::user()->id != $fantree->user->id){
+                    abort(404, 'Fanchart not found');
+                }
+                else{
+                    return $fantree;
+                }
+            }
+            abort(404, 'Fanchart not found');
+            
+        } catch (ModelNotFoundException $e) {
+            abort(404, 'Fanchart not found');
         }
 
-        $fantree = Fantree::where('user_id',$user->id)->first();
-
-        return $fantree;
 
     }
 
-    public function index(Request $request){
+
+    private function get_gedcom_file_for_delete($fantree){
+    
+        
+        if($fantree == null){
+            return null;
+        }
+        if($fantree->gedcom_file == null){
+          return null;
+        }
+    
+        if (!Storage::disk('local')->exists($fantree->gedcom_file)) {
+            return null;
+        } 
+        
+        $file = Storage::disk('local')->get($fantree->gedcom_file);
+    
+        return $fantree->gedcom_file;
+    
+    }
+
+    public function delete_fantree(Request $request, $id){
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            abort(404, 'Pedigree not found');
+        }
+        $fantree = Fantree::findOrFail($id);
+        
+
+        // delete all user data fantree
+
+        /// get gedcom file
+        $gedcom_file = $this->get_gedcom_file_for_delete($fantree);
+        if($gedcom_file != null){
+            /// get gedcom object
+            $gedcom = $this->get_gedcom($gedcom_file);
+            /// get all indis
+            $indis = $gedcom->getIndi();
+            /// iterate over all indis and delete photo if exist
+            foreach($indis as $indi){
+                    $note = $indi->getNote();
+
+                    $photo = null;
+                    if($note != null and $note != []){
+                        $photo = $note[0]->getNote();
+                    }
+
+                    if($photo != null){
+                    if (Storage::exists('portraits_fantree/'.$photo)) {
+                        Storage::delete('portraits_fantree/'.$photo);
+                    }
+                    }
+            }
+
+            /// delete gedcom file
+            if (Storage::exists('fantree_gedcoms/'.$gedcom_file)) {
+                Storage::delete('fantree_gedcoms/'.$gedcom_file);
+            }
+        }
+
+        $fantree->delete();
+
+        return redirect()->route('users.fantree.list')->with('success', 'Fanchart deleted with success');
+    }
+
+    public function edit_fantree(Request $request,$id){
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            abort(404, 'Pedigree not found');
+        }
+        $inputs = $request->except(['_token','_method']);
+        
+        Validator::make($inputs, [
+            'name' => ['required','string','unique:fantrees,name,'.$id],
+
+        ])->validate();
+
+        // create fantree
+
+        Fantree::where('id',$id)->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('users.fantree.list')->with('success', 'Fanchart updated with success');
+    }
+
+    public function store_fantree(Request $request){
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            abort(404, 'Pedigree not found');
+        }
+        $inputs = $request->except(['_token']);
+        
+        Validator::make($inputs, [
+            'name' => ['required','string','unique:fantrees,name'],
+
+        ])->validate();
+
+        // create fantree
+        $user = Auth::user();
+
+        Fantree::create([
+            'name' => $request->name,
+            'user_id' => $user->id
+        ]);
+
+        return redirect()->route('users.fantree.list')->with('success', 'Fanchart created with success');
+    }
+
+
+    public function list(FantreesDataTable $dataTable){
+
+        $user = Auth::user();
+        if(!$user->hasRole('superuser')){
+            $fantree = Fantree::where('user_id',$user->id)->first();
+            return redirect()->route('users.fantree.index',$fantree->id);
+        }
+
+        return $dataTable->render('users.fantree.list');
+    }
+
+    public function all(FantreesDataTable $dataTable){
+
+        $user = Auth::user();
+        if(!$user->hasRole('superadmin')){
+            abort(404, 'Fanchart not found');
+        }
+
+        return $dataTable->render('users.fantree.list');
+    }
+
+    public function index(Request $request, $fantree_id){
 
 
         $user = Auth::user();
@@ -150,13 +277,13 @@ class FantreeController extends Controller
 
         $max_generation = $product->fantree_max_generation;
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
 
-        return view('users.fantree.index', compact('print_types','selected_output_png','selected_output_pdf','has_payment'));
+        return view('users.fantree.index', compact('fantree_id','print_types','selected_output_png','selected_output_pdf','has_payment'));
     }
 
     // import a new gedcom file
-    public function importgedcom(Request $request){
+    public function importgedcom(Request $request,$fantree_id){
 
         $input = $request->all();
 
@@ -168,7 +295,7 @@ class FantreeController extends Controller
                 ],
             ]);
         
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
 
         // delete file if exist
         if($fantree->gedcom_file != null){
@@ -190,8 +317,8 @@ class FantreeController extends Controller
         
     }
 
-    public function getTree(Request $request){
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+    public function getTree(Request $request,$fantree_id){
+        $fantree = $this->get_fantree($fantree_id);
         
         if($fantree->gedcom_file == null){
             return response(null, 200);
@@ -240,24 +367,27 @@ class FantreeController extends Controller
     }
 
 
-    public function settings(Request $request){
+    public function settings(Request $request,$fantree_id){
         
         
         // load settings
         if($request->isMethod('get')){
-            $user = Auth::user();
+
+            $fantree = $this->get_fantree($fantree_id);
+            
 
             // if no settings created it
-            if(SettingFantree::where('user_id',$user->id)->first() == null){
-                SettingFantree::create(['user_id' => $user->id]);
+            if(SettingFantree::where('fantree_id',$fantree->id)->first() == null){
+                SettingFantree::create(['fantree_id' => $fantree->id]);
             }
             
-            $settings = SettingFantree::where('user_id',$user->id)->first()->toArray();
-            $fantree = Fantree::where('user_id',$user->id)->first();
-            if($fantree == null){
-                return response()->json(['error'=>true,'msg' => 'error']);
-            }
+            $settings = SettingFantree::where('fantree_id',$fantree->id)->first()->toArray();
+            
+            
             // get product features
+
+            $user = Auth::user();
+
             $current_payment = $user->last_payment();
             if($current_payment == false){
                 return redirect()->route('users.dashboard.index');
@@ -301,20 +431,17 @@ class FantreeController extends Controller
                 $inputs['bg_template'] = '0';
             }
 
-            
-            SettingFantree::where('user_id',Auth::user()->id)->update($inputs);
+            $fantree = $this->get_fantree($fantree_id);
+            SettingFantree::where('fantree_id',$fantree->id)->update($inputs);
 
             return response()->json(['error'=>false,'message' => "settings edited with success"]);
         }
     }
 
 
-    private function get_gedcom_file(){
+    private function get_gedcom_file($fantree_id){
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
-        if($fantree == null){
-            return null;
-        }
+        $fantree = $this->get_fantree($fantree_id);
 
         if (!Storage::disk('local')->exists($fantree->gedcom_file)) {
             return null;
@@ -434,7 +561,7 @@ class FantreeController extends Controller
     }
 
     // update person
-    public function update(Request $request){
+    public function update(Request $request,$fantree_id){
         
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
@@ -447,7 +574,7 @@ class FantreeController extends Controller
         ])->validate();
         
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($fantree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -492,7 +619,7 @@ class FantreeController extends Controller
     }
 
 
-    public function addparents(Request $request){
+    public function addparents(Request $request,$fantree_id){
         
         $inputs = $request->except(['_token']);
         $gedcomService = new GedcomService();
@@ -505,7 +632,7 @@ class FantreeController extends Controller
             'status' => ['required','string'],
         ])->validate();
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($fantree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -630,7 +757,7 @@ class FantreeController extends Controller
     }
 
 
-    public function delete(Request $request){
+    public function delete(Request $request,$fantree_id){
         //dd($request);
 
         $inputs = $request->except(['_token']);
@@ -641,7 +768,7 @@ class FantreeController extends Controller
         ])->validate();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($fantree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -712,11 +839,11 @@ class FantreeController extends Controller
     }
 
 
-    public function deleteimage(Request $request){
+    public function deleteimage(Request $request,$fantree_id){
         $gedcomService = new GedcomService();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($fantree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -760,13 +887,13 @@ class FantreeController extends Controller
     }
 
 
-    public function saveimage(Request $request){
+    public function saveimage(Request $request,$fantree_id){
 
 
         $gedcomService = new GedcomService();
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($fantree_id);
         if ($gedcom_file == null) {
             return redirect()->back()->with('error','cant load your family tree');
         } 
@@ -837,7 +964,7 @@ class FantreeController extends Controller
     }
 
 
-    public function addperson(Request $request){
+    public function addperson(Request $request,$fantree_id){
 
         $inputs = $request->except(['_token']);
         
@@ -916,7 +1043,7 @@ class FantreeController extends Controller
         Storage::put($uniqueFilename, StorageFile::get($tempFilePath));
 
         // store filename to pedigree
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
         $fantree->gedcom_file = $uniqueFilename;
         $fantree->save();
 
@@ -928,9 +1055,9 @@ class FantreeController extends Controller
     }
 
 
-    public function print(Request $request){
+    public function print(Request $request,$fantree_id){
         $user = Auth::user();
-        $fantree = Fantree::where('user_id',$user->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
         $current_payment = $user->has_payment();
         if($current_payment == false){
             return redirect()->route('users.dashboard.index');
@@ -949,11 +1076,11 @@ class FantreeController extends Controller
         
     }
 
-    public function download(Request $request){
+    public function download(Request $request,$fantree_id){
         
 
         // get gedcom file
-        $gedcom_file = $this->get_gedcom_file();
+        $gedcom_file = $this->get_gedcom_file($fantree_id);
         if($gedcom_file == null){
             return back()-with('error',"can't download your familytree, please try again");
         }
@@ -1019,10 +1146,10 @@ class FantreeController extends Controller
     }
 
 
-    public function editChartStatus(Request $request){
+    public function editChartStatus(Request $request,$fantree_id){
         $chart_status = $request->input('chart_status');
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
         if($fantree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }
@@ -1032,8 +1159,8 @@ class FantreeController extends Controller
         return response()->json(['error'=>false,'msg' => 'error']);
     }
 
-    public function getChartStatus(Request $request){
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+    public function getChartStatus(Request $request,$fantree_id){
+        $fantree = $this->get_fantree($fantree_id);
         if($fantree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }
@@ -1041,8 +1168,8 @@ class FantreeController extends Controller
         return response()->json(['error'=>false,'chart_status' => $chart_status]);
     }
 
-    public function updatecount(Request $request){
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+    public function updatecount(Request $request,$fantree_id){
+        $fantree = $this->get_fantree($fantree_id);
         if($fantree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }

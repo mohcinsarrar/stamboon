@@ -112,9 +112,9 @@ $(document).on("click", "#exportBtn", function () {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-
+  let pedigree_id = get_pedigree_id();
   $.ajax({
-      url: "/pedigree/print",
+      url: "/pedigree/print/"+pedigree_id,
       type: 'POST',
       encode: true,
       dataType: 'json',
@@ -122,7 +122,7 @@ $(document).on("click", "#exportBtn", function () {
           if (data.error == false) {
             if (type == "png") {
               //var format = document.querySelector('#exportModal #format').value;
-              var format = 2;
+              var format = 10;
               exportGraph(format,include_note,include_weapon)
               document.querySelector('#exportModal #exportModalSpinner').classList.remove('d-flex')
                 document.querySelector('#exportModal #exportModalSpinner').classList.add('d-none')
@@ -293,7 +293,7 @@ async function downloadPdf(format, orientation,include_note,include_weapon) {
 
 
   chart.exportImg({
-    scale:3,
+    scale:10,
     save: false,
     full: true,
     onLoad: (base64) => {

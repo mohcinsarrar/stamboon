@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body pt-2">
 
-                <form action="{{ route('users.pedigree.settings') }}" method="POST">
+                <form action="{{ route('users.pedigree.settings', $pedigree_id) }}" method="POST">
                     @csrf
                     <div class="nav-align-top  mb-6 mt-4">
                         <ul class="nav nav-tabs" role="tablist">

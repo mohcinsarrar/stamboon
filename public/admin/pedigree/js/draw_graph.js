@@ -1210,7 +1210,7 @@ function getFullDate(birth, death) {
 }
 
 function nodeClicked(d) {
-
+    
     // check if offcanvas is open
     var offcanvasElement = document.getElementById('offcanvasOrderSpouse');
     if (offcanvasElement.classList.contains('show')) {
@@ -1247,6 +1247,7 @@ function nodeClicked(d) {
         personInfo.death = person[0].death
         personInfo.spouseIds = person[0].spouseIds
         personInfo.type = 'person'
+        personInfo.parentId = person[0].parentId
     }
     else {
 
@@ -1262,7 +1263,11 @@ function nodeClicked(d) {
         personInfo.death = spouse[0].spouseDeath
         personInfo.type = 'spouse'
         personInfo.personBeforeSpouseId = spouse[0].personId
+        personInfo.parentId = spouse[0].parentId
     }
+
+    
+
 
     // store on global variable
     selectedPerson = personInfo
@@ -1272,7 +1277,13 @@ function nodeClicked(d) {
     const modal = document.getElementById('nodeModal');
     const modalBody = document.getElementById('nodeModalBody');
 
-    
+    // addAncestor
+    if(d.data.parentId == "hidden_root" && personInfo.type == "person"){
+        modalBody.querySelector('#addAncestor').style.display = 'block';
+    }
+    else{
+        modalBody.querySelector('#addAncestor').style.display = 'none';
+    }
 
     if(selectedPerson.spouseIds != undefined && selectedPerson.spouseIds.length >=1){
 
@@ -1368,6 +1379,9 @@ document.getElementById('nodeModalBody').querySelector('#nodeDelete').addEventLi
 });
 document.getElementById('nodeModalBody').querySelector('#addSpouse').addEventListener('click', (event) => {
     add_spouse()
+});
+document.getElementById('nodeModalBody').querySelector('#addAncestor').addEventListener('click', (event) => {
+    add_ancestor()
 });
 document.getElementById('nodeModalBody').querySelector('#addChild').addEventListener('click', (event) => {
     add_child()

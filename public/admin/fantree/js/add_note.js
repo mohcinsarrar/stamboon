@@ -39,9 +39,9 @@ function change_position(note_id, xpos, ypos) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/editnoteposition",
+        url: "/fantree/editnoteposition/"+fantree_id,
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -76,9 +76,9 @@ function get_notes() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/getnotes",
+        url: "/fantree/getnotes/"+fantree_id,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -285,9 +285,9 @@ function change_text(note_id, text) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/editnotetext",
+        url: "/fantree/editnotetext/"+fantree_id,
         type: 'POST',
         data: {
             'note_id': note_id,
@@ -387,10 +387,10 @@ function add_note(text, xPos, yPos) {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-    });
-
+    }); 
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/savenote",
+        url: "/fantree/savenote/"+fantree_id,
         type: 'POST',
         data: {
             'content': text,

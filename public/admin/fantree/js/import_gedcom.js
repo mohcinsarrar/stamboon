@@ -31,8 +31,9 @@ $(document).on("click", "#import-gedcom", function() {
         buttonsStyling: false
       }).then(function (result) {
         if (result.value) {
+            let fantree_id = get_fantree_id()
             $.ajax({
-                url: "/fantree/importgedcom",
+                url: "/fantree/importgedcom/"+fantree_id,
                 type: 'POST',
                 data: formData,
                 encode: true,

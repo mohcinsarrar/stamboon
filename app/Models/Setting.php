@@ -11,7 +11,7 @@ class Setting extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'pedigree_id',
         'spouse_link_color',
         'bio_child_link_color',
         'adop_child_link_color',
@@ -28,8 +28,8 @@ class Setting extends Model
         'photos_type'
     ];
 
-    public function user(): BelongsTo
+    public function pedigree(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Pedigree::class);
     }
 }

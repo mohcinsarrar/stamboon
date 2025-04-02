@@ -12,7 +12,8 @@ document.getElementById('downloadButton').addEventListener('click', function () 
         buttonsStyling: false
       }).then(function (result) {
         if(result.isConfirmed){
-            fetch('/fantree/download', {
+            let fantree_id = get_fantree_id()
+            fetch('/fantree/download/'+fantree_id, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content

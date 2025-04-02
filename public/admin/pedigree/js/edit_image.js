@@ -230,9 +230,9 @@ save_image_placeholder.addEventListener('click', function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/saveimage",
+        url: "/pedigree/saveimage/"+pedigree_id,
         type: 'POST',
         data: {
             'checkedImage': checkedRadio,

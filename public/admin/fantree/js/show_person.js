@@ -1,5 +1,5 @@
 function nodeClicked(d) {
-
+    
     // check if offcanvas is open
     
     if(preventOverlayModel()){

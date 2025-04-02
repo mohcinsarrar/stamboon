@@ -15,8 +15,8 @@ document.getElementById('downloadButton').addEventListener('click', function () 
         buttonsStyling: false
       }).then(function (result) {
         if(result.isConfirmed){
-            console.log('ff')
-            fetch('/pedigree/download', {
+            let pedigree_id = get_pedigree_id();
+            fetch('/pedigree/download/'+pedigree_id, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content

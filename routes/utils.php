@@ -44,10 +44,13 @@ Route::get('/invoice/pdf', function () {
 
 
 Route::get('/roles/create', function () {
+    
     $role = Role::create(['name' => 'admin']);
     $role = Role::create(['name' => 'user']);
     $role = Role::create(['name' => 'superadmin']);
     $role = Role::create(['name' => 'superuser']);
+    $role = Role::create(['name' => 'superuser2']);
+
     return "routes created";
 })->name('roles.create');
 

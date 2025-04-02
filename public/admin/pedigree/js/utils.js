@@ -1,3 +1,9 @@
+
+function get_pedigree_id(){
+    let pedigree_id = document.getElementById('main_graph').dataset.pedigreeid;
+    return(pedigree_id);
+}
+
 // clear forms
 function clearForm(formId) {
     const form = document.getElementById(formId);
@@ -132,9 +138,9 @@ function editChartStatus() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/editchartstatus",
+        url: "/pedigree/editchartstatus/"+pedigree_id,
         type: 'POST',
         data: {
             'chart_status': chart_status,
@@ -166,9 +172,9 @@ function applyChartStatus() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: '/pedigree/getchartstatus',
+        url: '/pedigree/getchartstatus/'+pedigree_id,
         method: 'GET',
         success: function (data) {
             if (data.error == false) {
@@ -476,9 +482,9 @@ function update_count(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/updatecount",
+        url: "/pedigree/updatecount/"+pedigree_id,
         type: 'POST',
         data: {
             'stats': stats

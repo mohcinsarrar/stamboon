@@ -48,6 +48,28 @@ function inlineStyles(source, target) {
   }
 
 
+  async function embedImages2(svgElement) {
+    const images = svgElement.querySelectorAll('image');
+
+    const imagePromises = Array.from(images).map(async (img) => {
+        const url = img.getAttribute('href');
+        if (url) {
+            const dataUrl = await fetch(url)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                    });
+                });
+
+            img.setAttribute('href', dataUrl);
+        }
+    });
+
+    await Promise.all(imagePromises);
+  }
 
   async function embedImages(svgElement) {
     const images = svgElement.querySelectorAll('img');
@@ -72,13 +94,12 @@ function inlineStyles(source, target) {
     await Promise.all(imagePromises);
   }
 
-  function downloadSVG({ source, target, scale, format, quality }) {
+  function downloadSVG(target) {
     let svgData = new XMLSerializer().serializeToString(target);
 
     // Create a Blob object for the SVG
     let blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
     let url = URL.createObjectURL(blob);
-    console.log(url)
 
     // Create a download link
     let link = document.createElement("a");

@@ -8,14 +8,20 @@ let constants = {
 let compact = false;
 let date_format = '';
 
+
+function get_pedigree_id2(){
+  let pedigree_id = document.getElementById('main_graph').dataset.pedigreeid;
+  return(pedigree_id);
+}
+
 $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-
+  let pedigree_id = get_pedigree_id2();
   $.ajax({
-    url: "/pedigree/settings",
+    url: "/pedigree/settings/"+pedigree_id,
     type: 'GET',
     dataType: 'json',
     success: function (data) {

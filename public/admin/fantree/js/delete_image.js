@@ -12,9 +12,9 @@ function delete_image(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     result = $.ajax({
-        url: "/fantree/deleteimage",
+        url: "/fantree/deleteimage/"+fantree_id,
         type: 'POST',
         data: {
             'person_id' : personInfo.id

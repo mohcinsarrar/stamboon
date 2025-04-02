@@ -236,14 +236,15 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
     
     const formData = $(this).serialize();
     event.preventDefault();
+    
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/update",
+        url: "/fantree/update/"+fantree_id,
         type: 'POST',
         data: formData,
         encode: true,

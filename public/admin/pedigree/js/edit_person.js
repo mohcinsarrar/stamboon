@@ -224,9 +224,9 @@ document.getElementById('formUpdatePerson').addEventListener('submit', function 
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let pedigree_id = get_pedigree_id();
     $.ajax({
-        url: "/pedigree/update",
+        url: "/pedigree/update/"+pedigree_id,
         type: 'POST',
         data: formData,
         encode: true,

@@ -9,9 +9,9 @@ function draw_tree() {
     load_settings()
     applyChartStatus()
     disable_tools_bar()
-    
+    let fantree_id = get_fantree_id()
     // load gedcom file from api for the current user
-    const promise = fetch('/fantree/getTree')
+    const promise = fetch('/fantree/getTree/'+fantree_id)
         .then(r => {
             if (r.status == 404) {
                 throw new Error(`HTTP error! Status: ${r.status}`);
@@ -66,9 +66,9 @@ function draw_tree() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        let fantree_id = get_fantree_id()
         $.ajax({
-            url: "/fantree/settings",
+            url: "/fantree/settings/"+fantree_id,
             type: 'GET',
             dataType: 'json',
             success: function (data) {

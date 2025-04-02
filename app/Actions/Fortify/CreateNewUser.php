@@ -60,20 +60,22 @@ class CreateNewUser implements CreatesNewUsers
         $user->save();
 
         // create pedigree
-        Pedigree::create([
+        $pedigree = Pedigree::create([
+            'name' => 'First Pedigree',
             'user_id' => $user->id
         ]);
 
         // create pedigree settings
-        $setting = Setting::create(['user_id' => $user->id]);
+        $setting = Setting::create(['pedigree_id' => $pedigree->id]);
 
         // create fantree
-        Fantree::create([
+        $fantree = Fantree::create([
+            'name' => 'First Fanchart',
             'user_id' => $user->id
         ]);
 
         // create fantree settings
-        SettingFantree::create(['user_id' => $user->id]);
+        SettingFantree::create(['fantree_id' => $fantree->id]);
 
         
         

@@ -145,7 +145,8 @@ document.getElementById('save_image').addEventListener('click', function () {
     let request = new XMLHttpRequest();
 
     // open the request to the "/fantree/saveimage" url
-    request.open("POST", "/fantree/saveimage", true);
+    let fantree_id = get_fantree_id()
+    request.open("POST", "/fantree/saveimage/"+fantree_id, true);
 
     // add content-type and csr token to header
     request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
@@ -241,9 +242,9 @@ save_image_placeholder.addEventListener('click', function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/saveimage",
+        url: "/fantree/saveimage/"+fantree_id,
         type: 'POST',
         data: {
             'checkedImage': checkedRadio,

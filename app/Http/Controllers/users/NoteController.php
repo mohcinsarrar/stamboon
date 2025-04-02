@@ -13,9 +13,24 @@ use Illuminate\Support\Facades\Storage;
 
 class NoteController extends Controller
 {
-  public function index()
+
+    private function get_pedigree($pedigree_id){
+
+
+        try {
+            $pedigree = Pedigree::findOrFail($pedigree_id);
+            return $pedigree;
+        } catch (ModelNotFoundException $e) {
+            abort(404, 'Fanchart not found');
+        }
+
+
+    }
+
+
+  public function index($pedigree_id)
   {
-    $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+    $pedigree = $this->get_pedigree($pedigree_id);
 
     if($pedigree == null){
         return response()->json(['error'=>true,'msg' => 'error']);
@@ -30,7 +45,7 @@ class NoteController extends Controller
     
     }
 
-    public function save(Request $request){
+    public function save(Request $request, $pedigree_id){
 
         $inputs = $request->all();
         
@@ -41,7 +56,7 @@ class NoteController extends Controller
             ])->validate();
         
 
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
         if($pedigree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }
@@ -56,7 +71,7 @@ class NoteController extends Controller
 
     }
 
-  public function edit_position(Request $request){
+  public function edit_position(Request $request, $pedigree_id){
         $inputs = $request->all();
         
         Validator::make($inputs, [
@@ -65,7 +80,7 @@ class NoteController extends Controller
                 'ypos' => ['required','string'],
             ])->validate();
 
-            $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            $pedigree = $this->get_pedigree($pedigree_id);
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -79,7 +94,7 @@ class NoteController extends Controller
             return response()->json(['error'=>false,'msg' => 'error']);
     }
 
-    public function edit_text(Request $request){
+    public function edit_text(Request $request, $pedigree_id){
         $inputs = $request->all();
         
         Validator::make($inputs, [
@@ -87,7 +102,7 @@ class NoteController extends Controller
                 'content' => ['required','string'],
             ])->validate();
 
-            $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            $pedigree = $this->get_pedigree($pedigree_id);
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -112,14 +127,14 @@ class NoteController extends Controller
             return response()->json(['error'=>false,'msg' => 'error']);
     }
 
-    public function addweapon(Request $request){
+    public function addweapon(Request $request, $pedigree_id){
         $inputs = $request->all();
 
         Validator::validate($inputs, [
             'file' => 'required|image|max:2048',
         ]);
 
-        $pedigree = pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -141,10 +156,10 @@ class NoteController extends Controller
 
     }
 
-    public function deleteweapon(Request $request){
+    public function deleteweapon(Request $request, $pedigree_id){
 
 
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -164,10 +179,10 @@ class NoteController extends Controller
 
     }
 
-    public function loadweapon(Request $request){
+    public function loadweapon(Request $request, $pedigree_id){
 
 
-        $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+        $pedigree = $this->get_pedigree($pedigree_id);
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -181,7 +196,7 @@ class NoteController extends Controller
 
     }
 
-    public function editweaponposition(Request $request){
+    public function editweaponposition(Request $request, $pedigree_id){
         $inputs = $request->all();
         
         Validator::make($inputs, [
@@ -189,7 +204,7 @@ class NoteController extends Controller
                 'ypos' => ['required','string'],
             ])->validate();
 
-            $pedigree = Pedigree::where('user_id',Auth::user()->id)->first();
+            $pedigree = $this->get_pedigree($pedigree_id);
             if($pedigree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }

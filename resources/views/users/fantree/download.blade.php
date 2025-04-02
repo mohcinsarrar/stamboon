@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body pt-2">
-                <form action="{{ route('users.fantree.download') }}" method="POST">
+                <form action="{{ route('users.fantree.download', $fantree_id) }}" method="POST">
                     @csrf
                     <div class="row mt-4 justify-content-end">
                         <div class="col-auto">

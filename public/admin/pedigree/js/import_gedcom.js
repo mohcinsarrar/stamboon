@@ -31,8 +31,9 @@ $(document).on("click", "#import-gedcom", function() {
         buttonsStyling: false
       }).then(function (result) {
         if (result.value) {
+            let pedigree_id = get_pedigree_id();
             $.ajax({
-                url: "/pedigree/importgedcom",
+                url: "/pedigree/importgedcom/"+pedigree_id,
                 type: 'POST',
                 data: formData,
                 encode: true,

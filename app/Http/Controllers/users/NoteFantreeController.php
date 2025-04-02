@@ -12,9 +12,23 @@ use Illuminate\Support\Facades\Storage;
 
 class NoteFantreeController extends Controller
 {
-  public function index()
+
+    private function get_fantree($fantree_id){
+
+
+        try {
+            $fantree = Fantree::findOrFail($fantree_id);
+            return $fantree;
+        } catch (ModelNotFoundException $e) {
+            abort(404, 'Fanchart not found');
+        }
+
+
+    }
+
+  public function index($fantree_id)
   {
-    $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+    $fantree = $this->get_fantree($fantree_id);
 
     if($fantree == null){
         return response()->json(['error'=>true,'msg' => 'error']);
@@ -29,7 +43,7 @@ class NoteFantreeController extends Controller
     
     }
 
-    public function save(Request $request){
+    public function save(Request $request,$fantree_id){
 
         $inputs = $request->all();
         
@@ -40,7 +54,7 @@ class NoteFantreeController extends Controller
             ])->validate();
         
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+            $fantree = $this->get_fantree($fantree_id);
         if($fantree == null){
             return response()->json(['error'=>true,'msg' => 'error']);
         }
@@ -55,7 +69,7 @@ class NoteFantreeController extends Controller
 
     }
 
-  public function edit_position(Request $request){
+  public function edit_position(Request $request,$fantree_id){
         $inputs = $request->all();
         
         Validator::make($inputs, [
@@ -64,7 +78,7 @@ class NoteFantreeController extends Controller
                 'ypos' => ['required','string'],
             ])->validate();
 
-            $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+            $fantree = $this->get_fantree($fantree_id);
             if($fantree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -78,7 +92,7 @@ class NoteFantreeController extends Controller
             return response()->json(['error'=>false,'msg' => 'error']);
     }
 
-    public function edit_text(Request $request){
+    public function edit_text(Request $request, $fantree_id){
         $inputs = $request->all();
         
         Validator::make($inputs, [
@@ -86,7 +100,7 @@ class NoteFantreeController extends Controller
                 'content' => ['required','string'],
             ])->validate();
 
-            $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+            $fantree = $this->get_fantree($fantree_id);
             if($fantree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -111,14 +125,14 @@ class NoteFantreeController extends Controller
             return response()->json(['error'=>false,'msg' => 'error']);
     }
 
-    public function addweapon(Request $request){
+    public function addweapon(Request $request, $fantree_id){
         $inputs = $request->all();
 
         Validator::validate($inputs, [
             'file' => 'required|image|max:2048',
         ]);
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
             if($fantree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -140,10 +154,10 @@ class NoteFantreeController extends Controller
 
     }
 
-    public function deleteweapon(Request $request){
+    public function deleteweapon(Request $request, $fantree_id){
 
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
             if($fantree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -163,10 +177,10 @@ class NoteFantreeController extends Controller
 
     }
 
-    public function loadweapon(Request $request){
+    public function loadweapon(Request $request, $fantree_id){
 
 
-        $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+        $fantree = $this->get_fantree($fantree_id);
             if($fantree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }
@@ -181,7 +195,7 @@ class NoteFantreeController extends Controller
 
     }
 
-    public function editweaponposition(Request $request){
+    public function editweaponposition(Request $request, $fantree_id){
         $inputs = $request->all();
         
         Validator::make($inputs, [
@@ -189,7 +203,7 @@ class NoteFantreeController extends Controller
                 'ypos' => ['required','string'],
             ])->validate();
 
-            $fantree = Fantree::where('user_id',Auth::user()->id)->first();
+            $fantree = $this->get_fantree($fantree_id);
             if($fantree == null){
                 return response()->json(['error'=>true,'msg' => 'error']);
             }

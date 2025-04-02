@@ -9,7 +9,7 @@
     <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
         <h6 class="offcanvas-subtitle"></h6>
         <form class="add-new-user pt-0" id="formAddParents" method="POST"
-            action="{{ route('users.fantree.addparents') }}">
+            action="{{ route('users.fantree.addparents', $fantree_id) }}">
             @csrf
             <input type="hidden" name="person_id" class="person_id">
 

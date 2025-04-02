@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('settings_fantree', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
+            $table->foreignId('fantree_id')
             ->constrained()
             ->onUpdate('cascade')
             ->onDelete('cascade');

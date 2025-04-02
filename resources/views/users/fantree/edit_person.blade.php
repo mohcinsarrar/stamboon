@@ -9,7 +9,7 @@
         <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
 
             <form class="add-new-user pt-0" id="formUpdatePerson" method="POST"
-                action="{{ route('users.fantree.update') }}">
+                action="{{ route('users.fantree.update', $fantree_id) }}">
                 @csrf
                 <input type="hidden" name="person_id" class="person_id">
                 <div class="mb-3">
@@ -28,11 +28,13 @@
                 <div class="mb-3 d-none" id="sex_container">
                     <label class="d-block form-label">Sex</label>
                     <div class="form-check form-check-inline mt-2">
-                        <input class="form-check-input male" type="radio" id="male" name="sex" value="M">
+                        <input class="form-check-input male" type="radio" id="male" name="sex"
+                            value="M">
                         <label class="form-check-label" for="male"> Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input female" type="radio" id="female" name="sex" value="F">
+                        <input class="form-check-input female" type="radio" id="female" name="sex"
+                            value="F">
                         <label class="form-check-label" for="female"> Female</label>
                     </div>
                 </div>
@@ -52,15 +54,13 @@
 
                 <div class="mb-3">
                     <label class="form-label">Date of Birth</label>
-                    <input type="text" name="birth_date" class="form-control date-input birth_date"
-                        >
+                    <input type="text" name="birth_date" class="form-control date-input birth_date">
                 </div>
 
                 <div class="death-container">
                     <div class="mb-3">
                         <label class="form-label">Date of Death</label>
-                        <input type="text" name="death_date" class="form-control date-input death_date"
-                            >
+                        <input type="text" name="death_date" class="form-control date-input death_date">
                     </div>
                 </div>
 

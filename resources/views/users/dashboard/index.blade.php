@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="{{ route('users.fantree.index') }}">
+                                <a href="{{ route('users.fantree.list') }}">
                                     <div class="content-right">
                                         <h5 class="text-primary mb-0">Fanchart</h5>
                                     </div>
@@ -227,7 +227,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="{{ route('users.pedigree.index') }}">
+                                <a href="{{ route('users.pedigree.list') }}">
                                     <div class="content-right">
                                         <h5 class="text-info mb-0">Pedigree</h5>
                                     </div>

@@ -4,91 +4,91 @@
       "url": "/admin/dashboard",
       "name": "Dashboard",
       "icon": "menu-icon tf-icons ti ti-smart-home",
-      "slug": "admin.dashboard.index"
+      "slug": ["admin.dashboard.index"]
     },
     {
       "url": "/admin/users",
       "name": "Users",
       "icon": "menu-icon tf-icons ti ti-users",
-      "slug": "admin.users.index"
+      "slug": ["admin.users.index"]
     },
     {
       "url": "/admin/notifications",
       "name": "Notifications",
       "icon": "menu-icon tf-icons ti ti-bell",
-      "slug": "admin.notifications"
+      "slug": ["admin.notifications"]
     },
     {
       "url": "/admin/documentations",
       "icon": "menu-icon tf-icons ti ti-file-description",
       "name": "Documentations",
-      "slug": "admin.documentations"
+      "slug": ["admin.documentations"]
     },
     {
       "url": "/admin/settings",
       "icon": "menu-icon tf-icons ti ti-settings",
       "name": "Settings",
-      "slug": "admin.settings"
+      "slug": ["admin.settings"]
     },
     {
       "name": "Webshop Admin",
       "icon": "menu-icon tf-icons ti ti-building-store",
-      "slug": "webshop",
+      "slug": ["webshop"],
       "submenu": [
         {
           "url": "/admin/webshop/colors",
           "name": "Colors & logo",
-          "slug": "admin.webshop.colors"
+          "slug": ["admin.webshop.colors"]
         },
         {
           "url": "/admin/webshop/hero",
           "name": "Hero",
-          "slug": "admin.webshop.hero"
+          "slug": ["admin.webshop.hero"]
         },
         {
           "url": "/admin/webshop/aboutus",
           "name": "About Us",
-          "slug": "admin.webshop.aboutus"
+          "slug": ["admin.webshop.aboutus"]
         },
         {
           "url": "/admin/webshop/features",
           "name": "Features",
-          "slug": "admin.webshop.features"
+          "slug": ["admin.webshop.features"]
         },
         {
           "url": "/admin/webshop/pricing",
           "name": "Pricing",
-          "slug": "admin.webshop.pricing"
+          "slug": ["admin.webshop.pricing"]
         }
         ,
         {
           "url": "/admin/webshop/products",
           "name": "Products",
-          "slug": "admin.webshop.products.index"
+          "slug": ["admin.webshop.products.index"]
         }
         ,
         {
           "url": "/admin/webshop/cta",
           "name": "Call To Action",
-          "slug": "admin.webshop.cta"
+          "slug": ["admin.webshop.cta"]
         }
         ,
         {
           "url": "/admin/webshop/faq",
           "name": "FAQ",
-          "slug": "admin.webshop.faq"
+          "slug": ["admin.webshop.faq"]
         }
         ,
         {
           "url": "/admin/webshop/contact",
           "name": "Contact",
-          "slug": "admin.webshop.contact"
+          "slug": ["admin.webshop.contact"]
         }
         ,
         {
           "url": "/admin/webshop/footer_pages",
           "name": "Footer Pages",
-          "slug": "admin.webshop.footer_pages"
+          "slug": ["admin.webshop.footer_pages"]
         }
       ]
     }

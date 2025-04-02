@@ -255,7 +255,7 @@
             </div>
         @endif
     @endif
-    <div class="card h-100" id="main_graph">
+    <div class="card h-100" id="main_graph" data-fantreeid="{{ $fantree_id }}">
         <div class="row justify-content-center mt-4 d-none" id="add-first-person-container">
             <div class="col-auto">
                 <button {{ $has_payment == false ? 'disabled' : '' }} id="add-first-person" type="button"

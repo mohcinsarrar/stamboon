@@ -34,6 +34,10 @@ class UsersDataTable extends DataTable
                 if($model->hasRole('superuser') == true){
                     return "superUser";
                 }
+
+                if($model->hasRole('superadmin') == true){
+                    return "superAdmin";
+                }
                 
                 return 'User';
 

@@ -9,7 +9,7 @@
     <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
         <h6 class="offcanvas-subtitle"></h6>
         <form class="add-new-user pt-0" id="formAddPerson" method="POST"
-            action="{{ route('users.pedigree.addperson') }}">
+            action="{{ route('users.pedigree.addperson', $pedigree_id) }}">
             @csrf
             <div class="mb-3">
                 <label class="form-label" for="name">First and middle name <span class="text-danger">*</span>

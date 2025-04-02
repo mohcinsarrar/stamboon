@@ -25,7 +25,7 @@ class FantreesDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('actions', 'superuser.fantree.actions')
+            ->addColumn('actions', 'superadmin.fantree.actions')
             ->editColumn('user_name', function(Fantree $model) {
                 return $model->user->firstname.' '.$model->user->lastname;
 

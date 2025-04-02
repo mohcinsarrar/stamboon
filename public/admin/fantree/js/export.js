@@ -112,9 +112,9 @@ $(document).on("click", "#exportBtn", function () {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-
+  let fantree_id = get_fantree_id()
   $.ajax({
-      url: "/fantree/print",
+      url: "/fantree/print/"+fantree_id,
       type: 'POST',
       encode: true,
       dataType: 'json',

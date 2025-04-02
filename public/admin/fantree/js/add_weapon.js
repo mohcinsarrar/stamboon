@@ -9,9 +9,9 @@ document.querySelector('#addWeapon').onclick = function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/loadweapon",
+        url: "/fantree/loadweapon/"+fantree_id,
         type: 'GET',
         encode: true,
         dataType: 'json',
@@ -62,9 +62,9 @@ if (deleteWeaponBtn) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        let fantree_id = get_fantree_id()
         $.ajax({
-            url: "/fantree/deleteweapon",
+            url: "/fantree/deleteweapon/"+fantree_id,
             type: 'POST',
             data: {},
             encode: true,
@@ -123,9 +123,9 @@ document.querySelector('#addWeaponModal #import-weapon').onclick = function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/addweapon",
+        url: "/fantree/addweapon/"+fantree_id,
         type: 'POST',
         data: formData,
         encode: true,
@@ -166,9 +166,9 @@ function get_weapon() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/loadweapon",
+        url: "/fantree/loadweapon/"+fantree_id,
         type: 'GET',
         encode: true,
         dataType: 'json',
@@ -229,9 +229,9 @@ function change_weapon_position(xpos, ypos) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    let fantree_id = get_fantree_id()
     $.ajax({
-        url: "/fantree/editweaponposition",
+        url: "/fantree/editweaponposition/"+fantree_id,
         type: 'POST',
         data: {
             'xpos': xpos,

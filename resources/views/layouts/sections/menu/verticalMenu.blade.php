@@ -41,20 +41,20 @@
     <ul class="menu-inner py-1">
         @foreach ($menuData[0]->menu as $menu)
             {{-- test if user has acces to this route --}}
-            @if ($menu->slug == 'users.fantree.index')
+            @if ($menu->slug == 'users.fantree.list')
                 @if (auth()->user()->has_one_payment('fantree') == false)
                     @continue
                 @endif
             @endif
 
-            @if ($menu->slug == 'users.pedigree.index')
+            @if ($menu->slug == 'users.pedigree.list')
                 @if (auth()->user()->has_one_payment('pedigree') == false)
                     @continue
                 @endif
             @endif
 
-            @if (isset($menu->role) && $menu->role == 'superuser')
-                @if (auth()->user()->hasRole('superuser') == false)
+            @if (isset($menu->role) && $menu->role == 'superadmin')
+                @if (auth()->user()->hasRole('superadmin') == false)
                     @continue
                 @endif
             @endif
@@ -72,7 +72,7 @@
                     $activeClass = null;
                     $currentRouteName = Route::currentRouteName();
 
-                    if ($currentRouteName === $menu->slug) {
+                    if (in_array($currentRouteName, $menu->slug)) {
                         $activeClass = 'active';
                     } elseif (isset($menu->submenu)) {
                         if (gettype($menu->slug) === 'array') {
